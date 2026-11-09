@@ -212,12 +212,6 @@ h1{font-size:25px;line-height:1.32;font-weight:800;margin:12px 0 8px;letter-spac
 .land h1.word{font-size:50px;color:#30271f;margin:26px 0 14px;display:inline-flex;align-items:flex-end;gap:2px}
 .land h1.word svg{margin-bottom:6px}
 .land .sub{font-size:15px;color:#5f574d;margin:0 0 26px}
-.feats{width:100%;display:flex;flex-direction:column;gap:12px}
-.feat{display:flex;gap:14px;align-items:center;width:100%;border:0;background:rgba(255,254,250,.88);border-radius:20px;padding:14px 16px;box-shadow:0 2px 10px rgba(70,60,30,.05);text-align:left;cursor:pointer;color:inherit}
-.feat .ibox{width:54px;height:54px;border-radius:16px;font-size:27px}
-.feat>div:nth-child(2){flex:1;min-width:0}
-.feat b{display:block;font-size:16px;margin-bottom:3px}.feat p{margin:0;color:var(--m);font-size:13px;line-height:1.45}
-.feat>.i{color:#9a9386;font-size:18px}
 .btn.pill{height:58px;font-size:17px}
 .foot .btn.pill{background:#607750 !important;color:#fffefa !important;border:0 !important;-webkit-text-fill-color:#fffefa}
 .land~.foot{background:linear-gradient(rgba(247,243,235,0),#f7f3eb 35%)}
@@ -271,8 +265,8 @@ h3{font-size:15px;margin:0}
 .ttl small{font-size:11.5px;color:var(--m);font-weight:600}.ttl b{font-size:18px;letter-spacing:-.03em}
 .steppill{flex:none;display:inline-flex;align-items:center;gap:2px;border:0;background:var(--prs);color:var(--prd);border-radius:999px;padding:9px 10px 9px 14px;font-size:13px;font-weight:700;cursor:pointer}
 .steppill.prev{padding:9px 14px 9px 10px}.steppill .i{font-size:15px}
-.flowline{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:12px}
-.flowline span{display:block;padding:6px 0 10px}
+.flowline{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:12px}
+.flowline button{display:block;padding:6px 0 10px;border:0;background:none;width:100%;cursor:pointer}.flowline button:disabled{cursor:default}
 .flowline i{display:block;height:4px;border-radius:4px;background:#e6dfd2}.flowline .on i{background:var(--sage)}
 main.flow{padding-top:30px}
 /* 화면 본문 머리말 */
@@ -329,19 +323,17 @@ select.field{-webkit-appearance:none;appearance:none;cursor:pointer;background:v
 .won .field{padding-right:40px;text-align:right}
 .buys .row{padding:6px 0;font-size:13.5px}
 /* 홈 루틴: 장 보기 전 / 장 보고 와서 구분 */
-.phase{display:grid;grid-template-columns:1fr 2fr;gap:10px;margin:24px 0 -14px}
-.phase span{font-size:11.5px;font-weight:700;text-align:center;padding-bottom:6px;border-bottom:2px solid}
-.phase .before{color:var(--neud);border-color:#e3d9c8}.phase .after{color:var(--prd);border-color:var(--sagel)}
 
 /* 홈 — 이번 주 집밥 루틴 (단계를 선으로 이어서 흐름이 보이게) */
 main.tab>section.card{margin:0 0 22px;padding:26px 22px}
-.steps{list-style:none;margin:30px -6px 30px;padding:0;display:grid;grid-template-columns:repeat(3,1fr)}
+.steps{list-style:none;margin:26px -6px 26px;padding:0;display:grid;grid-template-columns:repeat(4,1fr)}
 .steps li{position:relative;text-align:center}
-.steps li+li::before{content:"";position:absolute;top:27px;right:calc(50% + 34px);width:calc(100% - 68px);height:2px;border-radius:2px;background:var(--l)}
+.steps li+li::before{content:"";position:absolute;top:25px;right:calc(50% + 30px);width:calc(100% - 60px);height:2px;border-radius:2px;background:var(--l)}
 .steps li.done+li::before{background:var(--sage)}
-.steps .sbtn{border:0;background:none;padding:0 2px;cursor:default;display:flex;flex-direction:column;align-items:center;width:100%;color:var(--m)}
-.steps .node{width:54px;height:54px;border-radius:18px;display:grid;place-items:center;font-size:26px;background:#f1ede4;color:#b3ab9c;margin-bottom:14px;transition:.2s}
-.steps b{font-size:13px;line-height:1.3;color:var(--m);white-space:nowrap;letter-spacing:-.04em}
+.steps .sbtn{border:0;background:none;padding:0 2px;cursor:pointer;display:flex;flex-direction:column;align-items:center;width:100%;color:var(--m);font:inherit}
+.steps .sbtn:disabled{cursor:not-allowed}.steps .lock .node{opacity:.55}.steps .lock b{color:#b8b0a3}
+.steps .node{width:50px;height:50px;border-radius:17px;display:grid;place-items:center;font-size:26px;background:#f1ede4;color:#b3ab9c;margin-bottom:14px;transition:.2s}
+.steps b{font-size:12.5px;line-height:1.3;color:var(--m);word-break:keep-all;letter-spacing:-.04em}
 .steps small{font-size:11px;line-height:1.35;margin-top:5px;color:#a59d91;white-space:nowrap;letter-spacing:-.04em}
 .steps .done .node{background:var(--pri);color:#fff}
 .steps .done b{color:var(--t)}
@@ -1028,7 +1020,7 @@ const plan=()=>DB.plan&&DB.plan.wk===NOW_WK&&Array.isArray(DB.plan.recipes)?DB.p
 function addWish(t){const el=$("#wish");const v=(el?el.value:S.wish).trim();S.wish=v?`${v}, ${t}`:t;S.noWish=false;keep();}
 function setNoWish(){S.noWish=!S.noWish;if(S.noWish)S.wish="";keep();}
 function typeWish(el){S.wish=el.value;if(S.noWish){S.noWish=false;document.querySelector(".chip.nowish")?.classList.remove("on");}}
-function openPlanEdit(){const pl=draft()||plan();S.planEdit=true;S.wish=pl?pl.wish:"";S.noWish=!!pl&&!pl.wish;S.planNote="";render();scrollTo(0,0);}
+function openPlanEdit(){const pl=draft()||plan();S.planEdit=true;S.pview="wish";S.wish=pl?pl.wish:"";S.noWish=!!pl&&!pl.wish;S.planNote="";render();scrollTo(0,0);}
 // 이름으로 식재료 찾기 — ①이름·다른 이름이 정확히 같으면 그것 ②아니면 이름이 포함된 것 중 가장 긴 이름(2글자 이상)
 //   ("대파 1단" → 대파, "양파" → 양파(대파 아님), "닭가슴살" → 없음: 데이터의 닭고기는 육계 1kg라 다른 상품이에요)
 function matchItem(n){const c=coreName(n).replace(/\s*[\d.]+\s*(kg|g|개|단|마리|봉|팩|통|모|쪽|줌|컵|큰술|작은술).*$/,"").trim();if(!c)return null;
@@ -1189,7 +1181,7 @@ async function makeCombos(){const el=$("#wish");S.wish=(el?el.value:S.wish||"").
   return render();}
  valid.sort((a,b)=>a.k-b.k);
  DB.draft={wk:NOW_WK,at:Date.now(),wish,meals:N,wishes:valid[0].wishes,combos:valid.map(({k,wishes,...c})=>c),dropped:3-valid.length};
- S.comboSel=null;S.planEdit=false;S.planNote="";save();render();scrollTo(0,0);}
+ S.comboSel=null;S.planEdit=false;S.pview="combo";S.planNote="";save();render();scrollTo(0,0);}
 
 // 고른 조합으로 장볼 목록 확정 — 지금 냉장고·가격으로 다시 배정하고 크로스체크한 뒤 저장
 function confirmCombo(){const dr=draft(),c=dr&&dr.combos[S.comboSel];if(!c)return;
@@ -1205,7 +1197,8 @@ function confirmCombo(){const dr=draft(),c=dr&&dr.combos[S.comboSel];if(!c)retur
   fridge:al.fridge.map(f=>({name:f.item.name,level:f.item.level,recipes:[...new Set(f.recipes)]})),
   check:{ok:true,avoid:avoidText()==="없음"?"":avoidText()}};
  cart();DB.cart.items=DB.cart.items.filter(x=>!x.key.startsWith("p:")).concat(items.map(({pr,...x})=>({...x,bought:true})));
- DB.draft=null;S.comboSel=null;S.menus=null;save();render();scrollTo(0,0);}
+ dr.sel=S.comboSel;DB.plan.draftAt=dr.at;   // 조합은 지우지 않고 남겨둬요 (2단계로 돌아가 다시 고를 수 있게)
+ S.comboSel=null;S.menus=null;S.pview="list";save();render();scrollTo(0,0);}
 // 조합 미리보기용 — 안마다 장볼 재료 수·합계·많이 남는 재료 (실제 데이터로 계산)
 function comboSummary(c){const al=allocate(c.recipes),total=al.items.reduce((a,b)=>a+b.q.cost,0);
  const lefts=al.items.filter(b=>b.q.left>0).sort((a,b)=>b.q.cost-a.q.cost).slice(0,2).map(b=>`${b.it.name} 약 ${fmtAmt(b.q.left,b.q.lu)}`);
@@ -1330,7 +1323,7 @@ function shell(body,foot){const edit=S.view==="edit";
  const top=edit?`<div class="subtop"><button class="back" onclick="closeEdit()" aria-label="뒤로가기">${ic("back")}</button><b>초기 정보 수정</b></div>`
   :`<div class="top"><button class="back" onclick="go(${S.step-1})" aria-label="뒤로가기">${ic("back")}</button><div class="prog"><i style="width:${Math.round(S.step/(ONB.length-1)*100)}%"></i></div></div>`;
  $("#app").innerHTML=`${top}<main>${body}</main><div class="foot">${foot||""}</div>${overlays()}`;}
-const go=n=>{S.step=Math.max(0,n);S.err="";render();scrollTo(0,0);};
+const go=n=>{S.step=Math.max(A.user&&!DB.onboarded?1:0,n);S.err="";render();scrollTo(0,0);};
 // 다음 버튼: 온보딩이면 다음 단계, 수정 중이면 저장 (자치구는 가게 고르기까지 이어서)
 function nextFrom(name){if(S.view==="edit"){if(name==="area"){S.editKey="shop";return render();}return saveEdit();}go(ONB.indexOf(name)+1);}
 const nextLabel=()=>S.view==="edit"?"저장하기":"다음";
@@ -1340,21 +1333,31 @@ const nextLabel=()=>S.view==="edit"?"저장하기":"다음";
 const TABS=[["home","home","홈"],["pantry","fridge","냉장고"],["history","chart","기록"],["me","user","내 정보"]];
 const TAB_TITLE={pick:"메뉴 정하기",record:"산 것 기록",pantry:"우리집 냉장고",recipe:"오늘 뭐 해먹지?"};
 // 이번 주 집밥 루틴 — 홈 단계와 각 화면 위 흐름 막대가 같은 이름을 써요. phase: before=장 보기 전, after=장 보고 와서
-const FLOW=[["pick","pot","메뉴 정하기","before"],["record","basket","산 것 기록","after"],["recipe","pot","오늘 뭐 해먹지?","after"]];
+const FLOW=[["pick"],["record"]];   // 위에 4단계 진행선을 보여주는 화면
+// 이번 주 장보기 루틴 4단계 — 앞 단계를 마쳐야 다음 단계가 열리고, 뒤로는 언제든 돌아가 고칠 수 있어요
+function routine(){const pl=plan(),dr=draft(),bought=DB.purchases.some(x=>x.week===NOW_WK);
+ const R=[
+  {k:"wish",  i:"bulb",  t:"메뉴 정하기",           done:!!dr||!!pl,                 go:"goTab('pick','wish')"},
+  {k:"combo", i:"pot",   t:"메뉴 조합",             done:!!pl,                       go:"goTab('pick','combo')"},
+  {k:"list",  i:"cart",  t:"장볼 목록",             done:!!pl&&(!!pl.seen||bought),  go:"goTab('pick','list')"},
+  {k:"record",i:"basket",t:"장 보고 와서 기록하기", done:bought,                     go:"goTab('record')"}];
+ R.forEach((x,j)=>x.on=j===0||R[j-1].done);
+ return R;}
 // 단계 화면 상단: [뒤로] [루틴 n/3 · 제목] [다음 단계 ›] + 아래 3칸 진행선(눌러서 이동)
 // 단계 화면 상단 — 진행선은 지금 위치 표시만 해요. 단계 이동은 화면 안의 진한 초록 버튼으로만.
-function flowHead(){const k=FLOW.findIndex(f=>f[0]===S.tab),f=FLOW[k];
- return `<header class="fhead"><div class="fhrow"><button class="back" onclick="goTab('home')" aria-label="홈으로">${ic("back")}</button>
-<div class="ttl"><small>${k+1}/3 · ${f[3]==="before"?"장 보기 전":"장 보고 와서"}</small><b>${f[2]}</b></div></div>
-<div class="flowline" role="img" aria-label="3단계 중 ${k+1}단계">${FLOW.map((_,i)=>`<span class="${i<=k?"on":""}"><i></i></span>`).join("")}</div></header>`;}
+function flowHead(){const R=routine(),k=S.tab==="record"?3:{wish:0,combo:1,list:2}[pickView()];
+ return `<header class="fhead"><div class="fhrow"><button class="back" onclick="navBack()" aria-label="뒤로가기">${ic("back")}</button>
+<div class="ttl"><b>${R[k].t}</b></div></div>
+<div class="flowline" aria-label="4단계 중 ${k+1}단계">${R.map((x,i)=>`<button class="${i<=k?"on":""}" ${x.on&&i!==k?`onclick="${x.go}"`:"disabled"} aria-label="${i+1}단계 ${x.t}"><i></i></button>`).join("")}</div></header>`;}
 const tabbar=()=>`<nav class="tabbar">${TABS.map(([k,i,t])=>`<button class="${S.tab===k||(k==="home"&&!TABS.some(x=>x[0]===S.tab))?"on":""}" onclick="goTab('${k}')">${ic(i)}${t}</button>`).join("")}</nav>`;
-function goTab(k,sub){S.tab=k;S.view="app";if(k==="recipe"&&sub)S.rview=sub;if(k!=="record")S.recorded=0;
+function goTab(k,sub){S.tab=k;S.view="app";if(k==="recipe"&&sub)S.rview=sub;
+ if(k==="pick"){S.pview=sub||null;if(sub==="wish"&&!S.wish){const pl=draft()||plan();S.wish=pl?pl.wish:"";S.noWish=!!pl&&!pl.wish;}S.planNote="";}if(k!=="record")S.recorded=0;
  if(k==="recipe"&&S.rview==="make"&&needMenus()&&!planRecs().length)return suggestMenus();   // 짜둔 메뉴가 있으면 그걸 먼저 보여줘요   // 오늘 뭐 해먹지? → 만들 수 있는 메뉴부터
  render();scrollTo(0,0);}
 // 탭 화면(홈·기록·내 정보)은 하단 탭, 바로가기 화면(장보기·냉장고·레시피)은 위에 뒤로가기
 function page(body,foot,head){const isTab=TABS.some(t=>t[0]===S.tab);
  const inFlow=FLOW.some(f=>f[0]===S.tab);
- const top=isTab?(head||""):inFlow?flowHead():`<div class="subtop"><button class="back" onclick="goTab('home')" aria-label="홈으로">${ic("back")}</button><b>${TAB_TITLE[S.tab]}</b></div>`;
+ const top=isTab?(head||""):inFlow?flowHead():`<div class="subtop"><button class="back" onclick="navBack()" aria-label="뒤로가기">${ic("back")}</button><b>${TAB_TITLE[S.tab]}</b></div>`;
  // 하단 탭은 모든 앱 화면에 고정 (홈·냉장고·기록·내 정보)
  $("#app").innerHTML=`${top}<main class="tab ${inFlow?"flow":""} ${foot?"hasfoot":""}">${body}</main>${foot?`<div class="foot tab">${foot}</div>`:""}${tabbar()}${overlays()}`;}
 
@@ -1374,23 +1377,19 @@ function runLoader(kind,n,ms,done){S.busy={kind,i:0};render();
    ============================================================ */
 function landing(){
  const start="S.sheet='agree';render()";
- const FEATS=[["pot","먹고 싶은 메뉴로 장볼 목록","메뉴만 말하면 예산 안에서, 남김없이 다 쓸 만큼만 골라줘요."],
-  ["fridge","냉장고 재료로 레시피","남은 재료와 새로 산 재료로 AI가 레시피를 골라줘요."],
-  ["moneybag","쌓이는 식비 기록","주별·월별 지출과 배달 대비 아낀 돈을 보여줘요."]];
 $("#app").innerHTML=`<div class="land">${LAND_DECO}
 <div class="appicon">${symbol(66)}<svg class="spark" width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><path d="M6 14 3 5 M13 12l4-7 M16 19l8-3" stroke="#607750" stroke-width="2.6" stroke-linecap="round" fill="none"/></svg></div>
 <h1 class="word">살림밥상${leaf(26)}</h1>
 <p class="sub">먹고 싶은 걸로 장 보고,<br>남는 재료 없이 다 해 먹는 식비 플래너예요.</p>
-<div class="feats">${FEATS.map(([i,b,p])=>`<button class="feat" onclick="${start}"><div class="ibox">${ic(i)}</div><div><b>${b}</b><p>${p}</p></div>${ic("right")}</button>`).join("")}</div>
 </div>
-<div class="foot"><button class="btn pill" onclick="${start}">시작하기 ${ic("right")}</button>${authOn()?`<button class="link" style="margin-top:6px" onclick="S.lmode='login';openLogin()">이미 계정이 있어요 · 로그인</button>`:""}</div>${overlays()}`;}
+<div class="foot"><button class="btn pill" onclick="${start}">회원가입 ${ic("right")}</button>${authOn()?`<button class="link" style="margin-top:6px" onclick="S.lmode='login';openLogin()">이미 계정이 있어요 · 로그인</button>`:""}</div>${overlays()}`;}
 // 첫 화면 배경 장식: 창가 식물 그림자(흐리게) · 린넨 행주 · 허브 잎
 const SHADE_BRANCH=`<svg viewBox="0 0 200 260"><g fill="#2f3a24"><path d="M100 260C96 180 80 110 40 20" stroke="#2f3a24" stroke-width="5" fill="none"/>${[[60,60,-40],[78,95,30],[50,120,-55],[88,150,40],[62,175,-35],[95,205,25],[40,80,-70],[70,30,-20]].map(([x,y,r])=>`<ellipse cx="${x}" cy="${y}" rx="30" ry="11" transform="rotate(${r} ${x} ${y})"/>`).join("")}</g></svg>`;
 const HERB=`<svg viewBox="0 0 120 120"><path d="M10 110C40 80 60 60 100 40" stroke="#58743f" stroke-width="2.4" fill="none" stroke-linecap="round"/>${[[45,78,-30],[62,62,10],[78,52,-50],[95,42,20],[55,92,40],[30,95,-10]].map(([x,y,r])=>`<path d="M${x} ${y}c-8-10-4-22 6-24 2 6 10 6 9 14 6 1 8 9 2 13-5 4-12 2-17-3z" fill="#6f9258" transform="rotate(${r} ${x} ${y})"/>`).join("")}</svg>`;
 // 로그인 화면 — Google / 이메일, 그리고 '로그인 없이 시작'
 function loginScreen(){const signup=S.lmode==="signup";
  $("#app").innerHTML=`<div class="top"><button class="back" onclick="S.view='app';render()" aria-label="뒤로가기">${ic("back")}</button></div><main class="loginscr">
-<h1>${signup?"계정 만들기":"로그인"}</h1><p class="sub">로그인하면 기록이 계정에 저장돼서<br>다른 기기에서도 이어서 쓸 수 있어요.</p>
+<h1>${signup?"회원가입":"로그인"}</h1><p class="sub">로그인하면 기록이 계정에 저장돼서<br>다른 기기에서도 이어서 쓸 수 있어요.</p>
 ${!A.ready?`<div class="workcard card"><span class="spin dark"></span>로그인 준비 중…</div>`:A.err?`<div class="note bad">${esc(A.err)}</div>`:`
 ${AUTH_METHODS.google?`<button class="btn gbtn" ${A.busy?"disabled":""} onclick="loginGoogle()"><span class="gmark">G</span>Google로 계속하기</button>`:""}
 ${AUTH_METHODS.google&&AUTH_METHODS.email?`<div class="ordiv"><span>또는 이메일로</span></div>`:""}
@@ -1398,7 +1397,7 @@ ${AUTH_METHODS.email?`<label class="fl">이메일<input id="lEmail" class="field
 <label class="fl" style="margin-top:12px">비밀번호<input id="lPw" class="field" type="password" autocomplete="${signup?"new-password":"current-password"}" placeholder="${signup?"6자 이상":"비밀번호"}" onkeydown="if(event.key==='Enter')loginEmail()"></label>
 ${S.lerr?`<div class="note bad" style="margin-top:12px">${S.lerr}</div>`:""}
 <button class="btn" style="margin-top:16px" ${A.busy?"disabled":""} onclick="loginEmail()">${A.busy?`<span class="spin"></span>확인 중…`:signup?"가입하고 시작하기":"이메일로 로그인"}</button>
-<div class="logrow"><button class="link" onclick="S.lmode='${signup?"login":"signup"}';S.lerr='';render()">${signup?"이미 계정이 있어요 · 로그인":"처음이에요 · 계정 만들기"}</button>${signup?"":`<button class="link" onclick="resetPw()">비밀번호 찾기</button>`}</div>`:S.lerr?`<div class="note bad">${S.lerr}</div>`:""}`}
+<div class="logrow"><button class="link" onclick="S.lmode='${signup?"login":"signup"}';S.lerr='';render()">${signup?"이미 계정이 있어요 · 로그인":"처음이에요 · 회원가입"}</button>${signup?"":`<button class="link" onclick="resetPw()">비밀번호 찾기</button>`}</div>`:S.lerr?`<div class="note bad">${S.lerr}</div>`:""}`}
 ${authOn()?"":`<button class="link skip" onclick="skipLogin()">로그인 없이 시작하기 <small>(이 기기에만 저장돼요)</small></button>`}
 </main>${overlays()}`;}
 
@@ -1419,12 +1418,12 @@ function agreeModal(){return `<div class="modal-bg" onclick="if(event.target===t
  :"동네 설정과 서비스 이용 데이터는 이 기기에만 저장돼요. 이름·연락처 같은 개인 식별 정보는 일체 수집하지 않으며, 설정에서 언제든 데이터를 삭제할 수 있어요."}</p>
 <b>AI 사용 안내</b><p class="m" style="margin-bottom:0">AI는 입력한 예산과 조사 가격을 바탕으로 장볼 재료와 메뉴, 레시피를 추천해요. 화면에 표시되는 가격은 조사 데이터를 바탕으로 하며, 일부는 구별 평균 가격을 적용해요. 실제 구매 가격은 판매처에 따라 다를 수 있어요. 가격 정보가 있는 재료만 추천과 레시피에 사용해요. 알레르기 유발 성분은 구매하거나 조리하기 전에 직접 확인해 주세요.</p></div>
 <label class="agree"><span class="ck ${S.agree?"on":""}">${S.agree?ic("check"):""}</span><input type="checkbox" hidden ${S.agree?"checked":""} onchange="toggleAgree(this)">위 내용에 동의해요</label>
-<button class="btn" ${S.agree?"":"disabled"} onclick="afterAgree()">동의하고 시작하기</button>
+<button class="btn" ${S.agree?"":"disabled"} onclick="afterAgree()">동의하고 회원가입</button>
 </div></div>`;}
 
 // 동의 체크 — 화면을 다시 그리지 않고(시트가 다시 올라오지 않게) 체크 표시와 버튼만 바꿔요
 // 동의 후: 로그인을 쓰면 로그인 화면, 아니면 바로 온보딩
-function afterAgree(){S.sheet=null;if(authOn()&&!A.user)return openLogin();go(1);}
+function afterAgree(){S.sheet=null;if(authOn()&&!A.user){S.lmode="signup";return openLogin();}go(1);}
 function toggleAgree(el){S.agree=el.checked;const ck=el.parentElement.querySelector(".ck");ck.classList.toggle("on",S.agree);ck.innerHTML=S.agree?ic("check"):"";
  const b=el.closest(".modal").querySelector(".btn");if(b)b.disabled=!S.agree;}
 /* 1. 사는 곳 — 구와 동(법정동, 주소에 쓰는 동 이름)을 골라요. 동 목록은 서울시 자치구별 동 현황 기준 */
@@ -1480,14 +1479,16 @@ function sShop(){const p=S.p,dn=esc(String(p.dong||"").trim());
  const typeOrd=(a,b)=>a.type===b.type?a.name.localeCompare(b.name,"ko"):a.type==="전통시장"?-1:1;
  const all=(STORES[p.district]||[]).slice().sort((a,b)=>(dongOf(a.address)||"힣").localeCompare(dongOf(b.address)||"힣","ko")||typeOrd(a,b));
  const near=all.filter(m=>sameDong(m,p)).sort(typeOrd),rest=all.filter(m=>!sameDong(m,p));
+ // 우리 동네 가게가 없으면 '구 평균 가격'을 다른 동네 가게보다 먼저 보여줘요
+ const avgTile=`<div class="tiles"><div class="tile wide ${p.martAvg?"on":""}" onclick="S.p.mart='';S.p.martAvg=true;render()"><span class="ibox">${ic("map")}</span><span class="wtx"><b>${esc(p.district)} 평균 가격으로 볼게요</b><small>${all.length}곳에서 조사된 가격의 평균이에요</small></span></div></div>`;
  shell(`<h1>어디서 장 보세요?</h1><p class="sub">고른 가게에서 조사된 가격으로 보여줘요.<br>이름이 낯설면 아래 주소로 확인해 보세요.</p>
 <div style="text-align:center;margin:4px 0 6px"><div class="zipchip"><span>${esc(p.district)} ${dn}</span><button onclick="${S.view==="edit"?"S.editKey='area';render()":"go(1)"}">변경</button></div></div>
 ${near.length?`<p class="sec">${ic("pin")} ${dn} 시장·마트 ${near.length}곳</p><div class="tiles">${near.map(storeTile).join("")}</div>
 ${rest.length?`<p class="sec sep">${esc(p.district)} 다른 동네 ${rest.length}곳</p><div class="tiles">${rest.map(storeTile).join("")}</div>`:""}`
- :`<p class="m emptyline">${dn} 시장·마트는 아직 데이터를 준비 중이에요. ${esc(p.district)} 다른 동네에서 골라주세요.</p>
+ :`<p class="m emptyline">${dn} 시장·마트는 아직 데이터를 준비 중이에요. ${esc(p.district)} 평균 가격으로 보거나, 다른 동네 가게를 골라주세요.</p>
+${avgTile}
 ${rest.length?`<p class="sec">${ic("pin")} ${esc(p.district)} 다른 동네 ${rest.length}곳</p><div class="tiles">${rest.map(storeTile).join("")}</div>`:""}`}
-<p class="sec">맞는 가게가 없다면</p>
-<div class="tiles"><div class="tile wide ${p.martAvg?"on":""}" onclick="S.p.mart='';S.p.martAvg=true;render()"><span class="ibox">${ic("map")}</span><span class="wtx"><b>${esc(p.district)} 평균 가격으로 볼게요</b><small>${all.length}곳에서 조사된 가격의 평균이에요</small></span></div></div>
+${near.length?`<p class="sec">맞는 가게가 없다면</p>${avgTile}`:""}
 <p class="m" style="margin-top:12px">가게 사이 거리는 아직 데이터에 없어서, 다른 동네는 동 이름 순서로 보여드려요.</p>`,
  `<button class="btn" ${p.mart||p.martAvg?"":"disabled"} onclick="nextFrom('shop')">${nextLabel()}</button>`);}
 
@@ -1583,11 +1584,7 @@ const SCR={landing,area:sArea,shop:sShop,people:sPeople,meals:sMeals,budget:sBud
    ============================================================ */
 function home(){const p=DB.profile,w=weekly(),sw=spentWeek(),mb=monthBudget(),sm=spentMonth(),now=new Date(),sv=savings();
  const bought=DB.purchases.some(x=>x.week===NOW_WK),made=DB.recipes.some(r=>r.week===NOW_WK),planned=!!plan();
- // 이번 주 집밥 루틴 3단계 — 사기 → 기록 → 해먹기 (냉장고는 기록하면 자동으로 채워져서 단계가 아니라 상태로 보여줘요)
- const STEPS=[
-  {i:"pot",   t:"메뉴 정하기",    d:"먹고 싶은 걸로 장볼 목록", done:planned||bought, cta:"먹고 싶은 메뉴로 장볼 목록 받기", go:"goTab('pick')"},
-  {i:"basket",t:"산 것 기록",     d:"냉장고로 자동 저장", done:bought,                cta:"장 본 것 기록하기",        go:"goTab('record')"},
-  {i:"pot",   t:"오늘 뭐 해먹지?", d:"있는 재료로 추천",     done:made,                  cta:"있는 재료로 메뉴 추천받기", go:"goTab('recipe','make')"}];
+ const STEPS=routine();
  const nx=STEPS.findIndex(x=>!x.done);
  const uk=lastBuyWeek(),us=uk&&useStats(uk);
  const s=stock(),old=s.find(x=>daysAgo(x.addedAt)>=5),low=s.filter(x=>x.level==="low");
@@ -1596,13 +1593,10 @@ function home(){const p=DB.profile,w=weekly(),sw=spentWeek(),mb=monthBudget(),sm
  page(`
 <section class="card flow">
  <div class="row"><h3>이번 주 집밥 루틴</h3><span class="m">${wkLabel(NOW_WK)}</span></div>
- <div class="phase"><span class="before">장 보기 전</span><span class="after">장 보고 와서</span></div>
- <ol class="steps">${STEPS.map((x,k)=>`<li class="${x.done?"done":k===nx?"now":""} ${k?"after":"before"}"${k===nx?' aria-current="step"':""}><div class="sbtn"><span class="node">${x.done?ic("check"):ic(x.i)}</span><b>${x.t}</b><small>${x.d}</small></div></li>`).join("")}</ol>
- ${planned&&!bought&&nx===1?`<button class="btn" onclick="goTab('pick')">${ic("basket")} 장볼 목록 보기</button><div style="height:10px"></div>`:""}
- ${nx>=0?`<button class="btn" onclick="${STEPS[nx].go}">${STEPS[nx].cta}</button>`
-  :`<div class="alldone">이번 주 루틴을 다 했어요</div><button class="btn" onclick="goTab('recipe','make')">메뉴 더 추천받기</button>`}
+ <ol class="steps">${STEPS.map((x,k)=>`<li class="${x.done?"done":k===nx?"now":""} ${x.on?"":"lock"}"${k===nx?' aria-current="step"':""}><button class="sbtn" ${x.on?`onclick="${x.go}"`:"disabled"} aria-label="${k+1}단계 ${x.t}${x.done?" (완료)":x.on?"":" (이전 단계를 먼저 해주세요)"}"><span class="node">${x.done?ic("check"):ic(x.i)}</span><b>${x.t}</b></button></li>`).join("")}</ol>
+ ${nx<0?`<div class="alldone">이번 주 장보기를 다 했어요</div>`:""}
  <button class="fridgeline" onclick="goTab('pantry')"><span class="ibox">${ic("fridge")}</span><span class="fl-tx"><b>냉장고 보기 <em>${s.length?`재료 ${s.length}개`:"비어 있어요"}</em></b><small>${fridge}</small></span>${ic("right")}</button>
- ${s.length&&nx!==2&&nx>=0?`<button class="btn" style="margin-top:12px" onclick="goTab('recipe','make')">${ic("pot")} 이 재료로 뭐 해먹지?</button>`:""}
+ ${s.length?`<button class="btn ghost" style="margin-top:12px" onclick="goTab('recipe','make')">${ic("pot")} 이 재료로 뭐 해먹지?</button>`:""}
 </section>
 
 ${us?`<section class="card usecard">
@@ -1640,17 +1634,22 @@ function budgetCard(){const w=weekly(),sw=spentWeek(),ct=cartTotal(),left=w-sw-c
 ${over?`<p class="overmsg">담은 걸 다 사면 예산을 ${won(-left)} 넘어요.</p>`:""}</section>`;}
 
 /* ① 메뉴 정하기 — 장 보러 가기 전: 먹고 싶은 메뉴 입력 → AI가 필요한 식재료만 리스트업 */
-function pickPage(){const pl=plan(),dr=draft(),p=DB.profile,N=P().meals;
- if(dr&&!S.planEdit&&(!pl||dr.at>pl.at))return comboPage(dr);
- if(!pl||S.planEdit){const s=stock(),room=Math.max(0,weekly()-spentWeek());
+// 메뉴 정하기 화면 안의 단계: wish(먹고 싶은 메뉴) → combo(메뉴 조합) → list(장볼 목록)
+function pickView(){const pl=plan(),dr=draft();let v=S.pview;
+ if(v==="combo"&&!dr)v=null;if(v==="list"&&!pl)v=null;
+ return v||(dr&&(!pl||dr.at>pl.at)?"combo":pl?"list":"wish");}
+function pickPage(){const pl=plan(),dr=draft(),p=DB.profile,N=P().meals,v=pickView();
+ if(v==="combo")return comboPage(dr);
+ if(v==="wish"){const s=stock(),room=Math.max(0,weekly()-spentWeek());
   return page(`<h2 class="lead">이번엔 뭐 먹고 싶으세요?</h2>
 <p class="meta">${ic("calendar")} ${N}끼 · ${p.people}명 · 이번 주 남은 예산 ${won(room)}</p>
 <textarea id="wish" class="field wish" rows="4" oninput="typeWish(this)" placeholder="예) 김치찌개랑 제육볶음 먹고 싶어요" aria-label="먹고 싶은 메뉴">${esc(S.wish)}</textarea>
 <div class="chips" style="margin-top:12px"><span class="chip nowish ${S.noWish?"on":""}" onclick="setNoWish()">${ic("check")} 딱히 없어요, 알아서</span>${WISH_QUICK.map(t=>chip(`${ic("plus")} ${t}`,false,`addWish('${t}')`)).join("")}</div>
 <div class="note" style="margin-top:22px">먹고 싶은 메뉴는 ${WISH_MEALS}끼로 넣고, 사고 남는 재료와 냉장고 재료로 나머지 끼니를 채운 ${N}끼 조합을 3가지 보여드려요. 하나를 고르면 그 조합에 필요한 재료만 장볼 목록에 담아요.${s.length?` 냉장고에 있는 ${esc(s.slice(0,3).map(x=>coreName(x.name)).join(", "))}${s.length>3?` 외 ${s.length-3}개`:""}부터 써요.`:""}</div>
 ${S.planNote?`<div class="note warn">${S.planNote}</div>`:""}
-${pl||dr?`<button class="link" onclick="S.planEdit=false;render()">${dr&&(!pl||dr.at>pl.at)?"받은 메뉴 조합 보기":"지난번에 받은 목록 보기"}</button>`:""}`,
+${pl||dr?`<button class="link" onclick="S.planEdit=false;S.pview='${dr&&(!pl||dr.at>pl.at)?"combo":"list"}';render()">${dr&&(!pl||dr.at>pl.at)?"받은 메뉴 조합 보기":"지난번에 받은 목록 보기"}</button>`:""}`,
    S.work==="plan"?`<button class="btn" disabled><span class="spin"></span>${N}끼 메뉴 조합 짜는 중…</button>`:`<button class="btn" onclick="makeCombos()">${N}끼 메뉴 조합 받기</button>`);}
+ if(!pl.seen){pl.seen=true;save();}   // 3단계(장볼 목록)를 봤다고 표시 → 4단계가 열려요
  const c=cart(),ct=cartTotal(),prs=planRecs(),wishT=prs.filter(r=>r.wish).map(r=>r.title);
  const leftTxt=x=>x.unknown?"남는 양은 직접 확인해 주세요":x.left!=null&&x.left<=0?"남김없이 다 써요":x.left!=null?`다 쓰고 약 ${fmtAmt(x.left,x.lu)} 남아요`:"";
  const row=x=>{const on=inCart(x.key);return `<div class="li prow" onclick="toggleCart('${q(x.key)}')"><div class="em">${ingIc(x.name)}</div>
@@ -1670,7 +1669,7 @@ ${pl.items.length?`<div class="list">${pl.items.map(row).join("")}</div>`:`<div 
   c.length?`<button class="btn" onclick="goTab('record')">장 보고 와서 기록하기 <span class="btn-sub">${c.length}개 · ${won(ct)}</span>${ic("right")}</button>`:null);}
 
 // 메뉴 조합 3안 — 하나 고르면 그 조합으로 장볼 목록을 만들어요 (합계·남는 재료는 실제 데이터로 계산)
-function comboPage(dr){const sel=S.comboSel;
+function comboPage(dr){const pl=plan(),sel=S.comboSel??(pl&&pl.draftAt===dr.at?dr.sel:null);
  page(`<h2 class="lead">${dr.meals}끼 메뉴 조합을<br>${dr.combos.length}가지 짰어요</h2>
 <p class="meta">${ic("pin")} ${esc(placeOf(P()))} 조사 가격으로 계산했어요</p>
 ${S.planNote?`<div class="note warn">${S.planNote}</div>`:""}
@@ -1873,13 +1872,13 @@ function wipeAll(){S.sheet="wipe";render();}
 function wipeSheet(){const n=DB.purchases.length,r=DB.recipes.length,s=stock().length;
  return `<div class="modal-bg" onclick="if(event.target===this){S.sheet=null;render()}"><div class="modal" role="alertdialog" aria-labelledby="wipeT"><div class="grab"></div>
 <h1 id="wipeT" style="margin-top:0">정말 모든 정보와<br>기록을 지울까요?</h1>
-<p class="sub">지운 내용은 되돌릴 수 없어요. 처음 화면부터 다시 시작해요.</p>
+<p class="sub">지운 내용은 되돌릴 수 없어요. ${A.user?"로그인은 그대로 두고, 초기 정보 입력부터 다시 시작해요.":"처음 화면부터 다시 시작해요."}</p>
 <div class="card wipelist"><p>${ic("pin")} 동네·가게, 인원, 예산 등 초기 정보</p><p>${ic("fridge")} 냉장고 재료 ${s}개</p><p>${ic("chart")} 장보기 기록 ${n}건 · 레시피 ${r}개</p></div>
 <button class="btn danger" onclick="doWipe()">모두 지우기</button>
 <button class="link" onclick="S.sheet=null;render()">취소</button></div></div>`;}
 function doWipe(){try{localStorage.removeItem(KEY)}catch(e){}DB=EMPTY();
  if(A.user){clearTimeout(pushT);userDoc().delete().catch(()=>{});}   // 로그인했으면 서버 기록도 지워요 (계정은 남아요)
- Object.assign(S,{step:0,p:null,view:"app",tab:"home",agree:false,sheet:null,results:[],rsel:null,recorded:0,editKey:null,openR:null,left:null,wish:"",noWish:false,planEdit:false,planNote:"",menus:null,menuSig:""});
+ Object.assign(S,{step:A.user?1:0,p:null,view:"app",tab:"home",agree:!!A.user,sheet:null,results:[],rsel:null,recorded:0,editKey:null,openR:null,left:null,wish:"",noWish:false,planEdit:false,planNote:"",menus:null,menuSig:""});
  render();scrollTo(0,0);toast("모든 정보와 기록을 지웠어요");}
 
 /* ============================================================
@@ -1895,7 +1894,35 @@ function render(){draw();
  // 바텀시트는 처음 열릴 때만 아래에서 올라와요 (열린 채로 화면을 다시 그릴 땐 움직이지 않게)
  const sk=S.sheet||(S.openR?"r"+S.openR:null);
  if(sk&&S._shownSheet===sk)document.querySelectorAll(".modal").forEach(m=>m.style.animation="none");
- S._shownSheet=sk;requestAnimationFrame(updBar);}
+ S._shownSheet=sk;requestAnimationFrame(updBar);navSync();}
+/* ============================================================
+   뒤로 가기 — 화면이 바뀔 때마다 브라우저 기록에 남겨서
+   휴대폰 뒤로 가기·브라우저 뒤로 가기·화면 위 ← 버튼이 모두 바로 전 화면으로 돌아가요
+   ============================================================ */
+const NAV_KEYS=["view","tab","step","sheet","pview","rview","openR","editKey"];
+const NAV_ID=Math.random().toString(36).slice(2);   // 새로고침 전 기록과 섞이지 않게
+let NAV=[],NI=-1,navSkip=0,navBusy=false;
+const navSnap=()=>JSON.stringify(Object.fromEntries(NAV_KEYS.map(k=>[k,S[k]??null])));
+function navSync(){if(navBusy)return;const sig=navSnap();
+ if(NI>=0&&NAV[NI]===sig)return;
+ if(NI>0&&NAV[NI-1]===sig){NI--;navSkip++;try{history.back();}catch(e){}return;}   // 창을 닫는 등 '바로 전 화면'으로 돌아온 경우
+ NAV=NAV.slice(0,NI+1);NAV.push(sig);NI++;
+ try{const st={salimNav:NI,id:NAV_ID};NI===0?history.replaceState(st,""):history.pushState(st,"");}catch(e){}}
+// 돌아갈 화면이 지금 상태에서 그릴 수 없는 화면이면 고쳐서 그려요 (예: 로그인한 뒤의 로그인 화면)
+function navFix(st){if(A.user&&st.view==="login")st.view="app";
+ if(st.view==="edit"&&!S.p&&DB.profile)S.p={...DB.profile};
+ if(!DB.onboarded&&A.user&&st.step<1)st.step=1;
+ if(!DB.onboarded&&!S.p)S.p=DEFAULT_PROFILE();
+ return st;}
+window.addEventListener("popstate",e=>{
+ if(navSkip){navSkip--;return;}
+ const h=e.state;if(!h||h.id!==NAV_ID||!NAV[h.salimNav]){if(h&&h.id&&h.id!==NAV_ID)history.back();return;}
+ const before=navSnap(),st=navFix(JSON.parse(NAV[h.salimNav]));NI=h.salimNav;
+ navBusy=true;Object.assign(S,st);S.err="";S.left=null;render();navBusy=false;
+ const now=navSnap();NAV[NI]=now;
+ if(now===before&&NI>0){navSkip++;NI--;history.back();return;}   // 바뀐 게 없으면 한 번 더 뒤로
+ scrollTo(0,0);});
+function navBack(){if(NI>0)history.back();else goTab("home");}
 function draw(){
  if(S.busy)return loader();
  if(S.view==="login")return loginScreen();
