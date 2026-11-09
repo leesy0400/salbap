@@ -63,6 +63,7 @@ html{scrollbar-width:none}html::-webkit-scrollbar,body::-webkit-scrollbar{displa
 main{flex:1;padding:8px 22px 130px;display:flex;flex-direction:column}
 h1{font-size:25px;line-height:1.32;font-weight:800;margin:12px 0 8px;letter-spacing:-.035em}
 .sub{color:var(--m);font-size:14px;line-height:1.55;margin:0 0 18px}
+.inerr{color:#c0392b;font-size:13px;font-weight:600;line-height:1.5;margin:8px 4px 0}
 .center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:12px;min-height:300px}
 .m{color:var(--m);font-size:12.5px}
 .row{display:flex;justify-content:space-between;align-items:center;gap:10px}
@@ -950,9 +951,34 @@ function useStats(k){const b=DB.purchases.filter(x=>x.week===k&&x.kind!=="seas"&
 const lastBuyWeek=()=>DB.purchases.filter(x=>x.kind!=="seas").map(x=>x.week).sort().pop();
 function restore(id){const x=DB.pantry.find(p=>p.id===id);if(x){x.level="mid";x.tossed=false;setFate(x.pid,null);save();keep();}}
 function delPantry(id){DB.pantry=DB.pantry.filter(x=>x.id!==id);save();keep();}
-function addPantry(name){const v=(name||$("#pIn").value).trim();if(!v)return;putPantry(v,"mid","manual");save();keep();}
+function addPantry(name){const v=(name||$("#pIn").value).trim();if(!v)return;
+ if(!name&&!isFoodWord(v)){setInErr("pantry",`'${esc(v)}'은(는) 식재료로 판단되지 않아요. 재료 이름으로 적어주세요.`);keep();setTimeout(()=>{const el=$("#pIn");if(el){el.value=v;el.focus();el.select();}},0);return;}
+ setInErr();putPantry(v,"mid","manual");save();keep();}
 function cycleSeas(n){DB.seas[n]=SV_NEXT[DB.seas[n]||"out"];save();keep();}
 
+/* ============================================================
+   직접 입력 검사 — 재료·조미료 이름이 아닌 값(ㅋㅋ, 숫자, 아무 문장 등)은 받지 않아요
+   · 아래 사전에 있는 이름이거나, 사전 이름 앞뒤에 '다진·국산·냉동' 같은 말이 조금 붙은 경우만 통과
+   · 필요한 재료가 막히면 아래 목록에 단어를 추가하면 돼요
+   ============================================================ */
+const WORD_FOOD=["가금류", "가래떡", "가리비", "가자미", "가지", "간고기", "갈비", "갈치", "감", "감귤", "감자", "감자전분", "갑각류", "강낭콩", "건새우", "건포도", "검은콩", "게", "게맛살", "견과", "견과류", "계란", "고구마", "고기", "고등어", "고사리", "고수", "고추", "곤약", "골뱅이", "곱창", "곶감", "광어", "국수", "굴", "굴비", "귀리", "귤", "글루텐", "김", "김치", "깍두기", "깨", "깻잎", "깻잎순", "꼬막", "꽁치", "꽁치캔", "꽃게", "꽈리고추", "꿀", "낙지", "낙지젓", "난류", "냉면", "냉이", "녹두", "녹말", "녹차", "누룽지", "느타리", "느타리버섯", "다시마", "다짐육", "단감", "단무지", "단호박", "달걀", "달래", "닭", "닭가슴살", "닭고기", "닭날개", "닭다리", "닭다리살", "닭발", "닭봉", "당근", "당면", "대게", "대구", "대추", "대파", "대하", "더덕", "도라지", "도미", "도토리묵", "동태", "돼지갈비", "돼지고기", "두부", "두유", "뒷다리살", "들깨", "등심", "디포리", "딸기", "땅콩", "땅콩버터", "떡", "떡국떡", "떡볶이떡", "또띠아", "라면", "라임", "라즈베리", "랍스터", "레몬", "렌틸콩", "로메인", "로즈마리", "루꼴라", "마", "마늘", "마른멸치", "마카로니", "막걸리", "막창", "만두", "만두피", "맛살", "망고", "매생이", "매실", "맥주", "멍게", "메밀", "메추리알", "멜론", "멸치", "명란", "명란젓", "명태", "모시조개", "모짜렐라", "목살", "목이버섯", "무", "무말랭이", "무청", "무화과", "묵", "문어", "미나리", "미역", "민트", "밀", "밀가루", "바게트", "바나나", "바지락", "바질", "밤", "방울토마토", "배", "배추", "백김치", "백태", "버섯", "버터", "베이글", "베이컨", "병아리콩", "보리", "복숭아", "부추", "부침가루", "북어", "분유", "브로콜리", "블루베리", "비엔나", "비지", "비트", "빵", "빵가루", "사과", "사태", "살구", "삼겹살", "삼치", "상추", "새송이", "새송이버섯", "새우", "새우젓", "생강", "생선", "생크림", "샤인머스켓", "서리태", "석류", "셀러리", "소갈비", "소고기", "소라", "소면", "소시지", "소주", "송이", "쇠고기", "수박", "수육", "수제비", "숙주", "숙주나물", "순대", "순두부", "스파게티", "스팸", "시금치", "시래기", "시리얼", "식빵", "실파", "쌀", "쌀국수", "쑥", "쑥갓", "아몬드", "아몬드가루", "아보카도", "아스파라거스", "아황산", "안심", "알류", "알배추", "앞다리살", "애호박", "액젓", "양고기", "양배추", "양상추", "양송이", "양송이버섯", "양지", "양파", "어리굴젓", "어묵", "연근", "연두부", "연어", "연유", "열무", "열무김치", "오겹살", "오뎅", "오렌지", "오리", "오리고기", "오리알", "오이", "오이지", "오징어", "오징어젓", "오트밀", "옥수수", "올리브", "와인", "완두콩", "요거트", "요구르트", "우거지", "우동", "우둔", "우럭", "우엉", "우유", "유부", "유자", "유제품", "육류", "육포", "임연수", "자두", "자몽", "잡곡", "잣", "장아찌", "장어", "재첩", "잼", "적양배추", "적양파", "전복", "전분", "조개", "조개류", "조기", "주꾸미", "주키니", "죽순", "중면", "즉석밥", "쪽파", "쫄면", "쭈꾸미", "차돌박이", "참깨", "참외", "참치", "참치캔", "찹쌀", "창란젓", "채끝", "청경채", "청양고추", "청주", "청포묵", "체다", "체리", "초콜릿", "총각김치", "총각무", "취나물", "치즈", "치커리", "칵테일새우", "칼국수", "캐슈넛", "커피", "케일", "코다리", "코코넛", "코코아", "콜라비", "콜리플라워", "콩", "콩나물", "크래미", "크랜베리", "크림치즈", "키위", "토란", "토마토", "톳", "튀김가루", "파", "파래", "파마산", "파스타", "파슬리", "파인애플", "파프리카", "팥", "팽이", "팽이버섯", "펜네", "편육", "포도", "표고", "표고버섯", "풋고추", "피망", "피스타치오", "피클", "한라봉", "한우", "한치", "할라피뇨", "항정살", "해바라기씨", "해산물", "해삼", "햄", "햇반", "현미", "호두", "호박", "호박씨", "홍고추", "홍두깨", "홍시", "홍합", "황태", "휘핑크림", "흑미"];
+const WORD_SEAS=["오일","소스","시럽","트러플오일","후리카케","맛소금","치즈가루","파마산가루","MSG", "XO소스", "가쓰오부시", "간장", "갈비양념", "감자전분", "강황", "겨자", "계피", "고기양념", "고추가루", "고추기름", "고추냉이", "고추장", "고춧가루", "국간장", "굴소스", "까나리액젓", "깨", "깨소스", "꽃소금", "꿀", "냉면육수", "노두유", "녹말가루", "다시다", "다진마늘", "다진생강", "데리야끼", "데리야키소스", "돈가스소스", "된장", "두반장", "드레싱", "들기름", "들깨가루", "랜치", "레몬즙", "레몬청", "마가린", "마늘", "마늘가루", "마라소스", "마요네즈", "맛간장", "맛소금", "맛술", "매실액", "매실청", "머스터드", "메이플시럽", "멸치다시다", "멸치액젓", "물엿", "미림", "미원", "밀가루", "바닐라", "바베큐소스", "바질", "발사믹", "백후추", "버터", "부침가루", "불고기양념", "빵가루", "사과식초", "산초", "새우젓", "생강", "생강가루", "생강청", "설탕", "소고기육수", "소금", "쇠고기다시다", "쇼트닝", "스리라차", "스위트칠리", "시나몬", "시저드레싱", "식용유", "식초", "쌈장", "아보카도오일", "액젓", "양조간장", "양파가루", "연겨자", "연두", "오레가노", "오리엔탈드레싱", "옥수수전분", "올리고당", "올리브유", "와사비", "와사비마요", "요리술", "우스터소스", "원당", "월계수잎", "유자청", "육수", "전분", "정향", "조미료", "조선간장", "조청", "죽염", "진간장", "쯔유", "참기름", "참깨", "참깨드레싱", "천일염", "청국장", "청주", "초고추장", "초장", "춘장", "치킨스톡", "칠리소스", "카놀라유", "카레", "카레가루", "케찹", "케첩", "코인육수", "콩기름", "큐민", "크림소스", "타바스코", "토마토소스", "통깨", "통후추", "튀김가루", "파스타소스", "파슬리", "파프리카가루", "팔각", "포도씨유", "피쉬소스", "핫소스", "해바라기유", "허니머스타드", "현미식초", "혼다시", "화자오", "황설탕", "후추", "흑설탕", "흑후추"];
+const normWord=t=>String(t||"").replace(/\s+/g,"").toLowerCase();
+function looksLike(v,dict){const t=normWord(v);
+ if(!t||t.length>14)return false;
+ if(/[ㄱ-ㅎㅏ-ㅣ]/.test(t))return false;                 // ㅋㅋ, ㅎㅎ 같은 자음·모음만
+ if(!/^[가-힣a-z()·\-]+$/.test(t))return false;         // 숫자·특수문자
+ if(/(.)\1\1/.test(t))return false;                       // 같은 글자 3번 반복
+ const ws=dict.map(normWord),core=t.replace(/^(국산|국내산|수입산|수입|냉동|냉장|생|다진|깐|통|말린|건|유기농|무농약|햇|손질|볶은|구운)+/,"");
+ if(ws.includes(t)||ws.includes(core))return true;   // 예: 국산콩, 생강 → 앞의 꾸밈말을 떼고 한 글자 재료(콩·무·파)도 찾아요
+ return ws.some(w=>w.length>=2&&t.includes(w)&&t.length-w.length<=4);}   // 예: 다진마늘, 국산콩, 냉동새우
+const ITEM_WORDS=()=>[...WORD_FOOD,...ITEMS.flatMap(i=>[i.name,...i.alias])];
+const isFoodWord=v=>looksLike(v,ITEM_WORDS());
+const isSeasWord=v=>looksLike(v,[...WORD_SEAS,...SEASONINGS]);
+// 못 먹는 재료: 재료·조미료·알레르기 성분 이름이면 통과
+const isAvoidWord=v=>looksLike(v,[...ITEM_WORDS(),...WORD_SEAS,...ALLERGENS.flatMap(a=>[a[0],...a[1]])]);
+const inErr=k=>S.inErr&&S.inErr.k===k?`<p class="inerr" role="alert">${S.inErr.m}</p>`:"";
+function setInErr(k,m){S.inErr=m?{k,m}:null;}
 /* 조미료 고르기 (온보딩 화면 · 바텀시트 공용) — 종류별 묶음 + 직접 추가 */
 function seasPicker(){const custom=[...new Set([...S.seasDraft,...Object.keys(DB.seas)])].filter(n=>!SEASONINGS.includes(n));
  const tile=n=>`<div class="tile ${S.seasDraft.includes(n)?"on":""}" onclick="toggleDraft('${q(n)}')">${esc(n)}</div>`;
@@ -962,12 +988,14 @@ function seasPicker(){const custom=[...new Set([...S.seasDraft,...Object.keys(DB
  +`<p class="seasg">더 있다면</p><div class="seasacc">${more.map(([g,l])=>{const open=S.seasOpen.includes(g),cnt=l.filter(n=>S.seasDraft.includes(n)).length;
   return `<div class="accrow"><button class="acchd" onclick="toggleSeasGrp('${g}')" aria-expanded="${open}"><span class="acct">${g}</span><span class="accn">${cnt?`<em>${cnt}</em> 선택`:esc(l.slice(0,3).join(" · "))+(l.length>3?" …":"")}</span>${ic(open?"up":"down")}</button>${open?`<div class="accbody">${l.map(pill).join("")}</div>`:""}</div>`;}).join("")}</div>`
  +`<p class="seasg">직접 추가</p>${custom.length?`<div class="tiles three" style="margin-bottom:10px">${custom.map(tile).join("")}</div>`:""}
-<div class="seasadd"><input id="seasIn" class="field" placeholder="목록에 없는 조미료 (예: 와사비)" onkeydown="if(event.key==='Enter')addSeasDraft()"><span class="chip on" onclick="addSeasDraft()">추가</span></div>`;}
+<div class="seasadd"><input id="seasIn" class="field" placeholder="목록에 없는 조미료 (예: 와사비)" onkeydown="if(event.key==='Enter')addSeasDraft()"><span class="chip on" onclick="addSeasDraft()">추가</span></div>${inErr("seas")}`;}
 function toggleSeasGrp(g){S.seasOpen=S.seasOpen.includes(g)?S.seasOpen.filter(x=>x!==g):[...S.seasOpen,g];keep();}
-function addSeasDraft(){const v=($("#seasIn")?.value||"").trim();if(!v)return;if(!S.seasDraft.includes(v))S.seasDraft=[...S.seasDraft,v];keep();setTimeout(()=>$("#seasIn")?.focus(),0);}
+function addSeasDraft(){const v=($("#seasIn")?.value||"").trim();if(!v)return;
+ if(!isSeasWord(v)){setInErr("seas",`'${esc(v)}'은(는) 조미료로 판단되지 않아요. 조미료 이름으로 적어주세요.`);keep();setTimeout(()=>{const el=$("#seasIn");if(el){el.value=v;el.focus();el.select();}},0);return;}
+ setInErr();if(!S.seasDraft.includes(v))S.seasDraft=[...S.seasDraft,v];keep();setTimeout(()=>$("#seasIn")?.focus(),0);}
 function seasDefaults(){const own=Object.keys(DB.seas).filter(k=>DB.seas[k]!=="out");return own.length?own:[...DEFAULT_SEASONINGS];}
 function toggleDraft(s){S.seasDraft=S.seasDraft.includes(s)?S.seasDraft.filter(x=>x!==s):[...S.seasDraft,s];keep();}
-function openSeas(ctx){S.seasCtx=ctx;S.seasDraft=seasDefaults();S.sheet="seas";render();}
+function openSeas(ctx){S.inErr=null;S.seasCtx=ctx;S.seasDraft=seasDefaults();S.sheet="seas";render();}
 function saveSeas(){const nw={};
  S.seasDraft.forEach(n=>nw[n]=DB.seas[n]&&DB.seas[n]!=="out"?DB.seas[n]:"have");
  Object.keys(DB.seas).forEach(n=>{if(!(n in nw)&&DB.seas[n]==="out")nw[n]="out";});   // 다 떨어진 건 장보기 알림용으로 남겨요
@@ -1323,7 +1351,7 @@ function shell(body,foot){const edit=S.view==="edit";
  const top=edit?`<div class="subtop"><button class="back" onclick="closeEdit()" aria-label="뒤로가기">${ic("back")}</button><b>초기 정보 수정</b></div>`
   :`<div class="top"><button class="back" onclick="go(${S.step-1})" aria-label="뒤로가기">${ic("back")}</button><div class="prog"><i style="width:${Math.round(S.step/(ONB.length-1)*100)}%"></i></div></div>`;
  $("#app").innerHTML=`${top}<main>${body}</main><div class="foot">${foot||""}</div>${overlays()}`;}
-const go=n=>{S.step=Math.max(A.user&&!DB.onboarded?1:0,n);S.err="";render();scrollTo(0,0);};
+const go=n=>{S.inErr=null;S.step=Math.max(A.user&&!DB.onboarded?1:0,n);S.err="";render();scrollTo(0,0);};
 // 다음 버튼: 온보딩이면 다음 단계, 수정 중이면 저장 (자치구는 가게 고르기까지 이어서)
 function nextFrom(name){if(S.view==="edit"){if(name==="area"){S.editKey="shop";return render();}return saveEdit();}go(ONB.indexOf(name)+1);}
 const nextLabel=()=>S.view==="edit"?"저장하기":"다음";
@@ -1350,7 +1378,7 @@ function flowHead(){const R=routine(),k=S.tab==="record"?3:{wish:0,combo:1,list:
 <div class="ttl"><b>${R[k].t}</b></div></div>
 <div class="flowline" aria-label="4단계 중 ${k+1}단계">${R.map((x,i)=>`<button class="${i<=k?"on":""}" ${x.on&&i!==k?`onclick="${x.go}"`:"disabled"} aria-label="${i+1}단계 ${x.t}"><i></i></button>`).join("")}</div></header>`;}
 const tabbar=()=>`<nav class="tabbar">${TABS.map(([k,i,t])=>`<button class="${S.tab===k||(k==="home"&&!TABS.some(x=>x[0]===S.tab))?"on":""}" onclick="goTab('${k}')">${ic(i)}${t}</button>`).join("")}</nav>`;
-function goTab(k,sub){S.tab=k;S.view="app";if(k==="recipe"&&sub)S.rview=sub;
+function goTab(k,sub){S.tab=k;S.view="app";S.inErr=null;if(k==="recipe"&&sub)S.rview=sub;
  if(k==="pick"){S.pview=sub||null;if(sub==="wish"&&!S.wish){const pl=draft()||plan();S.wish=pl?pl.wish:"";S.noWish=!!pl&&!pl.wish;}S.planNote="";}if(k!=="record")S.recorded=0;
  if(k==="recipe"&&S.rview==="make"&&needMenus()&&!planRecs().length)return suggestMenus();   // 짜둔 메뉴가 있으면 그걸 먼저 보여줘요   // 오늘 뭐 해먹지? → 만들 수 있는 메뉴부터
  render();scrollTo(0,0);}
@@ -1559,10 +1587,14 @@ function sAvoid(){const a=avoidWords(),al=allergies(),open=S.allergyOpen;
 ${open?`<div class="accbody">${ALLERGENS.map(([n])=>`<span class="chip ${al.includes(n)?"on":""}" onclick="toggleAllergy('${n}')">${n}</span>`).join("")}</div>`:""}</div></div>
 <p class="seasg">싫어하는 재료</p>
 <div class="chips">${chip(`${ic("ban")} 없어요`,!a.length&&!al.length,"S.p.avoid='';S.p.allergies=[];render()")}${AVOID_QUICK.map(x=>chip(x,a.includes(x),`toggleAvoid('${x}')`)).join("")}</div>
-<input class="field" style="margin-top:12px" value="${esc(S.p.avoid||"")}" placeholder="직접 입력 · 예) 고수, 가지 (쉼표로 구분)" onchange="S.p.avoid=this.value;render()">
+<input class="field" style="margin-top:12px" value="${esc(S.p.avoid||"")}" placeholder="직접 입력 · 예) 고수, 가지 (쉼표로 구분)" onchange="setAvoid(this.value)">${inErr("avoid")}
 <div class="note" style="margin-top:16px">재료 이름으로 걸러내요. 가공식품(소스·양념 등)에 든 성분까지는 알 수 없으니 성분표는 꼭 직접 확인해 주세요.</div>
 ${S.err?`<div class="note bad">${S.err}</div>`:""}`,
  `<button class="btn" onclick="checkAvoid()">${nextLabel()}</button>`);}
+function setAvoid(v){const ws=String(v||"").split(/[,，\s]+/).map(x=>x.trim()).filter(Boolean),ok=[...new Set(ws.filter(isAvoidWord))],bad=ws.filter(w=>!isAvoidWord(w));
+ S.p.avoid=ok.join(", ");
+ setInErr("avoid",bad.length?`${bad.map(b=>`'${esc(b)}'`).join(", ")}은(는) 재료로 판단되지 않아 넣지 않았어요. 재료 이름으로 적어주세요.`:"");
+ render();}
 function toggleAvoid(x){const a=avoidWords();S.p.avoid=(a.includes(x)?a.filter(v=>v!==x):[...a,x]).join(", ");render();}
 function toggleAllergy(n){const a=S.p.allergies||[];S.p.allergies=a.includes(n)?a.filter(x=>x!==n):[...a,n];keep();}
 function checkAvoid(){nextFrom("avoid");}
@@ -1725,7 +1757,7 @@ ${s.length?`<div class="shelves">${s.map(x=>{const d=daysAgo(x.addedAt);return `
 <button class="lv ${x.level}" onclick="cycleLv('${x.id}')">${LV[x.level]}</button><button class="used" onclick="useUp('${x.id}')">다 씀</button><button class="used toss" onclick="tossOut('${x.id}')">버림</button></div>`}).join("")}</div>`
  :`<div class="fr-empty"><b>냉장고가 비어 있어요</b><p>장 본 것을 기록하면 자동으로 채워지고,<br>원래 있던 재료는 아래에서 넣을 수 있어요.</p></div>`}
 </div></section>
-<div class="card addrow"><input id="pIn" class="field" placeholder="원래 있던 재료 추가 (예: 김치)" onkeydown="if(event.key==='Enter')addPantry()"><span class="chip on" onclick="addPantry()">추가</span></div>
+<div class="card addrow"><input id="pIn" class="field" placeholder="원래 있던 재료 추가 (예: 김치)" onkeydown="if(event.key==='Enter')addPantry()"><span class="chip on" onclick="addPantry()">추가</span></div>${inErr("pantry")}
 ${quick.length?`<div class="chips">${quick.map(i=>chip(`+ ${coreName(i.name)}`,false,`addPantry('${q(coreName(i.name))}')`)).join("")}</div>`:""}
 
 <div class="row" style="margin:26px 0 6px"><h3>양념·조미료</h3>${own.length?`<span class="m" style="cursor:pointer;text-decoration:underline" onclick="openSeas('pantry')">고치기</span>`:""}</div>
