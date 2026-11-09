@@ -212,12 +212,6 @@ h1{font-size:25px;line-height:1.32;font-weight:800;margin:12px 0 8px;letter-spac
 .land h1.word{font-size:50px;color:#30271f;margin:26px 0 14px;display:inline-flex;align-items:flex-end;gap:2px}
 .land h1.word svg{margin-bottom:6px}
 .land .sub{font-size:15px;color:#5f574d;margin:0 0 26px}
-.feats{width:100%;display:flex;flex-direction:column;gap:12px}
-.feat{display:flex;gap:14px;align-items:center;width:100%;border:0;background:rgba(255,254,250,.88);border-radius:20px;padding:14px 16px;box-shadow:0 2px 10px rgba(70,60,30,.05);text-align:left;cursor:pointer;color:inherit}
-.feat .ibox{width:54px;height:54px;border-radius:16px;font-size:27px}
-.feat>div:nth-child(2){flex:1;min-width:0}
-.feat b{display:block;font-size:16px;margin-bottom:3px}.feat p{margin:0;color:var(--m);font-size:13px;line-height:1.45}
-.feat>.i{color:#9a9386;font-size:18px}
 .btn.pill{height:58px;font-size:17px}
 .foot .btn.pill{background:#607750 !important;color:#fffefa !important;border:0 !important;-webkit-text-fill-color:#fffefa}
 .land~.foot{background:linear-gradient(rgba(247,243,235,0),#f7f3eb 35%)}
@@ -1330,7 +1324,7 @@ function shell(body,foot){const edit=S.view==="edit";
  const top=edit?`<div class="subtop"><button class="back" onclick="closeEdit()" aria-label="뒤로가기">${ic("back")}</button><b>초기 정보 수정</b></div>`
   :`<div class="top"><button class="back" onclick="go(${S.step-1})" aria-label="뒤로가기">${ic("back")}</button><div class="prog"><i style="width:${Math.round(S.step/(ONB.length-1)*100)}%"></i></div></div>`;
  $("#app").innerHTML=`${top}<main>${body}</main><div class="foot">${foot||""}</div>${overlays()}`;}
-const go=n=>{S.step=Math.max(0,n);S.err="";render();scrollTo(0,0);};
+const go=n=>{S.step=Math.max(A.user&&!DB.onboarded?1:0,n);S.err="";render();scrollTo(0,0);};
 // 다음 버튼: 온보딩이면 다음 단계, 수정 중이면 저장 (자치구는 가게 고르기까지 이어서)
 function nextFrom(name){if(S.view==="edit"){if(name==="area"){S.editKey="shop";return render();}return saveEdit();}go(ONB.indexOf(name)+1);}
 const nextLabel=()=>S.view==="edit"?"저장하기":"다음";
@@ -1374,23 +1368,19 @@ function runLoader(kind,n,ms,done){S.busy={kind,i:0};render();
    ============================================================ */
 function landing(){
  const start="S.sheet='agree';render()";
- const FEATS=[["pot","먹고 싶은 메뉴로 장볼 목록","메뉴만 말하면 예산 안에서, 남김없이 다 쓸 만큼만 골라줘요."],
-  ["fridge","냉장고 재료로 레시피","남은 재료와 새로 산 재료로 AI가 레시피를 골라줘요."],
-  ["moneybag","쌓이는 식비 기록","주별·월별 지출과 배달 대비 아낀 돈을 보여줘요."]];
 $("#app").innerHTML=`<div class="land">${LAND_DECO}
 <div class="appicon">${symbol(66)}<svg class="spark" width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><path d="M6 14 3 5 M13 12l4-7 M16 19l8-3" stroke="#607750" stroke-width="2.6" stroke-linecap="round" fill="none"/></svg></div>
 <h1 class="word">살림밥상${leaf(26)}</h1>
 <p class="sub">먹고 싶은 걸로 장 보고,<br>남는 재료 없이 다 해 먹는 식비 플래너예요.</p>
-<div class="feats">${FEATS.map(([i,b,p])=>`<button class="feat" onclick="${start}"><div class="ibox">${ic(i)}</div><div><b>${b}</b><p>${p}</p></div>${ic("right")}</button>`).join("")}</div>
 </div>
-<div class="foot"><button class="btn pill" onclick="${start}">시작하기 ${ic("right")}</button>${authOn()?`<button class="link" style="margin-top:6px" onclick="S.lmode='login';openLogin()">이미 계정이 있어요 · 로그인</button>`:""}</div>${overlays()}`;}
+<div class="foot"><button class="btn pill" onclick="${start}">회원가입 ${ic("right")}</button>${authOn()?`<button class="link" style="margin-top:6px" onclick="S.lmode='login';openLogin()">이미 계정이 있어요 · 로그인</button>`:""}</div>${overlays()}`;}
 // 첫 화면 배경 장식: 창가 식물 그림자(흐리게) · 린넨 행주 · 허브 잎
 const SHADE_BRANCH=`<svg viewBox="0 0 200 260"><g fill="#2f3a24"><path d="M100 260C96 180 80 110 40 20" stroke="#2f3a24" stroke-width="5" fill="none"/>${[[60,60,-40],[78,95,30],[50,120,-55],[88,150,40],[62,175,-35],[95,205,25],[40,80,-70],[70,30,-20]].map(([x,y,r])=>`<ellipse cx="${x}" cy="${y}" rx="30" ry="11" transform="rotate(${r} ${x} ${y})"/>`).join("")}</g></svg>`;
 const HERB=`<svg viewBox="0 0 120 120"><path d="M10 110C40 80 60 60 100 40" stroke="#58743f" stroke-width="2.4" fill="none" stroke-linecap="round"/>${[[45,78,-30],[62,62,10],[78,52,-50],[95,42,20],[55,92,40],[30,95,-10]].map(([x,y,r])=>`<path d="M${x} ${y}c-8-10-4-22 6-24 2 6 10 6 9 14 6 1 8 9 2 13-5 4-12 2-17-3z" fill="#6f9258" transform="rotate(${r} ${x} ${y})"/>`).join("")}</svg>`;
 // 로그인 화면 — Google / 이메일, 그리고 '로그인 없이 시작'
 function loginScreen(){const signup=S.lmode==="signup";
  $("#app").innerHTML=`<div class="top"><button class="back" onclick="S.view='app';render()" aria-label="뒤로가기">${ic("back")}</button></div><main class="loginscr">
-<h1>${signup?"계정 만들기":"로그인"}</h1><p class="sub">로그인하면 기록이 계정에 저장돼서<br>다른 기기에서도 이어서 쓸 수 있어요.</p>
+<h1>${signup?"회원가입":"로그인"}</h1><p class="sub">로그인하면 기록이 계정에 저장돼서<br>다른 기기에서도 이어서 쓸 수 있어요.</p>
 ${!A.ready?`<div class="workcard card"><span class="spin dark"></span>로그인 준비 중…</div>`:A.err?`<div class="note bad">${esc(A.err)}</div>`:`
 ${AUTH_METHODS.google?`<button class="btn gbtn" ${A.busy?"disabled":""} onclick="loginGoogle()"><span class="gmark">G</span>Google로 계속하기</button>`:""}
 ${AUTH_METHODS.google&&AUTH_METHODS.email?`<div class="ordiv"><span>또는 이메일로</span></div>`:""}
@@ -1398,7 +1388,7 @@ ${AUTH_METHODS.email?`<label class="fl">이메일<input id="lEmail" class="field
 <label class="fl" style="margin-top:12px">비밀번호<input id="lPw" class="field" type="password" autocomplete="${signup?"new-password":"current-password"}" placeholder="${signup?"6자 이상":"비밀번호"}" onkeydown="if(event.key==='Enter')loginEmail()"></label>
 ${S.lerr?`<div class="note bad" style="margin-top:12px">${S.lerr}</div>`:""}
 <button class="btn" style="margin-top:16px" ${A.busy?"disabled":""} onclick="loginEmail()">${A.busy?`<span class="spin"></span>확인 중…`:signup?"가입하고 시작하기":"이메일로 로그인"}</button>
-<div class="logrow"><button class="link" onclick="S.lmode='${signup?"login":"signup"}';S.lerr='';render()">${signup?"이미 계정이 있어요 · 로그인":"처음이에요 · 계정 만들기"}</button>${signup?"":`<button class="link" onclick="resetPw()">비밀번호 찾기</button>`}</div>`:S.lerr?`<div class="note bad">${S.lerr}</div>`:""}`}
+<div class="logrow"><button class="link" onclick="S.lmode='${signup?"login":"signup"}';S.lerr='';render()">${signup?"이미 계정이 있어요 · 로그인":"처음이에요 · 회원가입"}</button>${signup?"":`<button class="link" onclick="resetPw()">비밀번호 찾기</button>`}</div>`:S.lerr?`<div class="note bad">${S.lerr}</div>`:""}`}
 ${authOn()?"":`<button class="link skip" onclick="skipLogin()">로그인 없이 시작하기 <small>(이 기기에만 저장돼요)</small></button>`}
 </main>${overlays()}`;}
 
@@ -1419,12 +1409,12 @@ function agreeModal(){return `<div class="modal-bg" onclick="if(event.target===t
  :"동네 설정과 서비스 이용 데이터는 이 기기에만 저장돼요. 이름·연락처 같은 개인 식별 정보는 일체 수집하지 않으며, 설정에서 언제든 데이터를 삭제할 수 있어요."}</p>
 <b>AI 사용 안내</b><p class="m" style="margin-bottom:0">AI는 입력한 예산과 조사 가격을 바탕으로 장볼 재료와 메뉴, 레시피를 추천해요. 화면에 표시되는 가격은 조사 데이터를 바탕으로 하며, 일부는 구별 평균 가격을 적용해요. 실제 구매 가격은 판매처에 따라 다를 수 있어요. 가격 정보가 있는 재료만 추천과 레시피에 사용해요. 알레르기 유발 성분은 구매하거나 조리하기 전에 직접 확인해 주세요.</p></div>
 <label class="agree"><span class="ck ${S.agree?"on":""}">${S.agree?ic("check"):""}</span><input type="checkbox" hidden ${S.agree?"checked":""} onchange="toggleAgree(this)">위 내용에 동의해요</label>
-<button class="btn" ${S.agree?"":"disabled"} onclick="afterAgree()">동의하고 시작하기</button>
+<button class="btn" ${S.agree?"":"disabled"} onclick="afterAgree()">동의하고 회원가입</button>
 </div></div>`;}
 
 // 동의 체크 — 화면을 다시 그리지 않고(시트가 다시 올라오지 않게) 체크 표시와 버튼만 바꿔요
 // 동의 후: 로그인을 쓰면 로그인 화면, 아니면 바로 온보딩
-function afterAgree(){S.sheet=null;if(authOn()&&!A.user)return openLogin();go(1);}
+function afterAgree(){S.sheet=null;if(authOn()&&!A.user){S.lmode="signup";return openLogin();}go(1);}
 function toggleAgree(el){S.agree=el.checked;const ck=el.parentElement.querySelector(".ck");ck.classList.toggle("on",S.agree);ck.innerHTML=S.agree?ic("check"):"";
  const b=el.closest(".modal").querySelector(".btn");if(b)b.disabled=!S.agree;}
 /* 1. 사는 곳 — 구와 동(법정동, 주소에 쓰는 동 이름)을 골라요. 동 목록은 서울시 자치구별 동 현황 기준 */
@@ -1873,13 +1863,13 @@ function wipeAll(){S.sheet="wipe";render();}
 function wipeSheet(){const n=DB.purchases.length,r=DB.recipes.length,s=stock().length;
  return `<div class="modal-bg" onclick="if(event.target===this){S.sheet=null;render()}"><div class="modal" role="alertdialog" aria-labelledby="wipeT"><div class="grab"></div>
 <h1 id="wipeT" style="margin-top:0">정말 모든 정보와<br>기록을 지울까요?</h1>
-<p class="sub">지운 내용은 되돌릴 수 없어요. 처음 화면부터 다시 시작해요.</p>
+<p class="sub">지운 내용은 되돌릴 수 없어요. ${A.user?"로그인은 그대로 두고, 초기 정보 입력부터 다시 시작해요.":"처음 화면부터 다시 시작해요."}</p>
 <div class="card wipelist"><p>${ic("pin")} 동네·가게, 인원, 예산 등 초기 정보</p><p>${ic("fridge")} 냉장고 재료 ${s}개</p><p>${ic("chart")} 장보기 기록 ${n}건 · 레시피 ${r}개</p></div>
 <button class="btn danger" onclick="doWipe()">모두 지우기</button>
 <button class="link" onclick="S.sheet=null;render()">취소</button></div></div>`;}
 function doWipe(){try{localStorage.removeItem(KEY)}catch(e){}DB=EMPTY();
  if(A.user){clearTimeout(pushT);userDoc().delete().catch(()=>{});}   // 로그인했으면 서버 기록도 지워요 (계정은 남아요)
- Object.assign(S,{step:0,p:null,view:"app",tab:"home",agree:false,sheet:null,results:[],rsel:null,recorded:0,editKey:null,openR:null,left:null,wish:"",noWish:false,planEdit:false,planNote:"",menus:null,menuSig:""});
+ Object.assign(S,{step:A.user?1:0,p:null,view:"app",tab:"home",agree:!!A.user,sheet:null,results:[],rsel:null,recorded:0,editKey:null,openR:null,left:null,wish:"",noWish:false,planEdit:false,planNote:"",menus:null,menuSig:""});
  render();scrollTo(0,0);toast("모든 정보와 기록을 지웠어요");}
 
 /* ============================================================
