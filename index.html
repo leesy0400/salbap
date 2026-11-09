@@ -222,6 +222,12 @@ h1{font-size:25px;line-height:1.32;font-weight:800;margin:12px 0 8px;letter-spac
 .modal{background:var(--bg);max-width:430px;width:100%;border-radius:26px 26px 0 0;padding:10px 22px calc(22px + env(safe-area-inset-bottom));max-height:90vh;overflow:auto;animation:up .25s ease}
 .modal .grab{width:40px;height:5px;border-radius:5px;background:#d6cdbb;margin:4px auto 14px}
 @keyframes up{from{transform:translateY(30px);opacity:0}}
+.consent{margin-bottom:12px}.consent>b{display:block;margin-bottom:8px}
+.consent dl{margin:0;font-size:13px;line-height:1.55}.consent dt{font-weight:700;margin-top:8px;color:var(--t)}.consent dd{margin:2px 0 0;color:var(--m)}
+.consent .plink{display:inline-flex;align-items:center;gap:2px;margin-top:12px;font-size:13.5px;font-weight:700;color:var(--pri);text-decoration:underline}
+.consent .warnline{color:#b5412f;font-weight:600;margin-top:8px}
+.agree.cons{margin:8px 0;align-items:flex-start}.agree .ctx{display:flex;flex-direction:column;gap:3px}.agree .ctx small{font-weight:400;font-size:12px;color:var(--m);line-height:1.45}
+.agree em{font-style:normal}.agree em.req{color:var(--pri)}.agree em.opt{color:var(--m)}
 .agree{display:flex;gap:12px;align-items:center;background:var(--card);border-radius:16px;padding:14px 16px;margin:14px 0;cursor:pointer;font-weight:600;box-shadow:var(--sh)}
 .toast{position:fixed;bottom:calc(150px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);background:rgba(48,39,31,.72);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);color:#fffefa;padding:9px 16px;border-radius:999px;font-size:13px;z-index:99;white-space:nowrap;pointer-events:none;animation:toastin .25s ease}
 @keyframes toastin{from{opacity:0;transform:translate(-50%,8px)}}
@@ -784,8 +790,8 @@ let pushT=null;
 function pushRemote(){if(!A.user)return;clearTimeout(pushT);
  pushT=setTimeout(async()=>{try{await userDoc().set({db:JSON.stringify(DB),updatedAt:Date.now()});A.syncErr="";}
   catch(e){A.syncErr="서버에 저장하지 못했어요. 이 기기에는 저장돼 있어요.";}},800);}   // 연달아 저장할 땐 0.8초 모아서 한 번만
-async function pullRemote(){try{const d=await userDoc().get(),raw=d.exists&&d.data().db;
-  if(raw){DB={...EMPTY(),...JSON.parse(raw)};try{localStorage.setItem(KEY,JSON.stringify(DB))}catch(e){}}
+async function pullRemote(){try{const d=await userDoc().get(),raw=d.exists&&d.data().db,lc=DB.consent;
+  if(raw){DB={...EMPTY(),...JSON.parse(raw)};if(lc&&(!DB.consent||(lc.at||0)>(DB.consent.at||0))){DB.consent=lc;pushRemote();}/* 방금 한 동의가 더 최신이면 계정에 반영 */try{localStorage.setItem(KEY,JSON.stringify(DB))}catch(e){}}
   else if(DB.onboarded)pushRemote();   // 서버가 비어 있으면 로그인 전 이 기기 기록을 계정으로 옮겨요
   A.syncErr="";}catch(e){A.syncErr="계정 기록을 불러오지 못했어요. 잠시 후 다시 열어주세요.";}}
 // 로그인 오류 → 한국어 안내
@@ -912,7 +918,9 @@ const ALLERGENS=[
  ["홍합",["홍합"]],
  ["잣",["잣"]],
 ];
-const allergies=()=>P().allergies||[];
+// 알레르기는 [선택] 동의를 한 경우에만 받고 써요. 이 기능 전에 가입한 계정(동의 기록 없음)은 예전처럼 써요.
+const allergyOK=()=>!DB.consent||!!DB.consent.allergy;
+const allergies=()=>allergyOK()?(P().allergies||[]):[];
 const avoidWords=()=>(P().avoid||"").split(/[,，\s]+/).filter(Boolean);   // 직접 적은 못 먹는 재료
 const avoidList=()=>[...new Set([...avoidWords(),...allergies().flatMap(a=>(ALLERGENS.find(x=>x[0]===a)||[,[]])[1])])];   // 실제로 걸러낼 단어 전체
 // AI에 알려줄 문장 — "새우, 고수 / 알레르기: 우유, 대두"
@@ -1438,22 +1446,36 @@ const LAND_DECO=`<div class="deco" aria-hidden="true">
 <div class="herb" style="right:-44px;top:300px;width:96px;height:96px;transform:rotate(160deg)">${HERB}</div>
 </div>`;
 
-function agreeModal(){return `<div class="modal-bg" onclick="if(event.target===this){S.sheet=null;render()}"><div class="modal"><div class="grab"></div>
-<h1 style="margin-top:0">시작하기 전에<br>확인해 주세요</h1><p class="sub">살림밥상은 아래 정보만 사용해요.</p>
-<div class="card"><b>수집하는 정보</b><p class="m">사는 구·동과 장 보는 가게, 가구원 수, 추천받을 끼니 수, 한 달 집밥 예산, 못 먹는 재료, 조미료, 먹고 싶은 메뉴, 장 본 기록과 레시피 기록${authOn()?", 로그인할 때만 로그인 이메일":""}</p>
-<b>안전한 정보 관리</b><p class="m">${authOn()
- ?"로그인하면 동네 설정과 서비스 이용 데이터는 안전하게 서버에 저장돼요. 로그인에 쓰는 이메일 외에 이름·연락처 같은 개인 식별 정보는 수집하지 않으며, 설정에서 언제든 데이터를 삭제하거나 탈퇴할 수 있어요. 로그인 없이 쓰면 이 기기에만 저장돼요."
- :"동네 설정과 서비스 이용 데이터는 이 기기에만 저장돼요. 이름·연락처 같은 개인 식별 정보는 일체 수집하지 않으며, 설정에서 언제든 데이터를 삭제할 수 있어요."}</p>
-<b>AI 사용 안내</b><p class="m" style="margin-bottom:0">AI는 입력한 예산과 조사 가격을 바탕으로 장볼 재료와 메뉴, 레시피를 추천해요. 화면에 표시되는 가격은 조사 데이터를 바탕으로 하며, 일부는 구별 평균 가격을 적용해요. 실제 구매 가격은 판매처에 따라 다를 수 있어요. 가격 정보가 있는 재료만 추천과 레시피에 사용해요. 알레르기 유발 성분은 구매하거나 조리하기 전에 직접 확인해 주세요.</p></div>
-<label class="agree"><span class="ck ${S.agree?"on":""}">${S.agree?ic("check"):""}</span><input type="checkbox" hidden ${S.agree?"checked":""} onchange="toggleAgree(this)">위 내용에 동의해요</label>
-<button class="btn" ${S.agree?"":"disabled"} onclick="afterAgree()">동의하고 회원가입</button>
+// 동의 화면 — 가입에 필요한 내용만 짧게, 자세한 내용은 개인정보 처리방침(privacy.html)에서
+const CONSENT_VER="2026-11-09";
+const PRIVACY_URL="privacy.html";
+function agreeModal(){const c=S.cons||(S.cons={age:false,privacy:false,allergy:false});
+ const row=(k,tag,t,sub)=>`<label class="agree cons"><span class="ck ${c[k]?"on":""}">${c[k]?ic("check"):""}</span><input type="checkbox" hidden ${c[k]?"checked":""} onchange="toggleCons('${k}',this)"><span class="ctx"><b><em class="${tag==="필수"?"req":"opt"}">[${tag}]</em> ${t}</b>${sub?`<small>${sub}</small>`:""}</span></label>`;
+ return `<div class="modal-bg" onclick="if(event.target===this){S.sheet=null;render()}"><div class="modal"><div class="grab"></div>
+<h1 style="margin-top:0">시작하기 전에<br>확인해 주세요</h1>
+<div class="card consent"><b>개인정보 수집·이용 안내</b>
+<dl>
+<dt>이용 목적</dt><dd>계정 생성과 로그인, 맞춤 메뉴·레시피 추천, 장보기·냉장고 기록 저장</dd>
+<dt>수집 항목</dt><dd>이메일, 계정 식별자(UID)(Google 로그인 시 Google 계정 이메일·이름·프로필 사진), 장보기 지역·매장, 가구원 수, 추천 끼니 수, 장보기 예산, 싫어하는 재료, 보유 재료·조미료, 입력한 메뉴, 장보기 기록(산 품목·금액), 레시피 기록</dd>
+<dt>보유·이용 기간</dt><dd>회원 탈퇴 또는 '모든 정보와 기록 지우기'를 하면 바로 삭제해요. 서비스를 종료하면 모두 삭제해요.</dd>
+<dt>동의 거부</dt><dd>동의하지 않을 수 있어요. 다만 필수 항목에 동의하지 않으면 가입할 수 없어요.</dd>
+</dl>
+<a class="plink" href="${PRIVACY_URL}" target="_blank" rel="noopener">개인정보 처리방침 보기 ${ic("right")}</a></div>
+${row("age","필수","만 14세 이상이에요","만 14세 미만은 가입할 수 없어요.")}
+${row("privacy","필수","개인정보 수집·이용에 동의해요","")}
+${row("allergy","선택","알레르기 정보 수집·이용에 동의해요","알레르기는 건강 관련 정보라 따로 여쭤봐요. 동의하지 않아도 가입할 수 있고, 알레르기 고르기만 건너뛰어요.")}
+<div class="card consent"><b>AI 사용 안내</b><p class="m">메뉴와 레시피는 AI(Anthropic Claude)가 추천해요. 추천을 위해 지역·인원·예산·재료·입력한 메뉴가 Anthropic(미국)으로 전송되며, 이메일 같은 계정 정보는 보내지 않아요. 장보기 예상 금액은 조사 가격과 지역 평균을 바탕으로 계산해 실제 구매 가격과 다를 수 있어요.</p>
+<p class="m warnline">알레르기 유발 성분은 구매·조리 전에 꼭 직접 확인해 주세요.</p></div>
+<button class="btn" ${c.age&&c.privacy?"":"disabled"} onclick="afterAgree()">동의하고 회원가입</button>
 </div></div>`;}
 
 // 동의 체크 — 화면을 다시 그리지 않고(시트가 다시 올라오지 않게) 체크 표시와 버튼만 바꿔요
 // 동의 후: 로그인을 쓰면 로그인 화면, 아니면 바로 온보딩
-function afterAgree(){S.sheet=null;if(authOn()&&!A.user){S.lmode="signup";return openLogin();}go(1);}
-function toggleAgree(el){S.agree=el.checked;const ck=el.parentElement.querySelector(".ck");ck.classList.toggle("on",S.agree);ck.innerHTML=S.agree?ic("check"):"";
- const b=el.closest(".modal").querySelector(".btn");if(b)b.disabled=!S.agree;}
+function afterAgree(){const c=S.cons||{};if(!(c.age&&c.privacy))return;
+ DB.consent={v:CONSENT_VER,at:Date.now(),age14:true,privacy:true,allergy:!!c.allergy};save();
+ S.sheet=null;if(authOn()&&!A.user){S.lmode="signup";return openLogin();}go(1);}
+function toggleCons(k,el){const c=S.cons;c[k]=el.checked;const ck=el.parentElement.querySelector(".ck");ck.classList.toggle("on",c[k]);ck.innerHTML=c[k]?ic("check"):"";
+ S.agree=c.age&&c.privacy;const b=el.closest(".modal").querySelector(".btn");if(b)b.disabled=!S.agree;}
 /* 1. 사는 곳 — 구와 동(법정동, 주소에 쓰는 동 이름)을 골라요. 동 목록은 서울시 자치구별 동 현황 기준 */
 const normDong=t=>String(t||"").replace(/\s/g,"");
 // "중계2,3동"·"종로5.6가동"·"신문로1.2가" 같은 묶음 이름은 하나씩도 받아요 (중계2동, 중계3동 …)
@@ -1583,8 +1605,9 @@ const AVOID_QUICK=["계란","두부","생선","돼지고기","닭고기","밀가
 function sAvoid(){const a=avoidWords(),al=allergies(),open=S.allergyOpen;
  shell(`<h1>못 먹는 재료가 있나요?</h1><p class="sub">알레르기나 싫어하는 재료는 장보기·레시피에서 빼드려요.</p>
 <p class="seasg">알레르기</p>
-<div class="seasacc"><div class="accrow"><button class="acchd" onclick="S.allergyOpen=!S.allergyOpen;keep()" aria-expanded="${!!open}"><span class="acct">알레르기 22종에서 고르기</span><span class="accn">${al.length?`<em>${al.length}</em> ${esc(al.slice(0,3).join("·"))}${al.length>3?" …":""}`:"없어요"}</span>${ic(open?"up":"down")}</button>
-${open?`<div class="accbody">${ALLERGENS.map(([n])=>`<span class="chip ${al.includes(n)?"on":""}" onclick="toggleAllergy('${n}')">${n}</span>`).join("")}</div>`:""}</div></div>
+${allergyOK()?"":`<div class="note">알레르기 정보 수집에 동의하지 않아 알레르기 고르기는 건너뛰어요.<button class="link" style="display:block;margin-top:6px" onclick="setAllergyConsent(true)">알레르기 정보 수집에 동의하고 고르기</button></div>`}
+${allergyOK()?`<div class="seasacc"><div class="accrow"><button class="acchd" onclick="S.allergyOpen=!S.allergyOpen;keep()" aria-expanded="${!!open}"><span class="acct">알레르기 22종에서 고르기</span><span class="accn">${al.length?`<em>${al.length}</em> ${esc(al.slice(0,3).join("·"))}${al.length>3?" …":""}`:"없어요"}</span>${ic(open?"up":"down")}</button>
+${open?`<div class="accbody">${ALLERGENS.map(([n])=>`<span class="chip ${al.includes(n)?"on":""}" onclick="toggleAllergy('${n}')">${n}</span>`).join("")}</div>`:""}</div></div>`:""}
 <p class="seasg">싫어하는 재료</p>
 <div class="chips">${chip(`${ic("ban")} 없어요`,!a.length&&!al.length,"S.p.avoid='';S.p.allergies=[];render()")}${AVOID_QUICK.map(x=>chip(x,a.includes(x),`toggleAvoid('${x}')`)).join("")}</div>
 <input class="field" style="margin-top:12px" value="${esc(S.p.avoid||"")}" placeholder="직접 입력 · 예) 고수, 가지 (쉼표로 구분)" onchange="setAvoid(this.value)">${inErr("avoid")}
@@ -1596,7 +1619,11 @@ function setAvoid(v){const ws=String(v||"").split(/[,，\s]+/).map(x=>x.trim()).
  setInErr("avoid",bad.length?`${bad.map(b=>`'${esc(b)}'`).join(", ")}은(는) 재료로 판단되지 않아 넣지 않았어요. 재료 이름으로 적어주세요.`:"");
  render();}
 function toggleAvoid(x){const a=avoidWords();S.p.avoid=(a.includes(x)?a.filter(v=>v!==x):[...a,x]).join(", ");render();}
-function toggleAllergy(n){const a=S.p.allergies||[];S.p.allergies=a.includes(n)?a.filter(x=>x!==n):[...a,n];keep();}
+// 알레르기 [선택] 동의·철회 — 철회하면 저장된 알레르기 정보도 지워요
+function setAllergyConsent(on){DB.consent={...(DB.consent||{v:CONSENT_VER,age14:true,privacy:true}),allergy:!!on,allergyAt:Date.now()};
+ if(!on){if(DB.profile)DB.profile.allergies=[];if(S.p)S.p.allergies=[];}
+ save();toast(on?"알레르기 정보 수집에 동의했어요":"알레르기 정보를 지우고 동의를 철회했어요");keep();}
+function toggleAllergy(n){if(!allergyOK())return;const a=S.p.allergies||[];S.p.allergies=a.includes(n)?a.filter(x=>x!==n):[...a,n];keep();}
 function checkAvoid(){nextFrom("avoid");}
 
 /* 7. 조미료 — 건너뛰면 레시피 받을 때 물어봐요 */
@@ -1879,14 +1906,19 @@ function settingsPage(){const p=DB.profile,seas=Object.entries(DB.seas).filter((
   ["seas","🧂","조미료",DB.seasSet?(seas.join(", ")||"없어요"):"아직 안 골랐어요"]];
  page(`<h1 style="margin-top:18px">내 정보</h1>${accountCard()}<p class="sub">처음에 입력한 정보예요. 바꿀 항목을 눌러주세요.</p>
 <div class="list">${rows.map(([k,i,t,v])=>`<div class="setrow" onclick="${k==="seas"?"openSeas('settings')":`openEdit('${k}')`}"><div class="ibox">${ICONS[i]?ic(i):emo(i)}</div><div class="tx"><b>${t}</b><span>${esc(v)}</span></div>${ic("right")}</div>`).join("")}</div>
+<p class="sec" style="margin-top:26px">개인정보</p>
+<div class="list"><div class="setrow" onclick="setAllergyConsent(${!allergyOK()})"><div class="ibox">${ic("ban")}</div><div class="tx"><b>[선택] 알레르기 정보 수집·이용</b><span>${allergyOK()?"동의함 · 누르면 철회하고 알레르기 정보를 지워요":"동의 안 함 · 누르면 동의해요"}</span></div>${ic("right")}</div>
+<a class="setrow" href="${PRIVACY_URL}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none"><div class="ibox">${ic("bulb")}</div><div class="tx"><b>개인정보 처리방침</b><span>수집 항목, 보관·삭제 기준, 위탁 업체</span></div>${ic("right")}</a></div>
 <button class="link" style="margin-top:28px;color:var(--r)" onclick="wipeAll()">모든 정보와 기록 지우기</button>`);}
+// 화면에 보이는 이메일은 앞 두 글자만 남기고 가려요 (예: ab***@gmail.com)
+const maskEmail=e=>{const m=String(e||"").match(/^([^@]*)@(.+)$/);if(!m)return e||"";const id=m[1];return `${id.slice(0,Math.min(2,id.length))}${"*".repeat(Math.max(3,id.length-2))}@${m[2]}`;};
 // 계정 카드 — 로그인 상태 · 저장 위치 · 로그아웃/탈퇴
 function accountCard(){
  if(!authOn())return `<div class="card acct"><div class="acrow"><div class="ibox">${ic("user")}</div><div class="tx"><b>로그인 없이 쓰는 중</b><span>기록은 이 기기에만 저장돼요</span></div></div></div>`;
  if(!A.user)return `<div class="card acct"><div class="acrow"><div class="ibox">${ic("user")}</div><div class="tx"><b>로그인하면 기록을 지킬 수 있어요</b><span>지금은 이 기기에만 저장돼요</span></div></div>
 <button class="btn" style="margin-top:14px" onclick="S.lmode='login';openLogin()">로그인 · 계정 만들기</button></div>`;
  const g=(A.user.providerData||[]).some(x=>x.providerId==="google.com");
- return `<div class="card acct"><div class="acrow"><div class="ibox">${ic("user")}</div><div class="tx"><b>${esc(A.user.email||"로그인됨")}</b><span>${g?"Google 계정":"이메일 계정"} · 기록이 계정에 저장돼요</span></div></div>
+ return `<div class="card acct"><div class="acrow"><div class="ibox">${ic("user")}</div><div class="tx"><b>${esc(maskEmail(A.user.email)||"로그인됨")}</b><span>${g?"Google 계정":"이메일 계정"} · 기록이 계정에 저장돼요</span></div></div>
 ${A.syncErr?`<div class="note bad" style="margin-top:12px">${A.syncErr}</div>`:""}
 <div class="acbtns"><button class="link" onclick="logout()">로그아웃</button><button class="link" style="color:var(--r)" onclick="S.sheet='delacct';render()">회원 탈퇴</button></div></div>`;}
 function delAcctSheet(){return `<div class="modal-bg" onclick="if(event.target===this){S.sheet=null;render()}"><div class="modal" role="alertdialog"><div class="grab"></div>
@@ -1908,7 +1940,7 @@ function wipeSheet(){const n=DB.purchases.length,r=DB.recipes.length,s=stock().l
 <div class="card wipelist"><p>${ic("pin")} 동네·가게, 인원, 예산 등 초기 정보</p><p>${ic("fridge")} 냉장고 재료 ${s}개</p><p>${ic("chart")} 장보기 기록 ${n}건 · 레시피 ${r}개</p></div>
 <button class="btn danger" onclick="doWipe()">모두 지우기</button>
 <button class="link" onclick="S.sheet=null;render()">취소</button></div></div>`;}
-function doWipe(){try{localStorage.removeItem(KEY)}catch(e){}DB=EMPTY();
+function doWipe(){const cons=DB.consent;try{localStorage.removeItem(KEY)}catch(e){}DB=EMPTY();if(cons&&A.user)DB.consent=cons;   // 로그인 유지 중이면 동의 기록은 남겨요
  if(A.user){clearTimeout(pushT);userDoc().delete().catch(()=>{});}   // 로그인했으면 서버 기록도 지워요 (계정은 남아요)
  Object.assign(S,{step:A.user?1:0,p:null,view:"app",tab:"home",agree:!!A.user,sheet:null,results:[],rsel:null,recorded:0,editKey:null,openR:null,left:null,wish:"",noWish:false,planEdit:false,planNote:"",menus:null,menuSig:""});
  render();scrollTo(0,0);toast("모든 정보와 기록을 지웠어요");}
