@@ -694,8 +694,16 @@ const DELIVERY = {perMeal:14000, label:"배달앱 평균 최소 주문금액 1�
 
 
 // 8) 안전선: 이 단어가 재생성 요청에 있으면 LLM을 호출하지 않고 안내 문구 표시
-const SAFETY_WORDS = ["단식","굶","극단적","약 대신","치료","진단","살 빼는 약","독","구토"];
+const SAFETY_WORDS = ["단식","굶","극단적","약 대신","치료","진단","살 빼는 약","독약","독극물","독버섯","구토","당뇨","고혈압","신장병","투석","항암","암 환자"];
 const SAFETY_MESSAGE = "건강 상태나 치료와 관련된 요청에는 답하기 어려워요. 살림밥상의 식단은 참고용이에요. 건강 관련 식단은 의사·영양사와 상담해 주세요.";
+// 안전선 종류별 안내 — 앞에서부터 먼저 걸리는 것 하나만 보여줘요 (띄어쓰기는 무시)
+const SAFETY_RULES = [
+  {w:SAFETY_WORDS, m:SAFETY_MESSAGE},
+  {w:["임신","임산부","수유","이유식","아기","영유아","유아식"], m:"임신·수유 중이거나 아기가 먹을 음식은 따로 조심할 점이 많아 추천하지 않아요. 의사·영양사와 상담해 주세요."},
+  {w:["상한","곰팡","유통기한지난","소비기한지난","기한지난","쉰내","썩은","냄새나는"], m:"상했거나 기한이 지난 재료는 드시지 말고 버려 주세요. 살림밥상은 먹어도 되는지 판단해 드릴 수 없어요."},
+];
+const safetyHit=t=>{const x=String(t||"").replace(/\s/g,"");const r=SAFETY_RULES.find(r=>r.w.some(w=>x.includes(w.replace(/\s/g,""))));return r?r.m:null;};
+const WISH_MAX=200;   // 직접 쓰는 요청 글자 수 제한 (아주 긴 입력 대비)
 
 /* ---- (원래 두 번째 <script> 블록) ---- */
 /* ============================================================
@@ -1203,8 +1211,8 @@ function parseCombo(txt){const c=JSON.parse(txt);
  const recs=(c.menus||[]).map(m=>{const ings=(m.i||m.ingredients||[]).map(g=>Array.isArray(g)?{name:g[0],qty:g[1],unit:g[2]}:g);
   return{...normRecipe({title:m.t||m.title,ingredients:ings,steps:[]},!!(m.w??m.wish)),meals:Math.max(1,Math.round(+(m.m??m.meals)||1))};}).filter(r=>r.title);
  return{wishes:(c.wishes||[]).map(x=>String(x).trim()).filter(Boolean),desc:String(c.desc||""),recipes:recs};}
-async function makeCombos(){const el=$("#wish");S.wish=(el?el.value:S.wish||"").trim();const wish=S.wish;
- if(SAFETY_WORDS.some(w=>wish.includes(w))){S.planNote=SAFETY_MESSAGE;S.wish="";return render();}
+async function makeCombos(){const el=$("#wish");S.wish=(el?el.value:S.wish||"").trim().slice(0,WISH_MAX);const wish=S.wish;
+ {const m=safetyHit(wish);if(m){S.planNote=m;S.wish="";return render();}}
  if(S.work)return;S.work="plan";S.planNote="";render();
  const N=P().meals,room=Math.max(0,weekly()-spentWeek()),why=[],errs=[],valid=[];
  const sysBase=`당신은 "냉장고 털기" 집밥 식단 도우미입니다. ${N}끼 메뉴 조합 1개를 만듭니다. 반드시 JSON만, 아래 형식 그대로 짧게 출력하세요(설명·코드블록 금지): ${COMBO_ONE}. t=메뉴명, w=먹고 싶은 메뉴면 1 아니면 0, m=이 메뉴로 먹는 끼니 수, i=[재료명, 분량, 단위] 목록(그 메뉴 m끼 전체 분량). 규칙: 사용자가 먹고 싶다고 한 메뉴는 wishes에 적고 w:1, m:${WISH_MEALS}로 꼭 넣기. m 합은 정확히 ${N}(먹고 싶은 메뉴×${WISH_MEALS}가 ${N}보다 많으면 일부만 1). 나머지 메뉴는 w:0, m:1, 서로 겹치지 않게. 먹고 싶은 메뉴가 없으면 wishes는 빈 배열. 사고 남는 재료와 냉장고 재료는 다른 메뉴에서 이어 써서 남김없이 쓰기. ${ingRules()}`;
@@ -1311,8 +1319,8 @@ const ingLine=()=>stock().map(x=>`${x.name}(${LV[x.level]}, ${daysAgo(x.addedAt)
 function seasLine(){const m=DB.seasSet?DB.seas:Object.fromEntries(DEFAULT_SEASONINGS.map(n=>[n,"have"]));
  return Object.entries(m).filter(([,v])=>v!=="out").map(([k,v])=>`${k}(${SV[v]})`).join(", ")||"없음";}
 
-async function suggestMenus(){if(S.work)return;S.req=($("#req")?.value??S.req).trim();
- if(SAFETY_WORDS.some(w=>S.req.includes(w))){S.note=SAFETY_MESSAGE;S.req="";return render();}
+async function suggestMenus(){if(S.work)return;S.req=($("#req")?.value??S.req).trim().slice(0,WISH_MAX);
+ {const m=safetyHit(S.req);if(m){S.note=m;S.req="";return render();}}
  if(!stock().length){S.menus=[];return render();}
  S.work="menus";S.tab="recipe";S.rview="make";S.view="app";render();   // 메뉴 자리에 '찾는 중' 표시
  const sys='당신은 "냉장고 털기" 집밥 도우미입니다. 반드시 JSON만 출력하세요(설명·코드블록 금지). 형식: {"menus":[{"title":"메뉴명","desc":"지금 이 메뉴가 좋은 이유 한 줄(예: 오래된 양파를 다 써요)","uses":["쓰는 냉장고 재료명"],"time_min":20}]}. 규칙: 메뉴 5개, 서로 겹치지 않게. 냉장고 재료·보유 조미료·물만으로 만들 수 있는 것만(전부 쓸 필요는 없음). 오래됐거나 넉넉한 재료를 많이 쓰는 메뉴를 앞에. 이번 주 먹고 싶다고 한 메뉴를 만들 수 있으면 맨 앞에. 기피 재료는 절대 사용 금지. 가격 숫자 금지. 의료·치료 조언 금지.';
@@ -1712,7 +1720,7 @@ function pickPage(){const pl=plan(),dr=draft(),p=DB.profile,N=P().meals,v=pickVi
  if(v==="wish"){const s=stock(),room=Math.max(0,weekly()-spentWeek());
   return page(`<h2 class="lead">이번엔 뭐 먹고 싶으세요?</h2>
 <p class="meta">${ic("calendar")} ${N}끼 · ${p.people}명 · 이번 주 남은 예산 ${won(room)}</p>
-<textarea id="wish" class="field wish" rows="4" oninput="typeWish(this)" placeholder="예) 김치찌개랑 제육볶음 먹고 싶어요" aria-label="먹고 싶은 메뉴">${esc(S.wish)}</textarea>
+<textarea id="wish" class="field wish" rows="4" maxlength="200" oninput="typeWish(this)" placeholder="예) 김치찌개랑 제육볶음 먹고 싶어요" aria-label="먹고 싶은 메뉴">${esc(S.wish)}</textarea>
 <div class="chips" style="margin-top:12px"><span class="chip nowish ${S.noWish?"on":""}" onclick="setNoWish()">${ic("check")} 딱히 없어요, 알아서</span>${WISH_QUICK.map(t=>chip(`${ic("plus")} ${t}`,false,`addWish('${t}')`)).join("")}</div>
 <div class="note" style="margin-top:22px">먹고 싶은 메뉴는 ${WISH_MEALS}끼로 넣고, 사고 남는 재료와 냉장고 재료로 나머지 끼니를 채운 ${N}끼 조합을 3가지 보여드려요. 하나를 고르면 그 조합에 필요한 재료만 장볼 목록에 담아요.${s.length?` 냉장고에 있는 ${esc(s.slice(0,3).map(x=>coreName(x.name)).join(", "))}${s.length>3?` 외 ${s.length-3}개`:""}부터 써요.`:""}</div>
 ${S.planNote?`<div class="note warn">${S.planNote}</div>`:""}
@@ -1829,7 +1837,7 @@ ${S.work==="menus"?`<div class="card workcard"><span class="spin dark"></span>�
 ${DB.seasSet?`<p class="m" style="margin-top:14px">조미료: ${esc(seasTxt||"없음")} · <span style="text-decoration:underline;cursor:pointer" onclick="openSeas('recipe')">고치기</span></p>`
  :`<div class="note warn" style="margin-top:12px">${emo("🧂")} 지금은 기본 조미료(${DEFAULT_SEASONINGS.join("·")})가 있다고 생각하고 골랐어요. 있는 조미료를 알려주시면 더 딱 맞게 골라드릴게요. <span style="text-decoration:underline;cursor:pointer;font-weight:700" onclick="openSeas('recipe')">알려주기</span></div>`}
 <p class="sec">원하는 스타일이 있다면 (선택)</p>
-<textarea id="req" class="field" rows="2" oninput="S.req=this.value" placeholder="예) 15분 안에, 국물 요리로">${esc(S.req)}</textarea>`}
+<textarea id="req" class="field" rows="2" maxlength="200" oninput="S.req=this.value" placeholder="예) 15분 안에, 국물 요리로">${esc(S.req)}</textarea>`}
 ${res.length?`<p class="sec">최근에 본 레시피</p>${res.map(rcard).join("")}`:""}`;
  }else body=DB.scraps.length?DB.scraps.map(rcard).join(""):`<div class="card"><p class="m" style="margin:0">아직 저장한 레시피가 없어요. 레시피에서 하트를 눌러 보세요.</p></div>`;
  page(`<h2 class="lead">${v==="make"?"지금 냉장고 재료로<br>이런 걸 만들 수 있어요":"저장한 레시피"}</h2><div class="seg"><button class="${v==="make"?"on":""}" onclick="S.rview='make';needMenus()?suggestMenus():render()">만들 수 있는 메뉴</button><button class="${v==="scrap"?"on":""}" onclick="S.rview='scrap';render()">저장한 레시피 ${DB.scraps.length||""}</button></div>
