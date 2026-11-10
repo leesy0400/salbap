@@ -922,11 +922,21 @@ const ALLERGENS=[
 const allergyOK=()=>!DB.consent||!!DB.consent.allergy;
 const allergies=()=>allergyOK()?(P().allergies||[]):[];
 const avoidWords=()=>(P().avoid||"").split(/[,，\s]+/).filter(Boolean);   // 직접 적은 못 먹는 재료
-const avoidList=()=>[...new Set([...avoidWords(),...allergies().flatMap(a=>(ALLERGENS.find(x=>x[0]===a)||[,[]])[1])])];   // 실제로 걸러낼 단어 전체
+// 알레르기 정답표 (2026-11-10) — 팀이 제품 원재료명을 보고 표시한 성분. 이름만으로는 안 보이는 가공품·양념 성분을 잡아요.
+//   ALLERGY_TABLE: 조미료·양념 단어 → 성분, ALLERGY_CODE: 가격 데이터 품목코드 → 성분 (같은 단어에 답이 둘이면 합쳐서 더 많이 거르는 쪽)
+const ALLERGY_TABLE={"XO소스":"대두,새우,조개류","간장":"대두,밀","갈비양념":"대두,밀,돼지고기","고추기름":"대두","고추장":"대두","국간장":"대두","굴소스":"대두,밀,조개류,굴","냉면육수":"대두,밀,돼지고기,토마토,닭고기,쇠고기","노두유":"대두,밀","다시다":"우유,대두,밀,쇠고기","데리야끼":"대두,밀","데리야키소스":"대두,밀","돈가스소스":"우유,대두,밀,토마토,쇠고기","된장":"대두,밀","두반장":"대두,밀","드레싱":"대두,밀","랜치":"알류(가금류),대두,밀","레몬즙":"아황산류","마가린":"우유,대두","마라소스":"알류(가금류),우유,땅콩,대두,밀,닭고기,쇠고기","마요네즈":"알류(가금류),대두,밀,쇠고기","맛간장":"땅콩,고등어,게,쇠고기,조개류,굴,홍합","머스터드":"알류(가금류),대두,밀,아황산류","멸치다시다":"우유,대두,밀,쇠고기,조개류,굴","밀가루":"밀","바베큐소스":"대두,밀,토마토,아황산류,쇠고기","발사믹":"아황산류","버터":"우유","부침가루":"대두,밀","불고기양념":"대두,밀,아황산류","빵가루":"대두,밀","사과식초":"아황산류","새우젓":"새우","소고기육수":"대두,밀,아황산류,쇠고기","쇠고기다시다":"우유,대두,밀,아황산류,쇠고기","쇼트닝":"대두","스리라차":"아황산류","스위트칠리":"아황산류","시저드레싱":"우유,대두,밀,고등어,아황산류","식용유":"대두","쌈장":"대두,밀,아황산류","액젓":"대두,밀,게,새우,아황산류","양조간장":"대두,밀,아황산류","연겨자":"대두,밀,아황산류","연두":"대두,아황산류","오리엔탈드레싱":"대두,밀,조개류,굴","옥수수전분":"밀","와사비마요":"알류(가금류),우유,대두,밀,닭고기,쇠고기","우스터소스":"대두,밀,토마토,쇠고기,조개류,굴","조선간장":"대두","진간장":"대두,밀","쯔유":"대두,밀","참깨드레싱":"알류(가금류),대두,밀","청국장":"대두,밀,쇠고기,조개류","초고추장":"밀","초장":"대두,밀","춘장":"대두,밀","치즈가루":"우유","치킨스톡":"우유,대두,밀,닭고기,쇠고기","칠리소스":"토마토","카레":"우유,대두,밀,토마토,쇠고기","카레가루":"우유,대두,밀,토마토,쇠고기,조개류,굴","케찹":"토마토","케첩":"토마토","코인육수":"대두,밀,새우,조개류","콩기름":"대두","크림소스":"알류(가금류),우유,대두,밀,돼지고기,닭고기,쇠고기","타바스코":"밀","토마토소스":"대두,밀,토마토,닭고기,쇠고기","튀김가루":"밀","파마산가루":"우유","파스타소스":"우유,대두,밀,토마토,닭고기,쇠고기","허니머스타드":"알류(가금류),대두","혼다시":"우유","후리카케":"알류(가금류),우유,대두,밀"};
+const ALLERGY_CODE={"A0004":"복숭아","A0021":"대두","A0023":"토마토","A0029":"대두","A0032":"쇠고기","A0033":"쇠고기","A0034":"돼지고기","A0035":"닭고기","A0036":"알류(가금류)","A0039":"오징어","A0040":"고등어","A0042":"조개류","A0043":"새우","A0050":"대두","A0051":"대두,밀","A0052":"대두,밀","A0056":"토마토","A0057":"알류(가금류),대두,밀,쇠고기","A0058":"대두","A0060":"대두,밀","A0062":"우유,대두","A0063":"밀","A0064":"알류(가금류),대두,밀,돼지고기,쇠고기","A0066":"대두,밀,돼지고기,쇠고기,조개류,굴","A0068":"대두","A0070":"대두,밀,돼지고기,닭고기,쇠고기","A0071":"대두","A0073":"대두,밀","A0074":"밀","A0075":"돼지고기","A0077":"우유","A0087":"대두,새우"};
+// 지금 고른 알레르기 성분이 든 단어 — 정답표 단어 + 해당 품목의 이름·별칭
+function tableWords(){const al=allergies();if(!al.length)return[];const has=v=>v.split(",").some(a=>al.includes(a));
+ return[...Object.keys(ALLERGY_TABLE).filter(k=>has(ALLERGY_TABLE[k])),...ITEMS.filter(i=>ALLERGY_CODE[i.id]&&has(ALLERGY_CODE[i.id])).flatMap(i=>[coreName(i.name),...i.alias])];}
+const avoidList=()=>[...new Set([...avoidWords(),...allergies().flatMap(a=>(ALLERGENS.find(x=>x[0]===a)||[,[]])[1])])];   // 직접 적은 재료 + 알레르기 기본 단어
+const avoidAll=()=>[...new Set([...avoidList(),...tableWords()])];   // 글자로 찾을 때(재료 이름·메뉴 이름·조리법) 쓰는 전체 단어
+// 가격 데이터 품목이 정답표에서 고른 알레르기 성분을 가졌는지
+const tableBad=it=>{const v=ALLERGY_CODE[it.id],al=allergies();return !!v&&v.split(",").some(a=>al.includes(a));};
 // AI에 알려줄 문장 — "새우, 고수 / 알레르기: 우유, 대두"
 const avoidText=()=>[P().avoid&&P().avoid.trim(),allergies().length&&`알레르기: ${allergies().join(", ")}`].filter(Boolean).join(" / ")||"없음";
 // 기피 매칭 — 한 글자 키워드(무·배·감·콩·김…)는 정확히 같을 때만 ('배추'를 피한다고 '배'까지 빼지 않게)
-function allowed(it){return !avoidList().some(x=>it.allergens.some(a=>a.length<2||x.length<2?a===x:x.includes(a)||a.includes(x)));}
+function allowed(it){return !tableBad(it)&&!avoidList().some(x=>it.allergens.some(a=>a.length<2||x.length<2?a===x:x.includes(a)||a.includes(x)));}
 const coreName=n=>String(n).replace(/\(.*?\)/g,"").trim();
 const itemByName=n=>matchItem(n);
 // 재료 이름 → 이모지 (목록에 없는 재료는 🥫, 조미료는 🧂)
@@ -1064,7 +1074,7 @@ function matchItem(n){const c=coreName(n).replace(/\s*[\d.]+\s*(kg|g|개|단|마
  const exact=ITEMS.filter(i=>names(i).includes(c));
  if(exact.length)return exact.sort((a,b)=>(price(a)?0:1)-(price(b)?0:1))[0];   // 소고기처럼 둘이면 가격 있는 쪽
  let best=null,len=0;ITEMS.forEach(i=>names(i).forEach(k=>{if(k.length>=2&&c.includes(k)&&k.length>len){best=i;len=k.length;}}));return best;}
-const avoided=n=>avoidList().some(a=>n.includes(a));
+const avoided=n=>avoidAll().some(a=>n.includes(a));
 const isSeasName=n=>SEASONINGS.includes(n)||Object.prototype.hasOwnProperty.call(DB.seas,n);
 const inFridge=n=>stock().some(x=>{const a=coreName(x.name),b=coreName(n);return a===b||(a.length>=2&&b.length>=2&&(a.includes(b)||b.includes(a)));});
 const parseG=t=>{const m=String(t||"").match(/([\d.]+)\s*(kg|g)/i);return m?Math.round(+m[1]*(m[2].toLowerCase()==="kg"?1000:1)):0;};
@@ -1122,11 +1132,11 @@ function classify(n){if(WATER.test(squash(n)))return{kind:"water"};
  return buyOf(n)||{kind:"none",why:`${placeOf(P())} 가격 데이터에 없는 재료예요`};}
 
 // ── ① 못 먹는 재료 검사 — 재료 이름, 메뉴 이름, 조리법 문장까지 ──
-function avoidHit(text){const t=String(text||"").replace(/\s/g,"");return avoidList().find(a=>a.length>=2?t.includes(a):squash(text)===a)||null;}
+function avoidHit(text){const t=String(text||"").replace(/\s/g,"");return avoidAll().find(a=>a.length>=2?t.includes(a):squash(text)===a)||null;}
 function recipeAvoid(r){
  for(const g of r.ingredients||[]){const h=avoidHit(g.name);if(h)return h;const it=matchItem(g.name);if(it&&!allowed(it))return it.name;}
  const h=avoidHit(r.title);if(h)return h;
- for(const st of r.steps||[]){const t=String(st).replace(/\s/g,"");const a=avoidList().find(a=>a.length>=2&&t.includes(a));if(a)return a;}
+ for(const st of r.steps||[]){const t=String(st).replace(/\s/g,"");const a=avoidAll().find(a=>a.length>=2&&t.includes(a));if(a)return a;}
  return null;}
 
 // ── ②·③·④ 배정 — 우선순위대로(먹고 싶은 메뉴 먼저) 재료를 냉장고/조미료/살 것에 나눠 담아요 ──
@@ -1165,8 +1175,8 @@ function ingRules(){return `재료 name은 반드시 아래 [냉장고 재료]·
 function catLinesShort(){return ITEMS.filter(allowed).map(it=>({it,pr:price(it)})).filter(x=>x.pr).map(({it,pr})=>`${it.name}(${pr.unit} ${pr.price}원)`).join(", ")||"없음";}
 function catLines(){return ITEMS.filter(allowed).map(it=>({it,pr:price(it)})).filter(x=>x.pr)
  .map(({it,pr})=>`${it.name}${specOf(pr)?`[${specOf(pr)}]`:""}(${pr.unit==="100g"?"100g 단위":pr.unit+" 단위"} ${pr.price}원)`).join(", ")||"없음";}
-function fridgeLines(skip){return stock().filter(x=>!skip||!skip["f"+x.id]).map(x=>`${x.name}(${LV[x.level]}${x.level==="low"?": 한 끼에만":""}, ${daysAgo(x.addedAt)}일째)`).join(", ")||"없음";}
-function seasLines(skip){return Object.entries(seasMapNow()).filter(([k,v])=>v!=="out"&&(!skip||!skip["s"+k])).map(([k,v])=>`${k}${v==="low"?"(조금: 한 끼에만)":""}`).join(", ")||"없음";}
+function fridgeLines(skip){return stock().filter(x=>(!skip||!skip["f"+x.id])&&!avoidHit(x.name)).map(x=>`${x.name}(${LV[x.level]}${x.level==="low"?": 한 끼에만":""}, ${daysAgo(x.addedAt)}일째)`).join(", ")||"없음";}
+function seasLines(skip){return Object.entries(seasMapNow()).filter(([k,v])=>v!=="out"&&(!skip||!skip["s"+k])&&!avoidHit(k)).map(([k,v])=>`${k}${v==="low"?"(조금: 한 끼에만)":""}`).join(", ")||"없음";}
 function normRecipe(x,wish){/* meals: 이 메뉴로 몇 끼를 먹는지 (먹고 싶은 메뉴는 2끼) */const ings=(x.ingredients||[]).map(g=>({name:String(g.name||"").trim(),qty:+g.qty||0,unit:String(g.unit||"").trim()})).filter(g=>g.name);
  return{title:String(x.title||"").trim(),wish:!!wish,time_min:x.time_min,level:x.level,ingredients:ings,steps:(x.steps||[]).map(String).filter(Boolean),
   uses:ings.map(g=>`${g.name}${g.qty?` ${g.qty}${g.unit}`:""}`)};}
