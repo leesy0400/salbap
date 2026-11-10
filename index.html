@@ -763,11 +763,19 @@ const logo=(s=28,f=26)=>`<span class="brandrow">${mark(s)}<span class="word" sty
    weeks     : 주차별 예산 {"2026-10-19":{budget}}
    recipes   : 추천받은 레시피 기록 (해먹으면 cooked:true)
    scraps    : 저장한(♥) 레시피
+   stats     : 이용 통계 {days:[앱을 연 날짜], combo:{first,retry,pass1,pass2,err,why}}  ← 실사용 테스트 숫자용 (내용 없이 횟수만)
    ============================================================ */
 const KEY="salim_v3";   // v3부터 실제 데이터 — 예전(예시 데이터) 기록과 섞이지 않게 새 칸에 저장해요
-const EMPTY=()=>({onboarded:false,profile:null,seasSet:false,seas:{},pantry:[],purchases:[],cart:{wk:"",items:[]},plan:null,weeks:{},recipes:[],scraps:[]});
+const EMPTY=()=>({onboarded:false,profile:null,seasSet:false,seas:{},pantry:[],purchases:[],cart:{wk:"",items:[]},plan:null,weeks:{},recipes:[],scraps:[],stats:{days:[],combo:{}}});
 let DB=(()=>{try{const d=JSON.parse(localStorage.getItem(KEY)||"null");return d?{...EMPTY(),...d}:EMPTY()}catch(e){return EMPTY()}})();
 function save(){try{localStorage.setItem(KEY,JSON.stringify(DB))}catch(e){}pushRemote();}
+// 이용 통계 — 앱을 연 날짜(하루 한 번)와 AI 메뉴 조합 결과 횟수만 남겨요. 실사용 테스트에서 재방문·조합 통과율을 셀 때 써요.
+const stats=()=>{const t=DB.stats||(DB.stats={});t.days=t.days||[];t.combo=t.combo||{};return t;};
+function markVisit(){if(!DB.onboarded)return;const t=stats(),d=ymd(new Date());if(t.days.includes(d))return;t.days=[...t.days,d].slice(-180);save();}
+// 조합이 규칙에 걸린 이유를 종류별로 세요 (가장 자주 틀리는 유형을 보려고)
+function comboWhy(p){return /끼니 합/.test(p)?"끼니 수":/먹고 싶은 메뉴/.test(p)?"먹고 싶은 메뉴 빠짐":/못 먹는 재료/.test(p)?"못 먹는 재료":/구할 수 없는|가격 데이터/.test(p)?"목록 밖 재료":/한 끼에만|조금밖에/.test(p)?"적은 재료 여러 번":/두 번/.test(p)?"같은 메뉴 중복":/비어/.test(p)?"재료 없음":"기타";}
+function countCombo(round,kind,why){const c=stats().combo;c[round]=(c[round]||0)+1;if(kind==="pass")c[round==="first"?"pass1":"pass2"]=(c[round==="first"?"pass1":"pass2"]||0)+1;
+ if(kind==="err")c.err=(c.err||0)+1;if(why){c.why=c.why||{};c.why[why]=(c.why[why]||0)+1;}}
 
 /* ============================================================
    로그인 · 서버 저장 (Firebase Auth + Firestore)
@@ -782,7 +790,7 @@ async function initAuth(){if(!authOn())return;
  try{if(!window.firebase)for(const m of["app","auth","firestore"])await loadScript(`https://www.gstatic.com/firebasejs/${FB_VER}/firebase-${m}-compat.js`);
   if(!firebase.apps.length)firebase.initializeApp(FIREBASE_CONFIG);
   firebase.auth().onAuthStateChanged(async u=>{A.user=u;A.ready=true;
-   if(u){await pullRemote();if(S.view==="login"){S.view="app";if(!DB.onboarded)S.step=Math.max(1,S.step);else S.tab="home";}}
+   if(u){await pullRemote();markVisit();if(S.view==="login"){S.view="app";if(!DB.onboarded)S.step=Math.max(1,S.step);else S.tab="home";}}
    render();});
  }catch(e){A.err=e.message;A.ready=true;render();}}
 const userDoc=()=>firebase.firestore().collection("users").doc(A.user.uid);
@@ -1213,14 +1221,14 @@ async function makeCombos(){const el=$("#wish");S.wish=(el?el.value:S.wish||"").
  const ask=(k,prev)=>callLLM(sysBase+` 이번 조합의 방향: '${COMBO_DIRS[k][0]}' — ${COMBO_DIRS[k][1]}.`,usr+(prev.length?`\n이미 나온 조합(이것과 다르게): ${prev.join(" / ")}`:""),LLM.planModel,LLM_PLAN)
   .then(t=>({k,label:COMBO_DIRS[k][0],...parseCombo(t)}));
  // 받은 안 검사 — 규칙에 안 맞으면 그 자리만 다시 요청해요 (시간 초과·연결 오류는 다시 요청하지 않아요)
- const take=(settled,ks)=>{const retry=[];settled.forEach((r,j)=>{const k=ks[j];
-  if(r.status!=="fulfilled"){errs.push(r.reason?.message||"오류");return;}
+ const take=(settled,ks,round)=>{const retry=[];settled.forEach((r,j)=>{const k=ks[j];
+  if(r.status!=="fulfilled"){const m=r.reason?.message||"오류";errs.push(m);countCombo(round,"err",/형식|JSON|Unexpected/.test(m)?"형식 오류":"연결·시간 초과");return;}
   const c=r.value,p=comboProblem(c.recipes,c.wishes,N);
-  if(!p&&valid.some(v=>keyOf(v)===keyOf(c))){retry.push(k);return;}
-  if(p){const w=`${c.label}: ${p}`;if(!why.includes(w))why.push(w);retry.push(k);}else valid.push(c);});return retry;};
- let retry=take(await Promise.allSettled([0,1,2].map(k=>ask(k,[]))),[0,1,2]);
- if(retry.length){const prev=valid.map(keyOf);take(await Promise.allSettled(retry.map(k=>ask(k,prev))),retry);}
- S.work=null;S.tab="pick";S.view="app";
+  if(!p&&valid.some(v=>keyOf(v)===keyOf(c))){countCombo(round,"rule","다른 안과 같음");retry.push(k);return;}
+  if(p){const w=`${c.label}: ${p}`;if(!why.includes(w))why.push(w);countCombo(round,"rule",comboWhy(p));retry.push(k);}else{countCombo(round,"pass");valid.push(c);}});return retry;};
+ let retry=take(await Promise.allSettled([0,1,2].map(k=>ask(k,[]))),[0,1,2],"first");
+ if(retry.length){const prev=valid.map(keyOf);take(await Promise.allSettled(retry.map(k=>ask(k,prev))),retry,"retry");}
+ save();S.work=null;S.tab="pick";S.view="app";
  if(!valid.length){
   S.planNote=errs.length&&!why.length?(LLM.proxy?`메뉴 조합을 만들지 못했어요. 잠시 후 다시 시도해 주세요. (${esc(errs[0])})`:"AI가 연결되지 않아 메뉴 조합을 만들 수 없어요. LLM 설정에 API 키를 넣거나 Claude 미리보기에서 열어주세요.")
    :`조건에 맞는 메뉴 조합을 만들지 못했어요. ${esc(why.slice(0,2).join(" / "))}`;
@@ -1457,7 +1465,7 @@ const LAND_DECO=`<div class="deco" aria-hidden="true">
 </div>`;
 
 // 동의 화면 — 가입에 필요한 내용만 짧게, 자세한 내용은 개인정보 처리방침(privacy.html)에서
-const CONSENT_VER="2026-11-09";
+const CONSENT_VER="2026-11-10";
 const PRIVACY_URL="privacy.html";
 function agreeModal(){const c=S.cons||(S.cons={age:false,privacy:false,allergy:false});
  const row=(k,tag,t,sub)=>`<label class="agree cons"><span class="ck ${c[k]?"on":""}">${c[k]?ic("check"):""}</span><input type="checkbox" hidden ${c[k]?"checked":""} onchange="toggleCons('${k}',this)"><span class="ctx"><b><em class="${tag==="필수"?"req":"opt"}">[${tag}]</em> ${t}</b>${sub?`<small>${sub}</small>`:""}</span></label>`;
@@ -1465,8 +1473,8 @@ function agreeModal(){const c=S.cons||(S.cons={age:false,privacy:false,allergy:f
 <h1 style="margin-top:0">시작하기 전에<br>확인해 주세요</h1>
 <div class="card consent"><b>개인정보 수집·이용 안내</b>
 <dl>
-<dt>이용 목적</dt><dd>계정 생성과 로그인, 맞춤 메뉴·레시피 추천, 장보기·냉장고 기록 저장</dd>
-<dt>수집 항목</dt><dd>이메일, 계정 식별자(UID)(Google 로그인 시 Google 계정 이메일·이름·프로필 사진), 장보기 지역·매장, 가구원 수, 추천 끼니 수, 장보기 예산, 싫어하는 재료, 보유 재료·조미료, 입력한 메뉴, 장보기 기록(산 품목·금액), 레시피 기록</dd>
+<dt>이용 목적</dt><dd>계정 생성과 로그인, 맞춤 메뉴·레시피 추천, 장보기·냉장고 기록 저장, 서비스 개선을 위한 이용 통계</dd>
+<dt>수집 항목</dt><dd>이메일, 계정 식별자(UID)(Google 로그인 시 Google 계정 이메일·이름·프로필 사진), 장보기 지역·매장, 가구원 수, 추천 끼니 수, 장보기 예산, 싫어하는 재료, 보유 재료·조미료, 입력한 메뉴, 장보기 기록(산 품목·금액), 레시피 기록, 앱을 연 날짜와 AI 메뉴 조합 결과(통과·실패 횟수)</dd>
 <dt>보유·이용 기간</dt><dd>회원 탈퇴 또는 '모든 정보와 기록 지우기'를 하면 바로 삭제해요. 공모전 종료 후 30일 이내에 모든 계정과 기록을 삭제해요.</dd>
 <dt>동의 거부</dt><dd>동의하지 않을 수 있어요. 다만 필수 항목에 동의하지 않으면 가입할 수 없어요.</dd>
 </dl>
@@ -1642,7 +1650,7 @@ function sSeas(){
 ${seasPicker()}`,
  `<button class="btn" onclick="onbSeas(true)">다 골랐어요</button><button class="link" onclick="onbSeas(false)">나중에 할게요</button>`);}
 function onbSeas(saveIt){if(saveIt){DB.seas={};S.seasDraft.forEach(n=>DB.seas[n]="have");DB.seasSet=true;}finishOnb();}
-function finishOnb(){DB.profile={...S.p,startedAt:Date.now()};DB.onboarded=true;S.p=null;S.sheet=null;save();
+function finishOnb(){DB.profile={...S.p,startedAt:Date.now()};DB.onboarded=true;S.p=null;S.sheet=null;markVisit();save();
  runLoader("build",3,600,()=>{S.view="app";S.tab="home";render();scrollTo(0,0);});}
 
 const ONB=["landing","area","shop","people","meals","budget","avoid","seas"];
@@ -2004,6 +2012,7 @@ function draw(){
  if(S.view==="edit")return SCR[S.editKey]();
  return {home,pick:pickPage,record:recordPage,pantry:pantryPage,recipe:recipePage,history:historyPage,me:settingsPage}[S.tab]();}
 render();
+if(!authOn())markVisit();
 initAuth();   // 로그인 설정이 있으면 Firebase를 불러와요 (없으면 아무것도 안 해요)
 
 </script>
