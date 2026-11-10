@@ -1,0 +1,5 @@
+node_modules/
+scripts/service-account.json
+scripts/test-report-*.json
+.env
+.env.local
