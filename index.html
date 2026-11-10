@@ -1621,7 +1621,7 @@ ${open?`<div class="accbody">${ALLERGENS.map(([n])=>`<span class="chip ${al.incl
 <p class="seasg">싫어하는 재료</p>
 <div class="chips">${chip(`${ic("ban")} 없어요`,!a.length&&!al.length,"S.p.avoid='';S.p.allergies=[];render()")}${AVOID_QUICK.map(x=>chip(x,a.includes(x),`toggleAvoid('${x}')`)).join("")}</div>
 <input class="field" style="margin-top:12px" value="${esc(S.p.avoid||"")}" placeholder="직접 입력 · 예) 고수, 가지 (쉼표로 구분)" onchange="setAvoid(this.value)">${inErr("avoid")}
-<div class="note" style="margin-top:16px">재료 이름으로 걸러내요. 가공식품(소스·양념 등)에 든 성분까지는 알 수 없으니 성분표는 꼭 직접 확인해 주세요.</div>
+<div class="note" style="margin-top:16px">식약처 알레르기 표시 기준 22종으로 걸러요. 브랜드가 정해지지 않은 소스·양념은 대표 제품의 원재료를 기준으로 해서, 제품마다 다를 수 있어요. 같은 제조시설에서 섞일 가능성까지는 반영하지 않으니, 포장의 원재료명과 알레르기 표시를 꼭 확인해 주세요.</div>
 ${S.err?`<div class="note bad">${S.err}</div>`:""}`,
  `<button class="btn" onclick="checkAvoid()">${nextLabel()}</button>`);}
 function setAvoid(v){const ws=String(v||"").split(/[,，\s]+/).map(x=>x.trim()).filter(Boolean),ok=[...new Set(ws.filter(isAvoidWord))],bad=ws.filter(w=>!isAvoidWord(w));
