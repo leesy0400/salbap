@@ -5,7 +5,7 @@
 //   1) Firebase 콘솔 → 프로젝트 설정 → 서비스 계정 → "새 비공개 키 생성"
 //      받은 파일을 scripts/service-account.json 으로 저장 (.gitignore 되어 있어 깃허브에 안 올라가요. 절대 공유 금지)
 //   2) npm install
-//   3) node scripts/test-report.mjs --since 2026-11-11 --exclude 팀원1@gmail.com,팀원2@gmail.com
+//   3) node scripts/test-report.mjs --since 2026-11-11 --until 2026-11-18 --exclude 팀원1@gmail.com,팀원2@gmail.com
 //      --since   : 이 날짜(포함)부터의 기록만 셈 (테스트 시작일)
 //      --until   : 이 날짜(포함)까지 (선택)
 //      --exclude : 집계에서 뺄 계정 이메일(팀원·시험용 계정), 쉼표로 구분
@@ -14,7 +14,6 @@ import { readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { SignJWT, importPKCS8 } from "jose";
 
-const DAY = 86400000;
 const ymd = t => { const d = new Date(t); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; };
 const pct = (a, b) => (b ? Math.round((a / b) * 1000) / 10 : null);
 const median = a => { if (!a.length) return null; const s = [...a].sort((x, y) => x - y), m = s.length >> 1; return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; };
@@ -23,18 +22,14 @@ const median = a => { if (!a.length) return null; const s = [...a].sort((x, y) =
 export function summarize(dbs, { since = "0000-00-00", until = "9999-99-99" } = {}) {
   const inRange = d => d >= since && d <= until;
   const out = { 계정: dbs.length, 온보딩완료: 0, 장본사람: 0, 방문: {}, 재료: {}, 예산: {}, 메뉴: {}, AI조합: {} };
-  const dayCounts = [], wk2 = [], weekRows = [];
+  const dayCounts = [], weekRows = [];
   let items = 0, used = 0, tossed = 0, cooked = 0, plans = 0;
   const combo = { first: 0, pass1: 0, retry: 0, pass2: 0, err: 0, why: {} };
   for (const db of dbs) {
     if (!db || !db.onboarded) continue;
     out.온보딩완료++;
     const days = [...new Set((db.stats?.days || []).filter(inRange))].sort();
-    if (days.length) {
-      dayCounts.push(days.length);
-      const first = new Date(days[0]).getTime();
-      wk2.push(days.some(d => new Date(d).getTime() - first >= 7 * DAY));
-    }
+    if (days.length) dayCounts.push(days.length);
     const buys = (db.purchases || []).filter(x => inRange(ymd(x.at)));
     if (buys.length) out.장본사람++;
     const food = buys.filter(x => x.kind !== "seas" && x.fate !== "rebought");
@@ -48,7 +43,8 @@ export function summarize(dbs, { since = "0000-00-00", until = "9999-99-99" } = 
     for (const k of ["first", "pass1", "retry", "pass2", "err"]) combo[k] += c[k] || 0;
     for (const [w, n] of Object.entries(c.why || {})) combo.why[w] = (combo.why[w] || 0) + n;
   }
-  out.방문 = { 방문기록있는사람: dayCounts.length, 앱연날수_중앙값: median(dayCounts), 일주일뒤에도연사람: wk2.filter(Boolean).length, 일주일뒤재방문률_퍼센트: pct(wk2.filter(Boolean).length, wk2.length) };
+  const back = dayCounts.filter(n => n >= 2).length;   // 테스트가 1주일이라 '다른 날 다시 연 사람'을 재방문으로 봐요
+  out.방문 = { 방문기록있는사람: dayCounts.length, 앱연날수_중앙값: median(dayCounts), 다른날다시연사람: back, 재방문률_퍼센트: pct(back, dayCounts.length), 사흘이상연사람: dayCounts.filter(n => n >= 3).length };
   out.재료 = { 산재료수_조미료제외: items, 다씀: used, 버림: tossed, 남음: items - used - tossed, 다쓴비율_퍼센트: pct(used, items), 버린비율_퍼센트: pct(tossed, items) };
   out.예산 = { 장본주수: weekRows.length, 예산안에서장본주: weekRows.filter(Boolean).length, 예산지킨비율_퍼센트: pct(weekRows.filter(Boolean).length, weekRows.length) };
   out.메뉴 = { 장볼목록확정한사람: plans, 해먹은메뉴수: cooked };

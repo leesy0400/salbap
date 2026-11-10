@@ -21,7 +21,7 @@ test("모두 합친 숫자만 계산", () => {
   assert.equal(r.계정, 5);
   assert.equal(r.온보딩완료, 3);
   assert.equal(r.장본사람, 1);
-  assert.deepEqual(r.방문, { 방문기록있는사람: 2, 앱연날수_중앙값: 2, 일주일뒤에도연사람: 1, 일주일뒤재방문률_퍼센트: 50 });
+  assert.deepEqual(r.방문, { 방문기록있는사람: 2, 앱연날수_중앙값: 2, 다른날다시연사람: 1, 재방문률_퍼센트: 50, 사흘이상연사람: 1 });
   assert.equal(r.재료.산재료수_조미료제외, 3);
   assert.equal(r.재료.다쓴비율_퍼센트, 33.3);
   assert.equal(r.예산.장본주수, 2);

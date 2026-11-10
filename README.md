@@ -35,8 +35,8 @@
 
 1. Firebase 콘솔 → 프로젝트 설정 → 서비스 계정 → **새 비공개 키 생성**. 받은 파일을 `scripts/service-account.json`으로 저장해요. 이 파일은 `.gitignore`에 들어 있어 깃허브에 올라가지 않아요. 절대 공유하지 마세요.
 2. `npm install`
-3. `node scripts/test-report.mjs --since 2026-11-11 --exclude 팀원1@gmail.com,팀원2@gmail.com`
+3. `node scripts/test-report.mjs --since 2026-11-11 --until 2026-11-18 --exclude 팀원1@gmail.com,팀원2@gmail.com`
    - `--since`: 테스트 시작일(포함), `--until`: 끝나는 날(선택)
    - `--exclude`: 집계에서 뺄 팀원·시험용 계정 이메일
 
-결과는 화면에 나오고 `scripts/test-report-<날짜>.json`에도 저장돼요. 재방문률, 산 재료 중 다 쓴 비율, 예산 지킨 주 비율, 해먹은 메뉴 수, AI 조합 첫 요청 통과율과 실패 종류가 들어 있어요.
+결과는 화면에 나오고 `scripts/test-report-<날짜>.json`에도 저장돼요. 재방문률(다른 날 다시 연 사람 비율), 산 재료 중 다 쓴 비율, 예산 지킨 주 비율, 해먹은 메뉴 수, AI 조합 첫 요청 통과율과 실패 종류가 들어 있어요.
