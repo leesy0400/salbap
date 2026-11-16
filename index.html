@@ -1370,13 +1370,16 @@ function finishCook(){const {rid,rows}=S.left;
 const chip=(t,on,fn)=>`<span class="chip ${on?"on":""}" onclick="${fn}">${t}</span>`;
 // 준비 중 화면 로고: 심볼 + 김 세 줄 + 손글씨 로고
 const brandLoad=()=>`<div class="brandload"><svg class="steam" width="40" height="22" viewBox="0 0 40 22" aria-hidden="true"><g stroke="var(--sage)" stroke-width="2.4" stroke-linecap="round" fill="none"><path d="M12 19c-3-4 3-6 0-10"/><path d="M20 17c-3-4 3-6 0-11"/><path d="M28 19c-3-4 3-6 0-10"/></g></svg>${symbol(78)}<span class="word">살림밥상</span></div>`;
-const overlays=()=>`${S.sheet==="delacct"?delAcctSheet():""}${S.sheet==="wipe"?wipeSheet():""}${S.sheet==="manual"?manualSheet():""}${S.sheet==="agree"?agreeModal():""}${S.sheet==="seas"?seasSheet():""}${S.left?leftSheet():S.openR?recipeSheet():""}`;
+const overlays=()=>`${S.sheet==="onblogout"&&A.user?onbLogoutSheet():""}${S.sheet==="delacct"?delAcctSheet():""}${S.sheet==="wipe"?wipeSheet():""}${S.sheet==="manual"?manualSheet():""}${S.sheet==="agree"?agreeModal():""}${S.sheet==="seas"?seasSheet():""}${S.left?leftSheet():S.openR?recipeSheet():""}`;
 
 // 온보딩·초기정보 수정 화면 뼈대: 위에 [← + 진행 막대], 아래에 고정 버튼
 function shell(body,foot){const edit=S.view==="edit";
  const top=edit?`<div class="subtop"><button class="back" onclick="closeEdit()" aria-label="뒤로가기">${ic("back")}</button><b>초기 정보 수정</b></div>`
-  :`<div class="top"><button class="back" onclick="go(${S.step-1})" aria-label="뒤로가기">${ic("back")}</button><div class="prog"><i style="width:${Math.round(S.step/(ONB.length-1)*100)}%"></i></div></div>`;
+  :`<div class="top"><button class="back" onclick="onbBack()" aria-label="뒤로가기">${ic("back")}</button><div class="prog"><i style="width:${Math.round(S.step/(ONB.length-1)*100)}%"></i></div></div>`;
  $("#app").innerHTML=`${top}<main>${body}</main><div class="foot">${foot||""}</div>${overlays()}`;}
+// 로그인한 채 온보딩 첫 단계(어디 사세요?)에서 뒤로 가면 → 로그아웃할지 물어봐요 (첫 화면은 회원가입 화면이라 로그인한 채로는 못 가요)
+const onbAtFirst=()=>!!A.user&&!DB.onboarded&&S.step<=1;
+function onbBack(){if(onbAtFirst()){S.sheet="onblogout";return render();}go(S.step-1);}
 const go=n=>{S.inErr=null;S.step=Math.max(A.user&&!DB.onboarded?1:0,n);S.err="";render();scrollTo(0,0);};
 // 다음 버튼: 온보딩이면 다음 단계, 수정 중이면 저장 (자치구는 가게 고르기까지 이어서)
 function nextFrom(name){if(S.view==="edit"){if(name==="area"){S.editKey="shop";return render();}return saveEdit();}go(ONB.indexOf(name)+1);}
@@ -1522,6 +1525,7 @@ const legalOf=(gu,t)=>legalEntry(gu,t)?.legals||DONG_IDX[gu]?.get(normDong(t))||
 const hintTxt=e=>e.hints.length?` (${e.hints.slice(0,3).map(h=>h.replace(/[.,]/g,"·")).join(", ")}${e.hints.length>3?" 등":""})`:"";
 function sArea(){const p=S.p,ds=LEGAL[p.district]||[],ok=p.district&&validDong(p.district,p.dong);
  shell(`<h1>어디 사세요?</h1><p class="sub">구와 동을 고르면 우리 동네 시장·마트부터 보여드려요.<br>상세 주소는 받지 않아요.</p>
+${A.user&&!DB.onboarded&&S.view!=="edit"?`<div class="acline" style="display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;margin:0 2px 16px;font-size:13px;color:var(--m)"><span>${esc(maskEmail(A.user.email)||"로그인됨")}으로 로그인됨</span><button class="link" style="display:inline;width:auto;margin:0;padding:0;font-size:13px;font-weight:600;color:var(--pri);text-decoration:underline" onclick="S.sheet='onblogout';render()">다른 계정으로 로그인</button></div>`:""}
 <label class="fl">구<select class="field" onchange="pickArea(this.value)"><option value="">구를 골라주세요</option>${DISTRICTS.map(d=>`<option ${p.district===d?"selected":""}>${d}</option>`).join("")}</select></label>
 <label class="fl" style="margin-top:16px">동<select class="field" ${p.district?"":"disabled"} onchange="setDong(this.value)" aria-label="동 고르기"><option value="">${p.district?"동을 골라주세요":"구를 먼저 골라주세요"}</option>${ds.map(e=>`<option value="${esc(e.name)}" ${p.dong===e.name?"selected":""}>${esc(e.name)}</option>`).join("")}</select></label>
 ${p.district?`<p class="m" style="margin:8px 2px 0">${esc(p.district)} 법정동 ${ds.length}개</p>`:""}
@@ -1939,6 +1943,10 @@ function accountCard(){
  return `<div class="card acct"><div class="acrow"><div class="ibox">${ic("user")}</div><div class="tx"><b>${esc(maskEmail(A.user.email)||"로그인됨")}</b><span>${g?"Google 계정":"이메일 계정"} · 기록이 계정에 저장돼요</span></div></div>
 ${A.syncErr?`<div class="note bad" style="margin-top:12px">${A.syncErr}</div>`:""}
 <div class="acbtns"><button class="link" onclick="logout()">로그아웃</button><button class="link" style="color:var(--r)" onclick="S.sheet='delacct';render()">회원 탈퇴</button></div></div>`;}
+function onbLogoutSheet(){return `<div class="modal-bg" onclick="if(event.target===this){S.sheet=null;render()}"><div class="modal" role="alertdialog"><div class="grab"></div>
+<h1 style="margin-top:0">로그아웃할까요?</h1><p class="sub">${esc(maskEmail(A.user&&A.user.email)||"지금 계정")}에서 로그아웃하고 처음 화면으로 돌아가요. 지금까지 입력한 내용은 저장되지 않아요.<br>다른 계정으로 쓰려면 처음 화면에서 '이미 계정이 있어요 · 로그인'을 눌러 주세요.</p>
+<button class="btn" onclick="logout()">로그아웃하고 처음으로</button>
+<button class="link" onclick="S.sheet=null;render()">취소</button></div></div>`;}
 function delAcctSheet(){return `<div class="modal-bg" onclick="if(event.target===this){S.sheet=null;render()}"><div class="modal" role="alertdialog"><div class="grab"></div>
 <h1 style="margin-top:0">정말 탈퇴할까요?</h1><p class="sub">계정과 서버에 저장된 모든 기록(장 본 기록, 레시피, 냉장고)이 지워지고 되돌릴 수 없어요.</p>
 <button class="btn" style="background:var(--r)" ${A.busy?"disabled":""} onclick="deleteAccount()">${A.busy?`<span class="spin"></span>지우는 중…`:"탈퇴하고 모두 지우기"}</button>
@@ -1993,7 +2001,7 @@ function navSync(){if(navBusy)return;const sig=navSnap();
 // 돌아갈 화면이 지금 상태에서 그릴 수 없는 화면이면 고쳐서 그려요 (예: 로그인한 뒤의 로그인 화면)
 function navFix(st){if(A.user&&st.view==="login")st.view="app";
  if(st.view==="edit"&&!S.p&&DB.profile)S.p={...DB.profile};
- if(!DB.onboarded&&A.user&&st.step<1)st.step=1;
+ if(!DB.onboarded&&A.user&&st.step<1){st.step=1;if(!st.sheet||st.sheet==="agree")st.sheet="onblogout";}
  if(!DB.onboarded&&!S.p)S.p=DEFAULT_PROFILE();
  return st;}
 window.addEventListener("popstate",e=>{
