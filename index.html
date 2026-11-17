@@ -517,10 +517,7 @@ input[type=range]:focus-visible{outline:2px solid var(--pri);outline-offset:6px}
 .hero-img{width:min(64vw,250px);height:auto;animation:bob 3.2s ease-in-out infinite}
 @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 .growline{font-size:13.5px;color:var(--m);margin:2px 0 0}.growline b{color:var(--t)}
-.mcount{font-size:14px;color:var(--m);margin:14px 2px 0}.mcount b{color:var(--t)}
-.ckrow.rc{cursor:pointer}.ckrow.rc.on .tx b{text-decoration:none;color:var(--t)}
-.rcout{display:flex;align-items:center;justify-content:space-between;margin-top:16px;font-weight:700}
-.stepper{display:flex;align-items:center;gap:12px}.stepper button{width:40px;height:40px;border-radius:50%;border:1.5px solid var(--l);background:var(--card);font:inherit;font-size:20px;color:var(--t);cursor:pointer}.stepper b{min-width:40px;text-align:center;font-size:17px}
+
 
 .tlink{border:0;background:none;padding:0;font:inherit;font-size:13.5px;font-weight:700;color:var(--pri);text-decoration:underline;cursor:pointer}
 .footrow{display:flex;gap:8px}.footrow .btn.ghost{flex:0 0 auto;width:auto;padding:0 18px}.footrow .btn:not(.ghost){flex:1}
@@ -1634,7 +1631,7 @@ function finishCook(){const {rid,rows}=S.left;
 const chip=(t,on,fn)=>`<span class="chip ${on?"on":""}" onclick="${fn}">${t}</span>`;
 // 준비 중 화면 로고: 심볼 + 김 세 줄 + 손글씨 로고
 const brandLoad=()=>`<div class="brandload"><svg class="steam" width="40" height="22" viewBox="0 0 40 22" aria-hidden="true"><g stroke="var(--sage)" stroke-width="2.4" stroke-linecap="round" fill="none"><path d="M12 19c-3-4 3-6 0-10"/><path d="M20 17c-3-4 3-6 0-11"/><path d="M28 19c-3-4 3-6 0-10"/></g></svg>${symbol(78)}<span class="word">살림밥상</span></div>`;
-const overlays=()=>`${S.sheet==="meal"&&S.mf?mealSheet():""}${S.sheet==="pay"&&S.pay?paySheet():""}${S.sheet==="droptrip"?dropTripSheet():""}${S.sheet==="recap"&&S.rc?recapSheet():""}${reactLayer()}${S.sheet==="onblogout"&&A.user?onbLogoutSheet():""}${S.sheet==="delacct"?delAcctSheet():""}${S.sheet==="wipe"?wipeSheet():""}${S.sheet==="manual"?manualSheet():""}${S.sheet==="agree"?agreeModal():""}${S.sheet==="seas"?seasSheet():""}${S.left?leftSheet():S.openR?recipeSheet():""}`;
+const overlays=()=>`${S.sheet==="meal"&&S.mf?mealSheet():""}${S.sheet==="pay"&&S.pay?paySheet():""}${S.sheet==="droptrip"?dropTripSheet():""}${reactLayer()}${S.sheet==="onblogout"&&A.user?onbLogoutSheet():""}${S.sheet==="delacct"?delAcctSheet():""}${S.sheet==="wipe"?wipeSheet():""}${S.sheet==="manual"?manualSheet():""}${S.sheet==="agree"?agreeModal():""}${S.sheet==="seas"?seasSheet():""}${S.left?leftSheet():S.openR?recipeSheet():""}`;
 
 // 온보딩·초기정보 수정 화면 뼈대: 위에 [← + 진행 막대], 아래에 고정 버튼
 function shell(body,foot){const edit=S.view==="edit";
@@ -1989,29 +1986,7 @@ ${c.length?`<div class="list">${c.map(ckRow).join("")}</div>`:`<p class="m" styl
 const shopFoot=()=>{const t=trip();if(!t||tripStep().k!==3)return null;const got=gotItems();
  return `<button class="btn" ${got.length?"":"disabled"} onclick="openPay('trip')">${got.length?`장보기 마치고 결제액 적기 <span class="btn-sub">${got.length}개 · ${won(gotTotal())}</span>`:"산 재료를 체크해 주세요"}</button>`;};
 function startTrip(){if(trip()&&(draft()||plan()||cart().length)){S.sheet="droptrip";return render();}
- const rt=recapTrip();if(rt&&S.sheet!=="recap"){openRecap(rt);return;}   // 새 장보기 전에 지난 장보기를 한 번 돌아봐요
  if(trip())dropTrip();Object.assign(S,{tm:P().meals||5,picked:[],wish:"",noWish:false,planEdit:false});goTab("pick","wish");}
-// 지난 장보기 돌아보기 — 끼니를 따로 입력받지 않는 대신, 새 장보기를 시작할 때 한 번:
-// 지난번 메뉴 중 해 먹은 것 체크(이미 [해먹었어요]를 누른 건 체크된 채로) + 그 사이 배달·외식 횟수
-const recapTrip=()=>{const t=pastTrips()[0];return t&&!t.recap&&(t.recipes||[]).length?t:null;};
-const wasCooked=id=>{const r=DB.recipes.find(x=>x.id===id);return !!(r&&r.cooked)||DB.recipes.some(x=>x.cooked&&x.from===id);};
-function openRecap(t){S.rc={id:t.id,ck:Object.fromEntries(t.recipes.map(id=>[id,wasCooked(id)])),out:0};S.sheet="recap";render();}
-function rcToggle(id){if(wasCooked(id))return;S.rc.ck[id]=!S.rc.ck[id];render();}
-function rcOut(d){S.rc.out=Math.max(0,Math.min(30,S.rc.out+d));render();}
-function saveRecap(skip){const t=(DB.trips||[]).find(x=>x.id===S.rc.id);if(!t){S.sheet=null;S.rc=null;return startTrip();}
- const before=homeCount();
- if(!skip)t.recipes.forEach(id=>{if(!S.rc.ck[id]||wasCooked(id))return;const r=DB.recipes.find(x=>x.id===id);
-  if(r)Object.assign(r,{cooked:true,cookedAt:Date.now(),cookedWeek:NOW_WK});else{const f=findR(id);if(f)DB.recipes.push({...f,id:uid(),from:id,at:Date.now(),week:NOW_WK,cooked:true,cookedAt:Date.now(),cookedWeek:NOW_WK});}});
- t.recap=skip?{at:Date.now(),skip:true}:{at:Date.now(),out:S.rc.out};S.rc=null;save();
- const n=homeCount();if(n>before){const up=stageOf(n)>stageOf(before);showReact(up?"grow":"home",up?`집밥 ${n}끼 달성!`:`집밥 ${n}번째!`,up?"밥풀이가 한 뼘 자랐어요":"잘 해 먹었어요");}
- S.sheet=null;startTrip();}
-function recapSheet(){const rc=S.rc,t=rc&&(DB.trips||[]).find(x=>x.id===rc.id);if(!t)return "";
- return `<div class="modal-bg"><div class="modal"><div class="grab"></div>
-<h1 style="margin-top:0">지난 장보기 메뉴,<br>얼마나 해 먹었어요?</h1>
-<div class="list">${t.recipes.map(id=>{const r=findR(id),on=!!rc.ck[id],lock=wasCooked(id);return r?`<div class="li ckrow rc ${on?"on":""}" onclick="rcToggle('${id}')"><span class="ckb"><span class="cb">${on?ic("check"):""}</span></span><div class="tx"><b>${esc(r.title)}</b></div>${lock?`<span class="m">해먹음</span>`:""}</div>`:"";}).join("")}</div>
-<div class="rcout"><span>그 사이 배달·외식</span><div class="stepper"><button onclick="rcOut(-1)" aria-label="줄이기">−</button><b>${rc.out}번</b><button onclick="rcOut(1)" aria-label="늘리기">+</button></div></div>
-<button class="btn" style="margin-top:18px" onclick="saveRecap()">새 장보기 시작</button>
-<button class="link" onclick="saveRecap(true)">건너뛰기</button></div></div>`;}
 function continueTrip(){const t=trip();if(!t)return startTrip();Object.assign(S,{tm:t.meals,picked:[...(t.picked||[])]});const {k,R}=tripStep();
  if(k===3)return setHtab("shop");goTab("pick",R[k].k==="wish"?"wish":R[k].k);}
 function shopTab(){const t=trip(),done=pastTrips().slice(0,5);
@@ -2280,9 +2255,6 @@ function historyPage(){const now=new Date(),n=homeCount(),nx=nextStage(n),st=sta
  page(`<h1 style="margin-top:18px">기록</h1>
 <section class="card mealtop">${bapImg(st>=STAGES.length?"grow":"hero","bmini")}<div><b>누적 집밥 ${n}끼</b><span class="m">${nx?`다음 성장까지 ${nx-n}끼`:"최고 단계예요"}</span>
 <div class="meter"><i style="width:${nx?Math.round((n-(STAGES[st-1]||0))/(nx-(STAGES[st-1]||0))*100):100}%"></i></div></div></section>
-${(()=>{const ym=NOW_YM,hm=cookedList().filter(r=>ymOf(r.cookedAt)===ym).length+mealList().filter(m=>m.type==="home"&&m.date.slice(0,7)===ym).length,
-  om=(DB.trips||[]).filter(t=>t.recap&&ymOf(t.recap.at)===ym).reduce((a,t)=>a+(+t.recap.out||0),0)+mealList().filter(m=>m.type!=="home"&&m.date.slice(0,7)===ym).length;
-  return `<p class="mcount">${ymLabel(ym)} 집밥 <b>${hm}</b> · 배달·외식 <b>${om}</b></p>`;})()}
 ${(()=>{const ck=cookedList().slice(0,10);return ck.length?`<p class="sec">해먹은 메뉴</p><div class="list">${ck.map(r=>`<div class="li" onclick="openRecipe('${r.id}')"><div class="em">${recipeIc(r)}</div><div class="tx"><b>${esc(r.title)}</b></div><span class="m">${new Date(r.cookedAt).getMonth()+1}/${new Date(r.cookedAt).getDate()}</span></div>`).join("")}</div>`
  :`<p class="m" style="margin:14px 2px">레시피에서 [해먹었어요]를 누르면 여기에 쌓여요</p>`;})()}
 ${us?`<section class="card usecard" style="margin-top:22px">
