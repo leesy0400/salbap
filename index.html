@@ -532,16 +532,12 @@ input[type=range]:focus-visible{outline:2px solid var(--pri);outline-offset:6px}
 .mnav{display:flex;align-items:center;justify-content:center;gap:18px;margin:14px 0 4px}.mnav b{font-size:17px;min-width:90px;text-align:center}
 .mnav button{width:36px;height:36px;border-radius:50%;border:1.5px solid var(--l);background:var(--card);display:grid;place-items:center;cursor:pointer;color:var(--t)}
 .mnav button:disabled{opacity:.35;cursor:default}
-.bud2 .big{font-size:30px;margin:10px 0 2px}
-.savecard{display:block;width:100%}.savenone{margin:6px 0 0;font-weight:700;color:var(--t)}
-.savez{text-align:left}.savez small{display:block;font-size:13.5px;font-weight:600;color:var(--m)}
-.savebig{display:flex;align-items:baseline;gap:6px;margin:4px 0 12px}.savebig b{font-size:30px;font-weight:800;letter-spacing:-.03em;color:var(--prd);line-height:1.2}.savebig span{font-size:16px;font-weight:700;color:var(--prd)}
-.savez.flat .savebig b,.savez.flat .savebig span{color:var(--t)}
-.svbars{display:flex;flex-direction:column;gap:8px}.svbar{display:grid;grid-template-columns:64px 1fr auto;align-items:center;gap:10px;font-size:13px}
-.svbar span{color:var(--m);font-weight:600}.svbar b{font-weight:700;color:var(--m);font-variant-numeric:tabular-nums}
-.svbar i{display:block;height:12px;border-radius:6px;background:transparent;overflow:hidden}.svbar i em{display:block;height:100%;border-radius:6px;background:#d9cfbf}
-.svbar.me span,.svbar.me b{color:var(--prd)}.svbar.me i em{background:var(--pri)}
-.donecard .savez{margin:16px 0 18px}.donecard .savez b{display:inline;gap:0}.donecard .svbar b{font-size:13px}.donecard .savebig b{font-size:30px}
+.bud3{text-align:center;padding:8px 2px 4px}.bud3 small{display:block;font-size:13.5px;font-weight:600;color:var(--m)}
+.bud3 .bbig{display:block;font-size:34px;font-weight:800;letter-spacing:-.03em;color:var(--prd);line-height:1.25;margin-top:2px}.bud3.over .bbig{color:var(--r)}.bud3 .bbig.none{color:var(--m);font-size:24px}
+.bud3 .meter{margin-top:12px}.bsub{display:flex;justify-content:space-between;align-items:center;margin-top:8px;font-size:13.5px;color:var(--m)}
+.bsave{display:flex;align-items:center;gap:12px;margin-top:18px;padding:14px 2px 0;border-top:1px solid var(--l)}
+.bsave .bap.bsv{width:60px;height:auto;flex:none}.bsave small{display:block;font-size:12.5px;font-weight:600;color:var(--prd);opacity:.8}.bsave b{display:block;font-size:20px;font-weight:800;color:var(--prd);letter-spacing:-.02em}
+.bsave.flat small,.bsave.flat b{color:var(--t)}
 /* 기록 탭 */
 .mealtop{display:flex;align-items:center;gap:14px}.mealtop>div{flex:1;display:flex;flex-direction:column;gap:3px}.mealtop b{font-size:17px}.mealtop .m{font-size:13px}
 .checkrow{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;margin-top:14px;font-size:14px;font-weight:700;cursor:pointer}
@@ -1056,12 +1052,6 @@ const stageOf=n=>STAGES.filter(v=>n>=v).length, nextStage=n=>STAGES.find(v=>v>n)
 const DELIV_MEAL=14000;
 function saveCalc(list){const meals=list.reduce((a,t)=>a+(+t.meals||0),0),paid=list.reduce((a,t)=>a+(+t.paid||0),0),deliv=meals*DELIV_MEAL;return{n:list.length,meals,paid,deliv,total:deliv-paid};}
 const savingsOf=(ym=NOW_YM)=>saveCalc((DB.trips||[]).filter(t=>!t.manual&&t.paid!=null&&+t.meals>0&&ymOf(t.paidAt||t.at)===ym));
-// 배달 대비 그림 — 큰 숫자 + 배달이었다면 / 장보기 막대 두 개
-function saveViz(sv,lead){const w=sv.deliv?Math.max(4,Math.round(sv.paid/sv.deliv*100)):0,ok=sv.total>0;
- return `<div class="savez ${ok?"":"flat"}"><small>${ok?lead:"배달보다"}</small>
-<div class="savebig">${ok?`<b>${won(sv.total)}</b><span>아꼈어요</span>`:sv.total?`<b>${won(-sv.total)}</b><span>더 썼어요</span>`:`<b>똑같이</b><span>썼어요</span>`}</div>
-<div class="svbars"><div class="svbar"><span>배달 ${sv.meals}끼</span><i><em style="width:100%"></em></i><b>${won(sv.deliv)}</b></div>
-<div class="svbar me"><span>장보기</span><i><em style="width:${Math.min(100,w)}%"></em></i><b>${won(sv.paid)}</b></div></div></div>`;}
 const bapImg=(k,cls="")=>`<img class="bap ${cls}" src="img/bapuri-${k}.webp" alt="밥풀이" draggable="false">`;
 
 /* 식재료·가격 */
@@ -2005,10 +1995,8 @@ ${ct?`<p class="m" style="margin:6px 0 0">예상 장보기 금액 ${won(ct)}</p>
 <ol class="tsteps">${R.map((x,i)=>`<li class="${x.done?"done":i===k?"now":""}"></li>`).join("")}</ol>
 <button class="btn" style="margin-top:16px" onclick="continueTrip()">이어서 하기 ${ic("right")}</button>
 <button class="link" onclick="startTrip()">새로 시작하기</button></section>`;}
- else if(S.recorded){const last=(DB.trips||[]).filter(x=>!x.manual&&x.paid!=null).slice(-1)[0],sv=last&&+last.meals>0?saveCalc([last]):null;
-  cur=`<section class="card donecard"><b>${ic("check")} 장보기를 마쳤어요</b>
-${sv&&sv.total>0?saveViz(sv,"배달 대신 집밥으로"):`<p class="m">남은 예산 ${won(leftMonth())}</p>`}
-<button class="btn" onclick="setHtab('rec')">레시피 보기 ${ic("right")}</button><button class="link" onclick="startTrip()">새 장보기 시작</button></section>`;}
+ else if(S.recorded)cur=`<section class="card donecard"><b>${ic("check")} 장보기를 마쳤어요</b><p class="m">${S.recorded>0?`산 재료 ${S.recorded}개가 냉장고에 들어갔어요. `:""}결제액 ${won(S.paidJust||0)}을 ${ymLabel(NOW_YM)} 장보기 예산에 반영했어요. 남은 예산은 ${won(leftMonth())}이에요.</p>
+<button class="btn" onclick="setHtab('rec')">레시피 보기 ${ic("right")}</button><button class="link" onclick="startTrip()">새 장보기 시작</button></section>`;
  else cur=`<section class="card tripcard empty">${bapImg("tofu","bmini")}<b class="ttl2">새 장보기를 시작해 볼까요?</b>
 <p class="m">몇 끼를 해 먹을지 정하면, 냉장고 재료를 먼저 쓰는 메뉴 조합과 장볼 목록을 만들어 드려요.</p>
 <button class="btn" style="margin-top:16px" onclick="startTrip()">${ic("plus")} 새 장보기 시작</button></section>`;
@@ -2019,17 +2007,17 @@ const tripRow=x=>`<div class="li triprow" onclick="openPastTrip('${x.id}')"><div
 // 예산 — 고른 달의 장보기 예산 · 남은 금액 · 예상 절약액 · 결제 내역
 function budgetTab(){const ym=S.bym||NOW_YM,mb=monthBudget(ym),sp=spentMonth(ym),left=mb-sp,pays=payments(ym),sv=savingsOf(ym),cur=ym===NOW_YM;
  return `<div class="mnav"><button onclick="S.bym=ymAdd('${ym}',-1);S.editB=false;keep()" aria-label="이전 달">${ic("back")}</button><b>${ymLabel(ym)}</b><button onclick="S.bym=ymAdd('${ym}',1);S.editB=false;keep()" ${cur?"disabled":""} aria-label="다음 달">${ic("right")}</button></div>
-<section class="card bud2">
- <div class="row"><span class="m">장보기 예산 ${mb?won(mb):"없음"}</span><button class="tlink" onclick="S.editB=!S.editB;keep()">${S.editB?"닫기":mb?"예산 수정":"월 예산 설정하기"}</button></div>
- ${S.editB?`<div class="row" style="gap:6px;margin-top:10px;justify-content:flex-start"><input id="bIn" class="priceIn" style="width:140px" inputmode="numeric" value="${mb?mb.toLocaleString():""}" placeholder="예: 300,000"><span class="chip on" onclick="saveMonthBudget('${ym}')">저장</span></div><p class="m" style="font-size:12.5px;margin:6px 2px 0">${ymLabel(ym)} 예산만 바꿔요. 다른 달의 기본 예산은 내 정보에서 바꿀 수 있어요.</p>`:""}
- ${mb?`<div class="big ${left<0?"up":""}">${left<0?`${won(-left)} 초과`:`${won(left)} 남음`}</div>
+<section class="bud3 ${mb&&left<0?"over":""}">
+ ${mb?`<small>남은 장보기 예산</small><b class="bbig">${left<0?`${won(-left)} 초과`:won(left)}</b>
  <div class="meter ${left<0?"over":""}"><i style="width:${Math.min(100,sp/mb*100)}%"></i></div>
- <p class="m" style="margin:10px 0 0">장보기 결제 ${pays.length}건 · ${won(sp)} 썼어요</p>`:`<p class="m" style="margin:12px 0 0">월 예산을 정하면 남은 금액을 보여드려요.</p>`}
+ <div class="bsub"><span>${won(mb)} 중 ${won(sp)} 썼어요</span><button class="tlink" onclick="S.editB=!S.editB;keep()">${S.editB?"닫기":"예산 수정"}</button></div>`
+ :`<small>장보기 예산</small><b class="bbig none">아직 없어요</b><button class="btn" style="margin-top:12px" onclick="S.editB=true;keep()">월 예산 정하기</button>`}
+ ${S.editB?`<div class="row" style="gap:6px;margin-top:10px;justify-content:flex-start"><input id="bIn" class="priceIn" style="width:140px" inputmode="numeric" value="${mb?mb.toLocaleString():""}" placeholder="예: 300,000"><span class="chip on" onclick="saveMonthBudget('${ym}')">저장</span></div>`:""}
 </section>
-<section class="card savecard">${sv.n?saveViz(sv,`${ymLabel(ym)} 배달 대신 집밥으로`):`<small class="m">배달 대신 집밥으로</small><p class="savenone">장보기를 마치면 배달보다 얼마 아꼈는지 보여드려요</p>`}</section>
-<div class="row" style="margin:24px 2px 8px"><b class="sec" style="margin:0">결제 내역</b><button class="tlink" onclick="openPay('new')">${ic("plus")} 직접 기록</button></div>
-${pays.length?`<div class="list">${pays.map(x=>`<div class="li" ${x.kind==="legacy"?'style="cursor:default"':`onclick="openPay('edit','${x.id}')"`}><div class="em">${ic(x.kind==="manual"?"wallet":"basket")}</div><div class="tx"><b>${esc(x.label)}</b><span class="m">${new Date(x.at).getMonth()+1}월 ${new Date(x.at).getDate()}일${x.kind==="legacy"?" · 예전 방식(품목별 가격) 기록":""}</span></div><div class="pr">${won(x.amount)}</div></div>`).join("")}</div>`
- :`<p class="m" style="margin:4px 2px">${ymLabel(ym)}에 기록한 결제가 없어요. 장보기를 마칠 때 실제 결제액을 적으면 여기에 쌓여요.</p>`}`;}
+${sv.n?`<section class="bsave ${sv.total>0?"":"flat"}">${bapImg(sv.total>0?"grow":"home","bsv")}<div><small>배달 대신 집밥 ${sv.meals}끼</small><b>${sv.total>0?`${won(sv.total)} 아꼈어요`:`배달보다 ${won(-sv.total)} 더 썼어요`}</b></div></section>`:""}
+<div class="row" style="margin:22px 2px 6px"><b class="sec" style="margin:0">결제 내역</b><button class="tlink" onclick="openPay('new')">${ic("plus")} 직접 기록</button></div>
+${pays.length?`<div class="list">${pays.map(x=>`<div class="li" ${x.kind==="legacy"?'style="cursor:default"':`onclick="openPay('edit','${x.id}')"`}><div class="em">${ic(x.kind==="manual"?"wallet":"basket")}</div><div class="tx"><b>${esc(x.kind==="trip"?x.label:`${new Date(x.at).getMonth()+1}월 ${new Date(x.at).getDate()}일 ${x.label}`)}</b></div><div class="pr">${won(x.amount)}</div></div>`).join("")}</div>`
+ :`<p class="m" style="margin:4px 2px">아직 결제 기록이 없어요</p>`}`;}
 function saveMonthBudget(ym){const v=+String($("#bIn").value).replace(/[^0-9]/g,"");DB.months=DB.months||{};
  if(v>0)DB.months[ym]={budget:v};else delete DB.months[ym];if(!DB.profile.monthly&&v>0)DB.profile.monthly=v;S.editB=false;save();toast("예산을 저장했어요");keep();}
 
