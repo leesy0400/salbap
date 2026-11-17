@@ -533,7 +533,15 @@ input[type=range]:focus-visible{outline:2px solid var(--pri);outline-offset:6px}
 .mnav button{width:36px;height:36px;border-radius:50%;border:1.5px solid var(--l);background:var(--card);display:grid;place-items:center;cursor:pointer;color:var(--t)}
 .mnav button:disabled{opacity:.35;cursor:default}
 .bud2 .big{font-size:30px;margin:10px 0 2px}
-.savecard{display:block;width:100%;text-align:left;font:inherit;color:var(--t);cursor:pointer}.savecard .big{font-size:26px;margin:6px 0 0}
+.savecard{display:block;width:100%}.savenone{margin:6px 0 0;font-weight:700;color:var(--t)}
+.savez{text-align:left}.savez small{display:block;font-size:13.5px;font-weight:600;color:var(--m)}
+.savebig{display:flex;align-items:baseline;gap:6px;margin:4px 0 12px}.savebig b{font-size:30px;font-weight:800;letter-spacing:-.03em;color:var(--prd);line-height:1.2}.savebig span{font-size:16px;font-weight:700;color:var(--prd)}
+.savez.flat .savebig b,.savez.flat .savebig span{color:var(--t)}
+.svbars{display:flex;flex-direction:column;gap:8px}.svbar{display:grid;grid-template-columns:64px 1fr auto;align-items:center;gap:10px;font-size:13px}
+.svbar span{color:var(--m);font-weight:600}.svbar b{font-weight:700;color:var(--m);font-variant-numeric:tabular-nums}
+.svbar i{display:block;height:12px;border-radius:6px;background:transparent;overflow:hidden}.svbar i em{display:block;height:100%;border-radius:6px;background:#d9cfbf}
+.svbar.me span,.svbar.me b{color:var(--prd)}.svbar.me i em{background:var(--pri)}
+.donecard .savez{margin:16px 0 18px}.donecard .savez b{display:inline;gap:0}.donecard .svbar b{font-size:13px}.donecard .savebig b{font-size:30px}
 /* 기록 탭 */
 .mealtop{display:flex;align-items:center;gap:14px}.mealtop>div{flex:1;display:flex;flex-direction:column;gap:3px}.mealtop b{font-size:17px}.mealtop .m{font-size:13px}
 .checkrow{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;margin-top:14px;font-size:14px;font-weight:700;cursor:pointer}
@@ -1042,10 +1050,18 @@ const nowSlot=()=>{const h=new Date().getHours();return h<10?"b":h<15?"l":h<21?"
 // 밥풀이 성장 단계 — 집밥 누적 횟수 기준 (단계별 끼니 수는 기획에서 추후 확정, 지금은 임시 값)
 const STAGES=[5,15,30];
 const stageOf=n=>STAGES.filter(v=>n>=v).length, nextStage=n=>STAGES.find(v=>v>n)||null;
-// 배달 대비 예상 절약액 — '배달 대신 해 먹었어요'를 고르고 재료비를 적은 집밥만, (평소 배달 한 끼 − 그 집밥 재료비)
-const delivCost=()=>+(DB.profile&&DB.profile.delivCost)||0;
-function savingsOf(ym=NOW_YM){const dc=delivCost(),list=mealList().filter(m=>m.type==="home"&&m.inst&&+m.cost>0&&m.date.slice(0,7)===ym).sort((a,b)=>a.date<b.date?1:-1);
- return{dc,list,n:list.length,total:dc?list.reduce((a,m)=>a+Math.max(0,dc-m.cost),0):0};}
+// 배달 대비 아낀 돈 — 마친 장보기마다 (끼니 수 × 배달 한 끼 고정값) − 실제 결제액
+// 고정값 근거: 소비자공익네트워크, 2024년 하반기 배달앱 입점 업주 502명 조사 — 평균 최소주문금액 약 1만 4천 원
+// (배민 14,079 · 쿠팡이츠 14,404 · 요기요 14,724 · 공공배달앱 13,589원). 배달비는 빼고 잡은 값이라 실제보다 적게 나와요.
+const DELIV_MEAL=14000;
+function saveCalc(list){const meals=list.reduce((a,t)=>a+(+t.meals||0),0),paid=list.reduce((a,t)=>a+(+t.paid||0),0),deliv=meals*DELIV_MEAL;return{n:list.length,meals,paid,deliv,total:deliv-paid};}
+const savingsOf=(ym=NOW_YM)=>saveCalc((DB.trips||[]).filter(t=>!t.manual&&t.paid!=null&&+t.meals>0&&ymOf(t.paidAt||t.at)===ym));
+// 배달 대비 그림 — 큰 숫자 + 배달이었다면 / 장보기 막대 두 개
+function saveViz(sv,lead){const w=sv.deliv?Math.max(4,Math.round(sv.paid/sv.deliv*100)):0,ok=sv.total>0;
+ return `<div class="savez ${ok?"":"flat"}"><small>${ok?lead:"배달보다"}</small>
+<div class="savebig">${ok?`<b>${won(sv.total)}</b><span>아꼈어요</span>`:sv.total?`<b>${won(-sv.total)}</b><span>더 썼어요</span>`:`<b>똑같이</b><span>썼어요</span>`}</div>
+<div class="svbars"><div class="svbar"><span>배달 ${sv.meals}끼</span><i><em style="width:100%"></em></i><b>${won(sv.deliv)}</b></div>
+<div class="svbar me"><span>장보기</span><i><em style="width:${Math.min(100,w)}%"></em></i><b>${won(sv.paid)}</b></div></div></div>`;}
 const bapImg=(k,cls="")=>`<img class="bap ${cls}" src="img/bapuri-${k}.webp" alt="밥풀이" draggable="false">`;
 
 /* 식재료·가격 */
@@ -1619,7 +1635,7 @@ function finishCook(){const {rid,rows}=S.left;
 const chip=(t,on,fn)=>`<span class="chip ${on?"on":""}" onclick="${fn}">${t}</span>`;
 // 준비 중 화면 로고: 심볼 + 김 세 줄 + 손글씨 로고
 const brandLoad=()=>`<div class="brandload"><svg class="steam" width="40" height="22" viewBox="0 0 40 22" aria-hidden="true"><g stroke="var(--sage)" stroke-width="2.4" stroke-linecap="round" fill="none"><path d="M12 19c-3-4 3-6 0-10"/><path d="M20 17c-3-4 3-6 0-11"/><path d="M28 19c-3-4 3-6 0-10"/></g></svg>${symbol(78)}<span class="word">살림밥상</span></div>`;
-const overlays=()=>`${S.sheet==="meal"&&S.mf?mealSheet():""}${S.sheet==="pay"&&S.pay?paySheet():""}${S.sheet==="save"?saveSheet():""}${S.sheet==="droptrip"?dropTripSheet():""}${reactLayer()}${S.sheet==="onblogout"&&A.user?onbLogoutSheet():""}${S.sheet==="delacct"?delAcctSheet():""}${S.sheet==="wipe"?wipeSheet():""}${S.sheet==="manual"?manualSheet():""}${S.sheet==="agree"?agreeModal():""}${S.sheet==="seas"?seasSheet():""}${S.left?leftSheet():S.openR?recipeSheet():""}`;
+const overlays=()=>`${S.sheet==="meal"&&S.mf?mealSheet():""}${S.sheet==="pay"&&S.pay?paySheet():""}${S.sheet==="droptrip"?dropTripSheet():""}${reactLayer()}${S.sheet==="onblogout"&&A.user?onbLogoutSheet():""}${S.sheet==="delacct"?delAcctSheet():""}${S.sheet==="wipe"?wipeSheet():""}${S.sheet==="manual"?manualSheet():""}${S.sheet==="agree"?agreeModal():""}${S.sheet==="seas"?seasSheet():""}${S.left?leftSheet():S.openR?recipeSheet():""}`;
 
 // 온보딩·초기정보 수정 화면 뼈대: 위에 [← + 진행 막대], 아래에 고정 버튼
 function shell(body,foot){const edit=S.view==="edit";
@@ -1989,8 +2005,10 @@ ${ct?`<p class="m" style="margin:6px 0 0">예상 장보기 금액 ${won(ct)}</p>
 <ol class="tsteps">${R.map((x,i)=>`<li class="${x.done?"done":i===k?"now":""}"></li>`).join("")}</ol>
 <button class="btn" style="margin-top:16px" onclick="continueTrip()">이어서 하기 ${ic("right")}</button>
 <button class="link" onclick="startTrip()">새로 시작하기</button></section>`;}
- else if(S.recorded)cur=`<section class="card donecard"><b>${ic("check")} 장보기를 마쳤어요</b><p class="m">${S.recorded>0?`산 재료 ${S.recorded}개가 냉장고에 들어갔어요. `:""}결제액 ${won(S.paidJust||0)}을 ${ymLabel(NOW_YM)} 장보기 예산에 반영했어요. 남은 예산은 ${won(leftMonth())}이에요.</p>
-<button class="btn" onclick="setHtab('rec')">레시피 보기 ${ic("right")}</button><button class="link" onclick="startTrip()">새 장보기 시작</button></section>`;
+ else if(S.recorded){const last=(DB.trips||[]).filter(x=>!x.manual&&x.paid!=null).slice(-1)[0],sv=last&&+last.meals>0?saveCalc([last]):null;
+  cur=`<section class="card donecard"><b>${ic("check")} 장보기를 마쳤어요</b>
+${sv&&sv.total>0?saveViz(sv,"배달 대신 집밥으로"):`<p class="m">남은 예산 ${won(leftMonth())}</p>`}
+<button class="btn" onclick="setHtab('rec')">레시피 보기 ${ic("right")}</button><button class="link" onclick="startTrip()">새 장보기 시작</button></section>`;}
  else cur=`<section class="card tripcard empty">${bapImg("tofu","bmini")}<b class="ttl2">새 장보기를 시작해 볼까요?</b>
 <p class="m">몇 끼를 해 먹을지 정하면, 냉장고 재료를 먼저 쓰는 메뉴 조합과 장볼 목록을 만들어 드려요.</p>
 <button class="btn" style="margin-top:16px" onclick="startTrip()">${ic("plus")} 새 장보기 시작</button></section>`;
@@ -2008,11 +2026,7 @@ function budgetTab(){const ym=S.bym||NOW_YM,mb=monthBudget(ym),sp=spentMonth(ym)
  <div class="meter ${left<0?"over":""}"><i style="width:${Math.min(100,sp/mb*100)}%"></i></div>
  <p class="m" style="margin:10px 0 0">장보기 결제 ${pays.length}건 · ${won(sp)} 썼어요</p>`:`<p class="m" style="margin:12px 0 0">월 예산을 정하면 남은 금액을 보여드려요.</p>`}
 </section>
-<button class="card savecard" onclick="S.sheet='save';render()">
- <div class="row"><span class="m">배달 대비 예상 절약액</span>${ic("right")}</div>
- ${sv.n&&sv.dc?`<div class="big dn">${won(sv.total)}</div><p class="m" style="margin:6px 0 0">배달 대신 해 먹은 ${sv.n}끼를 평소 배달 한 끼 ${won(sv.dc)}과 비교했어요</p>`
-  :`<b class="ttl2" style="display:block;margin-top:6px">배달 비용과 비교해 보기</b><p class="m" style="margin:6px 0 0">${sv.dc?"기록에서 집밥을 적을 때 재료비를 넣고 '배달 대신 해 먹었어요'를 고르면 계산돼요":"평소 배달 한 끼 비용을 정하면 집밥으로 아낀 돈을 계산해요"}</p>`}
-</button>
+<section class="card savecard">${sv.n?saveViz(sv,`${ymLabel(ym)} 배달 대신 집밥으로`):`<small class="m">배달 대신 집밥으로</small><p class="savenone">장보기를 마치면 배달보다 얼마 아꼈는지 보여드려요</p>`}</section>
 <div class="row" style="margin:24px 2px 8px"><b class="sec" style="margin:0">결제 내역</b><button class="tlink" onclick="openPay('new')">${ic("plus")} 직접 기록</button></div>
 ${pays.length?`<div class="list">${pays.map(x=>`<div class="li" ${x.kind==="legacy"?'style="cursor:default"':`onclick="openPay('edit','${x.id}')"`}><div class="em">${ic(x.kind==="manual"?"wallet":"basket")}</div><div class="tx"><b>${esc(x.label)}</b><span class="m">${new Date(x.at).getMonth()+1}월 ${new Date(x.at).getDate()}일${x.kind==="legacy"?" · 예전 방식(품목별 가격) 기록":""}</span></div><div class="pr">${won(x.amount)}</div></div>`).join("")}</div>`
  :`<p class="m" style="margin:4px 2px">${ymLabel(ym)}에 기록한 결제가 없어요. 장보기를 마칠 때 실제 결제액을 적으면 여기에 쌓여요.</p>`}`;}
@@ -2252,7 +2266,7 @@ function historyPage(){const now=new Date(),n=homeCount(),nx=nextStage(n),st=sta
 <div class="meter"><i style="width:${nx?Math.round((n-(STAGES[st-1]||0))/(nx-(STAGES[st-1]||0))*100):100}%"></i></div></div></section>
 <button class="btn" style="margin:6px 0 4px" onclick="openMeal()">${ic("plus")} 끼니 기록</button>
 ${days.length?days.map(d=>`<p class="sec">${dayTxt(d)}</p><div class="list">${SLOTS.map(([k])=>mealList().find(m=>m.date===d&&m.slot===k)).filter(Boolean).map(m=>`<div class="li" onclick="openMeal('${m.date}','${m.slot}')"><div class="em">${m.type==="home"?"🍚":m.type==="deliv"?"🛵":"🍽️"}</div>
-<div class="tx"><b>${slotName(m.slot)} · ${esc(m.menu||typeName(m.type))}</b><span class="m">${typeName(m.type)}${+m.cost?` · ${won(m.cost)}`:""}${m.inst?" · 배달 대신 해 먹음":""}</span></div>${ic("right")}</div>`).join("")}</div>`).join("")
+<div class="tx"><b>${slotName(m.slot)} · ${esc(m.menu||typeName(m.type))}</b><span class="m">${typeName(m.type)}${+m.cost?` · ${won(m.cost)}`:""}</span></div>${ic("right")}</div>`).join("")}</div>`).join("")
  :`<p class="m" style="margin:14px 2px">아직 적은 끼니가 없어요. 오늘 먹은 끼니부터 적어 볼까요?</p>`}
 ${us?`<section class="card usecard" style="margin-top:22px">
  <div class="row"><h3>남김없이 다 쓰기</h3><span class="m">${wkLabel(uk)}에 산 재료 ${us.n}개</span></div>
@@ -2290,7 +2304,6 @@ ${f.id?`<p class="sub">이 날짜·끼니에 적은 기록이 있어서 그 기�
 <label class="fl">메뉴 (선택)<input id="mfMenu" class="field" maxlength="30" value="${esc(f.menu||"")}" placeholder="${home1?"예: 김치찌개":"예: 치킨"}"></label>
 ${recent.length&&home1?`<div class="chips" style="margin-top:8px">${recent.map(t=>`<span class="chip" style="padding:6px 12px;font-size:13px" onclick="setMf('menu','${q(t)}')">${esc(t)}</span>`).join("")}</div>`:""}
 <label class="fl" style="margin-top:14px">${home1?"이 끼니에 쓴 재료비":"쓴 돈"} (선택)<span class="won"><input id="mfCost" class="field" inputmode="numeric" value="${f.cost?(+f.cost).toLocaleString():""}" placeholder="0"><em>원</em></span></label>
-${home1?`<label class="checkrow"><input id="mfInst" type="checkbox" ${f.inst?"checked":""}> 배달 대신 해 먹었어요 <span class="m">재료비를 적으면 배달 비용과 비교해요</span></label>`:""}
 <button class="btn" style="margin-top:20px" onclick="saveMeal()">저장하기</button>
 ${f.id?`<button class="link" style="color:var(--r)" onclick="delMeal('${f.id}')">이 기록 지우기</button>`:""}
 <button class="link" onclick="S.sheet=null;render()">닫기</button></div></div>`;}
@@ -2301,23 +2314,12 @@ function saveMeal(){mfSync();const f=S.mf;if(!/^\d{4}-\d{2}-\d{2}$/.test(f.date)
  if(rec.type==="home"&&n>before)showReact(up?"grow":"home",up?`집밥 ${n}끼 달성!`:`집밥 ${n}번째!`,up?"밥풀이가 한 뼘 자랐어요":"맛있게 먹었어요");
  else if(rec.type!=="home")showReact("empty",rec.type==="deliv"?"오늘은 배달이었군요":"오늘은 외식이었군요","다음 끼니는 집밥 어때요?");
  else{toast("기록을 고쳤어요");render();}
- if(rec.type==="home"&&rec.inst&&rec.cost&&!delivCost())setTimeout(()=>{S.sheet="save";render();},2300);}   // 처음 비교할 때 평소 배달비를 한 번 물어봐요
+}
 function delMeal(id){DB.meals=mealList().filter(m=>m.id!==id);S.sheet=null;S.mf=null;save();toast("기록을 지웠어요");render();}
 // 밥풀이 반응 — 저장 직후 크게 보여주고 2초 뒤 사라져요 (눌러도 닫혀요)
 let reactT=null;
 function showReact(img,title,sub){S.react={img,title,sub};render();clearTimeout(reactT);reactT=setTimeout(()=>{S.react=null;render();},2200);}
 const reactLayer=()=>S.react?`<div class="react" role="status" onclick="S.react=null;render()">${bapImg(S.react.img,"pop")}<b>${esc(S.react.title)}</b><small>${esc(S.react.sub)}</small></div>`:"";
-// 예상 절약액 근거 — 비교한 끼니와 계산식, 평소 배달비 설정
-function saveSheet(){const ym=S.bym||NOW_YM,sv=savingsOf(ym);
- return `<div class="modal-bg" onclick="if(event.target===this){S.sheet=null;render()}"><div class="modal"><div class="grab"></div>
-<h1 style="margin-top:0">배달 대비<br>예상 절약액</h1>
-<p class="sub">'배달 대신 해 먹었어요'를 고르고 재료비를 적은 집밥만 비교해요. 한 끼마다 <b>평소 배달 한 끼 비용 − 그 집밥 재료비</b>를 더해요.</p>
-<label class="fl">평소 배달 한 끼 비용<span class="row" style="gap:6px;justify-content:flex-start"><span class="won" style="flex:1"><input id="dcIn" class="field" inputmode="numeric" value="${sv.dc?sv.dc.toLocaleString():""}" placeholder="예: 18,000"><em>원</em></span><span class="chip on" onclick="saveDeliv()">저장</span></span></label>
-${sv.dc&&sv.n?`<p class="sec">${ymLabel(ym)} 비교한 끼니 ${sv.n}개 · 합계 ${won(sv.total)}</p><div class="list">${sv.list.map(m=>`<div class="li" style="cursor:default"><div class="em">🍚</div><div class="tx"><b>${esc(m.menu||"집밥")}</b><span class="m">${+m.date.slice(5,7)}월 ${+m.date.slice(8)}일 ${slotName(m.slot)} · ${won(sv.dc)} − ${won(m.cost)}</span></div><div class="pr dn">${won(Math.max(0,sv.dc-m.cost))}</div></div>`).join("")}</div>`
- :`<div class="note" style="margin-top:16px">${sv.dc?`${ymLabel(ym)}에 비교할 집밥이 아직 없어요. 기록 탭에서 집밥을 적을 때 재료비를 넣고 '배달 대신 해 먹었어요'를 골라 주세요.`:"평소 배달 한 끼 비용을 먼저 정해 주세요. 한 번 정하면 계속 써요."}</div>`}
-<p class="m" style="font-size:12.5px;margin:14px 2px 0">재료비를 적지 않은 끼니와 배달·외식 기록은 비교하지 않아요. 실제 아낀 돈이 아니라 예상치예요.</p>
-<button class="link" onclick="S.sheet=null;render()">닫기</button></div></div>`;}
-function saveDeliv(){const v=+String($("#dcIn").value).replace(/[^0-9]/g,"")||0;if(!DB.profile)return;DB.profile.delivCost=v||null;save();toast(v?"평소 배달비를 저장했어요":"평소 배달비를 지웠어요");render();}
 
 /* ============================================================
    ⑥-2 초기 정보 수정 — 항목별로 따로 고쳐요
