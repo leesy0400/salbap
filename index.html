@@ -588,6 +588,12 @@ main.tab .setrow .ibox{border-radius:50%}
 .own.on{border-color:var(--pri);color:var(--prd);background:var(--prs)}
 .pr.zero{color:#b8afa1}.li.have .tx b{color:var(--m)}
 .rlist{margin-top:2px}
+.cklist{padding-top:8px}.cklist .list{margin-top:8px}
+.ckrow{cursor:default}.ckb{border:0;background:none;padding:4px 2px;cursor:pointer;flex:none}
+.ckrow .cb{width:26px;height:26px;border-radius:8px;border:2px solid #cfc6b6;display:grid;place-items:center;background:var(--card);color:#fff}.ckrow .cb .i{font-size:16px;stroke-width:2.6}
+.ckrow.on .cb{background:var(--pri);border-color:var(--pri)}.ckrow.on .tx b{color:var(--m);text-decoration:line-through}
+.ckrow .tx{cursor:pointer}.ckp{display:inline-flex;align-items:center;gap:3px;flex:none}.ckp .priceIn{width:92px}.ckp em{font-style:normal;font-size:13px;color:var(--m)}
+.cklinks{display:flex;gap:8px}.cklinks .link{flex:1}
 .rsubs{display:flex;gap:6px;margin:6px 0 8px}.rsubs button{border:0;background:none;font:inherit;font-size:15px;font-weight:700;color:#b9b0a3;padding:6px 10px;border-radius:999px;cursor:pointer}
 .rsubs button.on{background:var(--prs);color:var(--prd)}.rsubs em{font-style:normal;font-size:12px;color:var(--pri);margin-left:2px}
 .triprow .tx b{font-size:16.5px;font-weight:800;letter-spacing:-.02em}
@@ -1015,7 +1021,7 @@ function dropTrip(){DB.trip=null;DB.draft=null;DB.cart={wk:NOW_WK,trip:null,item
 // 장보기 마치기 — 실제 결제액을 한 번만 기록해요 (월 예산은 이 금액만 빼요)
 function finishTrip(paid){const t=trip();if(!t)return;const pl=plan();
  Object.assign(t,{paid:Math.max(0,Math.round(+paid||0)),paidAt:Date.now(),label:`${t.meals}끼 장보기${pl&&pl.label?` · ${pl.label}`:""}`,
-  n:cart().length,menus:pl?pl.recipes.map(findR).filter(Boolean).map(r=>r.title):[],recipes:pl?pl.recipes.slice():[]});
+  n:cart().filter(x=>x.bought!==false).length,menus:pl?pl.recipes.map(findR).filter(Boolean).map(r=>r.title):[],recipes:pl?pl.recipes.slice():[]});
  DB.trips=[...(DB.trips||[]),t];DB.trip=null;}
 // 장보기 이름 — 마친 날짜 + 그날 몇 번째인지: "11월 17일 장보기 목록 (1)", 같은 날 또 하면 (2)
 function tripName(t){const at=t.paidAt||t.at,d=new Date(at),k=ymd(d);
@@ -1223,12 +1229,12 @@ function cartItemOf(key){
  if(key.startsWith("m:")){const n=key.slice(2);return{key,name:n,unit:"",price:0,kind:"manual",bought:true};}
  if(key.startsWith("p:")){const x=(DB.plan?.items||[]).find(i=>i.key===key);if(x)return{...x,bought:true};}
  return{key,name:key,unit:"",price:0,kind:"manual",bought:true};}
-function toggleCart(key){const c=cart(),i=c.findIndex(x=>x.key===key);if(i>=0)c.splice(i,1);else c.push(cartItemOf(key));save();keep();}
+function toggleCart(key){const c=cart(),i=c.findIndex(x=>x.key===key);if(i>=0)c.splice(i,1);else c.push({...cartItemOf(key),...(plan()?.ready&&key.startsWith("p:")?{bought:false}:{})});save();keep();}
 // 장볼 목록에서 '보유중' — 이미 집에 있으면 0원으로 빼고 냉장고에 넣어요 (냉장고에 미처 안 적은 재료 대비). 다시 누르면 되돌려요
 function toggleHave(key){const pl=plan(),x=pl&&pl.items.find(i=>i.key===key);if(!x)return;
  if(!x.have){x.have=true;DB.cart.items=cart().filter(c=>c.key!==key);const ids=new Set(DB.pantry.map(p=>p.id));
   putPantry(x.name,"full","have");x.haveId=(DB.pantry.find(p=>!ids.has(p.id))||{}).id||null;toast(`${x.name}을(를) 냉장고에 넣었어요`);}
- else{x.have=false;if(x.haveId)DB.pantry=DB.pantry.filter(p=>p.id!==x.haveId);x.haveId=null;if(!inCart(key))cart().push(cartItemOf(key));}
+ else{x.have=false;if(x.haveId)DB.pantry=DB.pantry.filter(p=>p.id!==x.haveId);x.haveId=null;if(!inCart(key))toggleCart(key);}
  save();keep();}
 function toggleBought(key){const x=cart().find(i=>i.key===key);if(x){x.bought=!x.bought;save();keep();}}
 function removeCart(key){DB.cart.items=cart().filter(x=>x.key!==key);save();keep();}
@@ -1245,7 +1251,7 @@ function addManual(){const n=$("#mName").value.trim(),pr=+String($("#mPrice").va
 const QTY=[["full","많이"],["mid","보통"],["low","적게"]];
 const qtyLabel=k=>(QTY.find(x=>x[0]===k)||[])[1]||"";
 function setQty(k){S.mqty=k;document.querySelectorAll(".qseg button").forEach(b=>b.classList.toggle("on",b.dataset.k===k));}
-function commitCart(paid){const c=cart(),b=[...c],tid=trip()?.id||null;   // 목록에 남아 있는 건 전부 산 것 (안 산 건 ✕로 빼요)
+function commitCart(paid){const c=cart(),b=c.filter(x=>x.bought!==false),tid=trip()?.id||null;   // 체크리스트에서 [구매]로 체크한 것만 산 것
  b.forEach(x=>{const pid=uid();
   DB.purchases.push({id:pid,week:NOW_WK,at:Date.now(),name:x.name,price:+x.price||0,kind:x.kind,src:x.kind==="manual"?"manual":"rec",trip:tid});
   if(x.kind==="seas")DB.seas[coreName(x.name)]=x.qty==="low"?"low":"have";else putPantry(x.name,x.qty||"full","buy",pid);});   // 얼마나 샀는지 → 냉장고 남은 양
@@ -1639,7 +1645,7 @@ function routine(){const pl=plan(),dr=draft(),bought=false;   // 결제액을 �
  const R=[
   {k:"wish",  i:"bulb",  t:"끼니·메뉴 정하기",           done:!!dr||!!pl,                 go:"goTab('pick','wish')"},
   {k:"combo", i:"pot",   t:"메뉴 조합",             done:!!pl,                       go:"goTab('pick','combo')"},
-  {k:"list",  i:"cart",  t:"장볼 목록",             done:!!pl&&(!!pl.seen||bought),  go:"goTab('pick','list')"}];   // 구매기록은 단계에 넣지 않아요
+  {k:"list",  i:"cart",  t:"장볼 목록",             done:!!pl&&(!!pl.ready||bought),  go:"goTab('pick','list')"}];   // [장볼 목록 확정]을 누르면 끝나요   // 구매기록은 단계에 넣지 않아요
  R.forEach((x,j)=>x.on=j===0||R[j-1].done);
  return R;}
 // 단계 화면 상단: [뒤로] [루틴 n/3 · 제목] [다음 단계 ›] + 아래 3칸 진행선(눌러서 이동)
@@ -1649,7 +1655,8 @@ function flowHead(){const R=routine(),rec=S.tab==="record",k=rec?3:{wish:0,combo
 <div class="ttl"><b>${rec?"구매기록":R[k].t}</b></div></div>
 ${rec?"":`<div class="flowline" aria-label="3단계 중 ${k+1}단계">${R.map((x,i)=>`<span class="${i<=k?"on":""}"><i></i></span>`).join("")}</div>`}</header>`;}   // 진행선은 위치 표시만 (눌러도 안 움직여요)
 const tabbar=()=>`<nav class="tabbar">${TABS.map(([k,i,t])=>`<button class="${S.tab===k||(k==="home"&&!TABS.some(x=>x[0]===S.tab))?"on":""}" onclick="goTab('${k}')">${ic(i)}${t}</button>`).join("")}</nav>`;
-function goTab(k,sub){if(k==="home")S.htab="today";S.tab=k;S.view="app";S.inErr=null;   // 아래 홈을 누르면 첫 탭(밥풀이)부터
+function goTab(k,sub){if(k==="record"){if(trip()&&plan()&&!plan().ready)confirmList();else setHtab("shop");return;}   // 구매기록은 장보기 탭 체크리스트에서 해요
+ if(k==="home")S.htab="today";S.tab=k;S.view="app";S.inErr=null;   // 아래 홈을 누르면 첫 탭(밥풀이)부터
  if(k==="recipe"&&sub)S.rview=sub;
  if(k==="pick"){S.pview=sub||null;if(sub==="wish"&&!S.wish){const pl=draft()||plan();S.wish=pl?pl.wish:"";S.noWish=!!pl&&!pl.wish;}S.planNote="";}if(k!=="record")S.recorded=0;
  if(k==="recipe"&&S.rview==="make"&&needMenus()&&!planRecs().length)return suggestMenus();   // 짜둔 메뉴가 있으면 그걸 먼저 보여줘요   // 오늘 뭐 해먹지? → 만들 수 있는 메뉴부터
@@ -1915,7 +1922,7 @@ function setHtab(k){Object.assign(S,{tab:"home",view:"app",htab:k,editB:false,re
 const htopBar=t=>`<header class="htop"><nav class="htabs" role="tablist">${HTABS.map(([k,n])=>`<button role="tab" aria-selected="${t===k}" class="${t===k?"on":""}" onclick="setHtab('${k}')">${n}</button>`).join("")}</nav></header>`;
 function home(){const t=HTABS.some(x=>x[0]===S.htab)?S.htab:"today";
  const body=t==="shop"?shopTab():t==="budget"?budgetTab():t==="rec"?recTab():todayTab();
- page(body,null,htopBar(t));}
+ page(body,t==="shop"?shopFoot():null,htopBar(t));}
 
 // 레시피 — 이번 장보기로 고른 메뉴의 레시피 (누르면 재료·조리법), 저장한 레시피
 const RSUBS=[["now","이번 메뉴"],["past","지난 메뉴"],["fav","즐겨찾기"]];
@@ -1946,27 +1953,44 @@ function todayTab(){const n=homeCount(),nx=nextStage(n),mb=monthBudget(),left=le
 <div class="tbud ${mb&&left<0?"over":""}">
  <small>${ymLabel(NOW_YM)} 남은 장보기 예산</small><b>${mb?(left<0?`${won(-left)} 초과`:won(left)):"월 예산을 정해 주세요"}</b>
  ${mb?`<span class="tbud-bar"><i style="width:${Math.max(0,Math.min(100,left/mb*100))}%"></i></span>`:""}</div>
-${trip()&&tripStep().k===3?`<button class="btn gobtn" onclick="goTab('record')">${ic("basket")} 장 보고 왔어요 · 구매기록</button>`   // 장볼 목록까지 끝났으면 홈 버튼이 구매기록으로 바뀌어요
+${trip()&&tripStep().k===3?`<button class="btn gobtn" onclick="setHtab('shop')">${ic("basket")} 장보기 체크리스트 열기</button>`   // 장볼 목록을 확정했으면 홈 버튼이 체크리스트로 바뀌어요
  :`<button class="btn gobtn" onclick="setHtab('shop')">${ic("cart")} 장보러 가기</button>`}
 </section>`;}
 
 // 장보기 — 진행 중인 장보기 이어서 하기 또는 새 장보기 시작 · 지난 장보기
-function tripStep(){const R=routine(),k=R.findIndex(x=>!x.done);return {k:k<0?3:k,R};}   // k=3이면 구매기록 차례
+function tripStep(){const R=routine(),k=R.findIndex(x=>!x.done);return {k:k<0?3:k,R};}   // k=3이면 장보기 체크리스트 차례
+// 장볼 목록 확정 → 장보기 탭이 마트에서 보는 체크리스트로 바뀌어요 (살 때 [구매] 체크, 실제 가격 고치기)
+function confirmList(){const pl=plan();if(!pl)return;pl.ready=true;cart().forEach(x=>{if(x.key.startsWith("p:"))x.bought=false;});save();setHtab("shop");toast("장보기 체크리스트를 만들었어요");}
+const gotItems=()=>cart().filter(x=>x.bought);
+const gotTotal=()=>gotItems().reduce((a,x)=>a+(+x.price||0),0);
+const ckRow=x=>`<div class="li ckrow ${x.bought?"on":""}"><button class="ckb" onclick="toggleBought('${q(x.key)}')" role="checkbox" aria-checked="${!!x.bought}" aria-label="${esc(x.name)} 구매"><span class="cb">${x.bought?ic("check"):""}</span></button>
+<div class="tx" onclick="toggleBought('${q(x.key)}')"><b>${esc(x.name)}</b><span class="m">${esc(x.qty?`${qtyLabel(x.qty)} 샀어요`:x.unit||"")}</span></div>
+<span class="ckp"><input class="priceIn" inputmode="numeric" value="${+x.price?(+x.price).toLocaleString():""}" placeholder="가격" onchange="setPrice('${q(x.key)}',this.value)" aria-label="${esc(x.name)} 실제 가격"><em>원</em></span>
+${x.key.startsWith("p:")?"":`<button class="x" onclick="removeCart('${q(x.key)}')" aria-label="${esc(x.name)} 빼기">${ic("x")}</button>`}</div>`;
+function checklist(){const c=cart(),got=gotItems();
+ return `<section class="cklist"><div class="row"><b class="ttl2">장보기 체크리스트</b><span class="tag o">${got.length}/${c.length} 구매</span></div>
+${c.length?`<div class="list">${c.map(ckRow).join("")}</div>`:`<p class="m" style="margin:10px 0 0">살 재료가 없어요.</p>`}
+<button class="btn ghost extra" style="margin-top:12px" onclick="S.sheet='manual';S.mqty='mid';render()">${ic("plus")} 목록에 없던 것도 샀어요</button>
+<div class="cklinks"><button class="link" onclick="goTab('pick','list')">장볼 목록 고치기</button><button class="link" onclick="startTrip()">새로 시작하기</button></div></section>`;}
+const shopFoot=()=>{const t=trip();if(!t||tripStep().k!==3)return null;const got=gotItems();
+ return `<button class="btn" ${got.length?"":"disabled"} onclick="openPay('trip')">${got.length?`장보기 마치고 결제액 적기 <span class="btn-sub">${got.length}개 · ${won(gotTotal())}</span>`:"산 재료를 체크해 주세요"}</button>`;};
 function startTrip(){if(trip()&&(draft()||plan()||cart().length)){S.sheet="droptrip";return render();}
  if(trip())dropTrip();Object.assign(S,{tm:P().meals||5,picked:[],wish:"",noWish:false,planEdit:false});goTab("pick","wish");}
 function continueTrip(){const t=trip();if(!t)return startTrip();Object.assign(S,{tm:t.meals,picked:[...(t.picked||[])]});const {k,R}=tripStep();
- if(k===3)return goTab("record");goTab("pick",R[k].k==="wish"?"wish":R[k].k);}
+ if(k===3)return setHtab("shop");goTab("pick",R[k].k==="wish"?"wish":R[k].k);}
 function shopTab(){const t=trip(),done=pastTrips().slice(0,5);
  let cur;
- if(t){const {k,R}=tripStep(),pl=plan(),ct=cartTotal();
-  cur=`<section class="card tripcard"><div class="row"><b class="ttl2">진행 중인 장보기</b><span class="tag o">${k<3?`${k+1}/3 단계`:"구매기록"}</span></div>
-<p class="tripmeta">${t.meals}끼 · ${k<3?R[k].t:"장 보러 갈 차례예요"}</p>
+ if(t&&tripStep().k===3)cur=checklist();
+ else if(t){const {k,R}=tripStep(),pl=plan(),ct=cartTotal();
+  cur=`<section class="card tripcard"><div class="row"><b class="ttl2">진행 중인 장보기</b><span class="tag o">${k+1}/3 단계</span></div>
+<p class="tripmeta">${t.meals}끼 · ${R[k].t}</p>
 ${pl?`<p class="m" style="margin:6px 0 0">${pl.recipes.map(findR).filter(Boolean).slice(0,4).map(r=>esc(r.title)).join(", ")}${pl.recipes.length>4?" 외":""}</p>`:""}
 ${ct?`<p class="m" style="margin:6px 0 0">예상 장보기 금액 ${won(ct)}</p>`:""}
 <ol class="tsteps">${R.map((x,i)=>`<li class="${x.done?"done":i===k?"now":""}"></li>`).join("")}</ol>
-${k<3?`<button class="btn" style="margin-top:16px" onclick="continueTrip()">이어서 하기 ${ic("right")}</button>`
- :`<button class="btn" style="margin-top:16px" onclick="goTab('record')">${ic("basket")} 구매기록 하기</button><button class="link" onclick="goTab('pick','list')">장볼 목록 다시 보기</button>`}
+<button class="btn" style="margin-top:16px" onclick="continueTrip()">이어서 하기 ${ic("right")}</button>
 <button class="link" onclick="startTrip()">새로 시작하기</button></section>`;}
+ else if(S.recorded)cur=`<section class="card donecard"><b>${ic("check")} 장보기를 마쳤어요</b><p class="m">${S.recorded>0?`산 재료 ${S.recorded}개가 냉장고에 들어갔어요. `:""}결제액 ${won(S.paidJust||0)}을 ${ymLabel(NOW_YM)} 장보기 예산에 반영했어요. 남은 예산은 ${won(leftMonth())}이에요.</p>
+<button class="btn" onclick="setHtab('rec')">레시피 보기 ${ic("right")}</button><button class="link" onclick="startTrip()">새 장보기 시작</button></section>`;
  else cur=`<section class="card tripcard empty">${bapImg("tofu","bmini")}<b class="ttl2">새 장보기를 시작해 볼까요?</b>
 <p class="m">몇 끼를 해 먹을지 정하면, 냉장고 재료를 먼저 쓰는 메뉴 조합과 장볼 목록을 만들어 드려요.</p>
 <button class="btn" style="margin-top:16px" onclick="startTrip()">${ic("plus")} 새 장보기 시작</button></section>`;
@@ -2033,11 +2057,11 @@ ${pl||dr?`<button class="link" onclick="S.planEdit=false;S.pview='${dr&&(!pl||dr
    S.work==="plan"?`<button class="btn" disabled><span class="spin"></span>${progSpan("plan")}</button>`:`<button class="btn" onclick="makeCombos()">${N}끼 메뉴 조합 받기</button>`);}
  if(!pl.seen){pl.seen=true;save();}   // 3단계(장볼 목록)를 봤다고 표시 → 4단계가 열려요
  const c=cart(),ct=cartTotal(),prs=planRecs(),wishT=prs.filter(r=>r.wish).map(r=>r.title);
- // 재료 한 줄: [구매] 체크(체크하면 가격이 쌓이고, 풀면 0원) · [미보유/보유중] (보유중이면 0원 + 냉장고에 넣어요)
+ // 재료 한 줄: [살 것] 체크(체크하면 가격이 쌓이고, 풀면 0원) · [미보유/보유중] (보유중이면 0원 + 냉장고에 넣어요)
  const row=x=>{const have=!!x.have,on=!have&&inCart(x.key);return `<div class="li prow ${have?"have":""}"><div class="em">${ingIc(x.name)}</div>
 <div class="tx"><b>${esc(x.name)}</b><span class="m">${esc([x.spec,x.unit].filter(Boolean).join(" · "))}</span><span class="m" style="display:block;font-size:12px;line-height:1.5">${dateTxt(x.pr)}</span></div>
 <div class="pcol"><div class="pr ${on?"":"zero"}">${won(on?x.price:0)}</div>
-<div class="pbtns"><button class="buy ${on?"on":""}" ${have?"disabled":""} onclick="toggleCart('${q(x.key)}')" role="checkbox" aria-checked="${on}" aria-label="${esc(x.name)} 구매"><span class="cb">${on?ic("check"):""}</span>구매</button>
+<div class="pbtns"><button class="buy ${on?"on":""}" ${have?"disabled":""} onclick="toggleCart('${q(x.key)}')" role="checkbox" aria-checked="${on}" aria-label="${esc(x.name)} 살 것"><span class="cb">${on?ic("check"):""}</span>살 것</button>
 <button class="own ${have?"on":""}" onclick="toggleHave('${q(x.key)}')" aria-pressed="${have}" aria-label="${esc(x.name)} ${have?"보유중":"미보유"}">${have?"보유중":"미보유"}</button></div></div></div>`;};
  page(`<h2 class="lead">필요한 재료를 골랐어요</h2>
 <p class="meta">${ic("pin")} ${esc(placeOf(p))} 조사 가격 · 조사일은 재료마다 달라요</p>
@@ -2047,7 +2071,8 @@ ${pl.check.ok&&pl.check.avoid?`<p class="tip okline">${ic("check")} 못 먹는 �
 ${pl.items.length?`<div class="list">${pl.items.map(row).join("")}</div>`:`<div class="note">냉장고 재료만으로 충분해요. 이번엔 장 안 봐도 돼요.</div>`}
 <div style="margin-top:16px">${budgetCard()}</div>
 ${pl.fridge.length?`<p class="sec">${ic("fridge")} 냉장고에서 꺼내 쓰는 재료</p><p class="fridgeuse">${esc(pl.fridge.map(f=>f.name).join(", "))}</p>`:""}`,
-  c.length?`<button class="btn" onclick="goTab('record')">장 보고 와서 구매기록 <span class="btn-sub">${c.length}개 · ${won(ct)}</span>${ic("right")}</button>`
+  pl.ready?`<button class="btn" onclick="setHtab('shop')">${ic("basket")} 체크리스트로 돌아가기</button>`
+  :c.length?`<button class="btn" onclick="confirmList()">장볼 목록 확정 <span class="btn-sub">${c.length}개 · ${won(ct)}</span>${ic("right")}</button>`
   :`<button class="btn" onclick="commitCart(0);setHtab('shop')">이번 장보기 마치기</button>`);}
 
 // 메뉴 조합 3안 — 하나 고르면 그 조합으로 장볼 목록을 만들어요 (가격·남는 재료는 장볼 목록에서 실제 데이터로 보여줘요)
@@ -2090,11 +2115,11 @@ ${extra.length?`<div class="list">${extra.map(row).join("")}</div>`:`<p class="m
  c.length?`<button class="btn two" onclick="openPay('trip')">기록 완료하고 결제액 적기<small>${c.length}개가 냉장고에 들어가요 · 예상 ${won(tot)}</small></button>`:null);}
 // 결제액 시트 — trip: 장보기 마칠 때 / new: 직접 기록 / edit: 내역 고치기·지우기
 function openPay(mode,id){const x=id&&(DB.trips||[]).find(t=>t.id===id);
- S.pay={mode,id:id||null,amount:mode==="trip"?cart().reduce((a,y)=>a+(+y.price||0),0):x?x.paid:"",date:ymd(new Date(x?(x.paidAt||x.at):Date.now())),memo:x?.memo||""};S.sheet="pay";render();}
+ S.pay={mode,id:id||null,amount:mode==="trip"?cart().filter(y=>y.bought!==false).reduce((a,y)=>a+(+y.price||0),0):x?x.paid:"",date:ymd(new Date(x?(x.paidAt||x.at):Date.now())),memo:x?.memo||""};S.sheet="pay";render();}
 function paySheet(){const y=S.pay,trip1=y.mode==="trip",x=y.id&&(DB.trips||[]).find(t=>t.id===y.id);
  return `<div class="modal-bg" onclick="if(event.target===this){S.sheet=null;render()}"><div class="modal"><div class="grab"></div>
 <h1 style="margin-top:0">${trip1?"실제로 얼마<br>결제했나요?":y.mode==="edit"?"결제 기록 고치기":"장 본 금액<br>직접 기록하기"}</h1>
-<p class="sub">${trip1?`영수증 금액을 적어 주세요. 장볼 목록 가격으로 계산한 예상 금액을 미리 넣어 뒀어요.`:"월 장보기 예산에서 이 금액만큼 빠져요."}</p>
+<p class="sub">${trip1?`영수증 금액을 적어 주세요. 체크한 재료 가격을 더해서 미리 넣어 뒀어요.`:"월 장보기 예산에서 이 금액만큼 빠져요."}</p>
 <label class="fl">결제액<span class="won"><input id="payIn" class="field" inputmode="numeric" value="${y.amount!==""?(+y.amount).toLocaleString():""}" placeholder="0"><em>원</em></span></label>
 ${trip1?"":`<label class="fl" style="margin-top:14px">날짜<input id="payDate" type="date" class="field" value="${y.date}" max="${todayKey()}"></label>
 ${!x||x.manual?`<label class="fl" style="margin-top:14px">메모 (선택)<input id="payMemo" class="field" maxlength="30" value="${esc(y.memo)}" placeholder="예: 동네 시장"></label>`:""}`}
