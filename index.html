@@ -592,7 +592,7 @@ main.tab .setrow .ibox{border-radius:50%}
 .ckrow{cursor:default}.ckb{border:0;background:none;padding:4px 2px;cursor:pointer;flex:none}
 .ckrow .cb{width:26px;height:26px;border-radius:8px;border:2px solid #cfc6b6;display:grid;place-items:center;background:var(--card);color:#fff}.ckrow .cb .i{font-size:16px;stroke-width:2.6}
 .ckrow.on .cb{background:var(--pri);border-color:var(--pri)}.ckrow.on .tx b{color:var(--m);text-decoration:line-through}
-.ckrow .tx{cursor:pointer}.ckp{display:inline-flex;align-items:center;gap:3px;flex:none}.ckp .priceIn{width:92px}.ckp em{font-style:normal;font-size:13px;color:var(--m)}
+.ckrow .tx{cursor:pointer}.ckp{display:inline-flex;align-items:center;flex:none;width:104px;border:1.5px solid var(--l);border-radius:10px;background:var(--bg);padding-right:10px}.ckp:focus-within{border-color:var(--pri)}.ckp .priceIn{flex:1;min-width:0;width:auto;border:0;background:none;padding:8px 4px 8px 8px}.ckp em{position:static;transform:none;font-style:normal;font-size:13px;font-weight:600;color:var(--m)}
 .cklinks{display:flex;gap:8px}.cklinks .link{flex:1}
 .rsubs{display:flex;gap:6px;margin:6px 0 8px}.rsubs button{border:0;background:none;font:inherit;font-size:15px;font-weight:700;color:#b9b0a3;padding:6px 10px;border-radius:999px;cursor:pointer}
 .rsubs button.on{background:var(--prs);color:var(--prd)}.rsubs em{font-style:normal;font-size:12px;color:var(--pri);margin-left:2px}
@@ -1964,7 +1964,7 @@ function confirmList(){const pl=plan();if(!pl)return;pl.ready=true;cart().forEac
 const gotItems=()=>cart().filter(x=>x.bought);
 const gotTotal=()=>gotItems().reduce((a,x)=>a+(+x.price||0),0);
 const ckRow=x=>`<div class="li ckrow ${x.bought?"on":""}"><button class="ckb" onclick="toggleBought('${q(x.key)}')" role="checkbox" aria-checked="${!!x.bought}" aria-label="${esc(x.name)} 구매"><span class="cb">${x.bought?ic("check"):""}</span></button>
-<div class="tx" onclick="toggleBought('${q(x.key)}')"><b>${esc(x.name)}</b><span class="m">${esc(x.qty?`${qtyLabel(x.qty)} 샀어요`:x.unit||"")}</span></div>
+<div class="tx" onclick="toggleBought('${q(x.key)}')"><b>${esc(x.name)}</b></div>
 <span class="ckp"><input class="priceIn" inputmode="numeric" value="${+x.price?(+x.price).toLocaleString():""}" placeholder="가격" onchange="setPrice('${q(x.key)}',this.value)" aria-label="${esc(x.name)} 실제 가격"><em>원</em></span>
 ${x.key.startsWith("p:")?"":`<button class="x" onclick="removeCart('${q(x.key)}')" aria-label="${esc(x.name)} 빼기">${ic("x")}</button>`}</div>`;
 function checklist(){const c=cart(),got=gotItems();
