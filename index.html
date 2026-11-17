@@ -1946,7 +1946,8 @@ function todayTab(){const n=homeCount(),nx=nextStage(n),mb=monthBudget(),left=le
 <div class="tbud ${mb&&left<0?"over":""}">
  <small>${ymLabel(NOW_YM)} 남은 장보기 예산</small><b>${mb?(left<0?`${won(-left)} 초과`:won(left)):"월 예산을 정해 주세요"}</b>
  ${mb?`<span class="tbud-bar"><i style="width:${Math.max(0,Math.min(100,left/mb*100))}%"></i></span>`:""}</div>
-<button class="btn gobtn" onclick="setHtab('shop')">${ic("cart")} 장보러 가기</button>
+${trip()&&tripStep().k===3?`<button class="btn gobtn" onclick="goTab('record')">${ic("basket")} 장 보고 왔어요 · 구매기록</button>`   // 장볼 목록까지 끝났으면 홈 버튼이 구매기록으로 바뀌어요
+ :`<button class="btn gobtn" onclick="setHtab('shop')">${ic("cart")} 장보러 가기</button>`}
 </section>`;}
 
 // 장보기 — 진행 중인 장보기 이어서 하기 또는 새 장보기 시작 · 지난 장보기
@@ -1959,11 +1960,12 @@ function shopTab(){const t=trip(),done=pastTrips().slice(0,5);
  let cur;
  if(t){const {k,R}=tripStep(),pl=plan(),ct=cartTotal();
   cur=`<section class="card tripcard"><div class="row"><b class="ttl2">진행 중인 장보기</b><span class="tag o">${k<3?`${k+1}/3 단계`:"구매기록"}</span></div>
-<p class="tripmeta">${t.meals}끼 · ${k<3?R[k].t:"장 보고 와서 구매기록"}</p>
+<p class="tripmeta">${t.meals}끼 · ${k<3?R[k].t:"장 보러 갈 차례예요"}</p>
 ${pl?`<p class="m" style="margin:6px 0 0">${pl.recipes.map(findR).filter(Boolean).slice(0,4).map(r=>esc(r.title)).join(", ")}${pl.recipes.length>4?" 외":""}</p>`:""}
 ${ct?`<p class="m" style="margin:6px 0 0">예상 장보기 금액 ${won(ct)}</p>`:""}
 <ol class="tsteps">${R.map((x,i)=>`<li class="${x.done?"done":i===k?"now":""}"></li>`).join("")}</ol>
-<button class="btn" style="margin-top:16px" onclick="continueTrip()">이어서 하기 ${ic("right")}</button>
+${k<3?`<button class="btn" style="margin-top:16px" onclick="continueTrip()">이어서 하기 ${ic("right")}</button>`
+ :`<button class="btn" style="margin-top:16px" onclick="goTab('record')">${ic("basket")} 구매기록 하기</button><button class="link" onclick="goTab('pick','list')">장볼 목록 다시 보기</button>`}
 <button class="link" onclick="startTrip()">새로 시작하기</button></section>`;}
  else cur=`<section class="card tripcard empty">${bapImg("tofu","bmini")}<b class="ttl2">새 장보기를 시작해 볼까요?</b>
 <p class="m">몇 끼를 해 먹을지 정하면, 냉장고 재료를 먼저 쓰는 메뉴 조합과 장볼 목록을 만들어 드려요.</p>
@@ -2401,7 +2403,7 @@ window.addEventListener("popstate",e=>{
 function navBack(){if(NI>0)history.back();else goTab("home");}
 // 장보기 단계 화면의 ← : 늘 한 단계 앞으로 가요  기록 → 장볼 목록 → 메뉴 조합 → 메뉴 정하기 → 홈 장보기 탭
 function flowBack(){const v=S.tab==="pick"?pickView():null;navReplace=true;S.sheet=null;
- if(S.tab==="record"&&trip()&&plan())return goTab("pick","list");
+ if(S.tab==="record"){if(NI>0){navReplace=false;return history.back();}if(trip()&&plan())return goTab("pick","list");}   // 구매기록은 들어온 곳(홈·장보기 탭·장볼 목록)으로 돌아가요
  if(v==="list"&&draft())return goTab("pick","combo");
  if(v==="combo"||v==="list"){S.planNote="";return goTab("pick","wish");}
  Object.assign(S,{tab:"home",view:"app",htab:"shop",recorded:0,inErr:null});render();scrollTo(0,0);}
