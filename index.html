@@ -516,7 +516,10 @@ input[type=range]:focus-visible{outline:2px solid var(--pri);outline-offset:6px}
 .bap{display:block;user-select:none;-webkit-user-drag:none}
 .hero-img{width:min(64vw,250px);height:auto;animation:bob 3.2s ease-in-out infinite}
 @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-.growline{font-size:13.5px;color:var(--m);margin:2px 0 0}.growline b{color:var(--t)}
+.growline{font-size:13.5px;color:var(--m);margin:10px 0 0}.growline b{color:var(--t)}
+.qmeal{display:flex;gap:8px;width:100%;margin-top:4px}.qmeal button{flex:1;height:50px;border-radius:999px;border:1.5px solid var(--l);background:var(--card);font:inherit;font-size:16px;font-weight:700;color:var(--t);cursor:pointer}.qmeal button:active{background:var(--prs);border-color:var(--pri)}
+.qdone{margin-top:4px;font-size:15px;font-weight:700;color:var(--prd);display:flex;align-items:center;gap:8px}.qdone .tlink{font-size:13px}
+.mcount{font-size:14px;color:var(--m)}.mcount b{color:var(--t)}
 .tlink{border:0;background:none;padding:0;font:inherit;font-size:13.5px;font-weight:700;color:var(--pri);text-decoration:underline;cursor:pointer}
 .footrow{display:flex;gap:8px}.footrow .btn.ghost{flex:0 0 auto;width:auto;padding:0 18px}.footrow .btn:not(.ghost){flex:1}
 .gobtn{margin:18px 0 0;height:60px;font-size:17px;background:var(--t)}
@@ -1043,6 +1046,10 @@ const mealList=()=>DB.meals||(DB.meals=[]);
 const homeCount=()=>mealList().filter(m=>m.type==="home").length;
 const todayKey=()=>ymd(new Date());
 const nowSlot=()=>{const h=new Date().getHours();return h<10?"b":h<15?"l":h<21?"d":"s";};
+// 홈에서 한 번에 적는 끼니 — 지금 시간 기준 아침·점심·저녁 (밤에도 '저녁')
+const qSlot=()=>{const h=new Date().getHours();return h<10?"b":h<15?"l":"d";};
+const qMealNow=()=>mealList().find(m=>m.date===todayKey()&&m.slot===qSlot());
+function quickMeal(type){S.mf={id:null,date:todayKey(),slot:qSlot(),type,menu:"",cost:"",inst:false};saveMeal();}
 // 밥풀이 성장 단계 — 집밥 누적 횟수 기준 (단계별 끼니 수는 기획에서 추후 확정, 지금은 임시 값)
 const STAGES=[5,15,30];
 const stageOf=n=>STAGES.filter(v=>n>=v).length, nextStage=n=>STAGES.find(v=>v>n)||null;
@@ -1617,7 +1624,10 @@ function finishCook(){const {rid,rows}=S.left;
  let r=DB.recipes.find(x=>x.id===rid);
  if(!r||r.cooked){r={...findR(rid),id:uid(),at:Date.now(),week:NOW_WK};DB.recipes.push(r);}   // 저장한 레시피를 또 해먹으면 새 기록으로
  Object.assign(r,{cooked:true,cookedAt:Date.now(),cookedWeek:NOW_WK});
- S.left=null;S.openR=null;save();toast("해먹은 기록을 남기고 냉장고에 반영했어요");render();}
+ S.left=null;S.openR=null;
+ // 해먹었어요 = 집밥 한 끼: 지금 끼니가 비어 있거나 집밥이면 메뉴 이름까지 적어요 (배달·외식으로 적은 끼니는 건드리지 않아요)
+ const ex=qMealNow();if(!ex||(ex.type==="home"&&!ex.menu)){S.mf={...(ex||{id:null,date:todayKey(),slot:qSlot(),cost:"",inst:false}),type:"home",menu:r.title||""};saveMeal();toast("집밥으로 기록하고 냉장고에 반영했어요");return;}
+ save();toast("해먹은 기록을 남기고 냉장고에 반영했어요");render();}
 
 /* ============================================================
    공통 뼈대
@@ -1949,13 +1959,14 @@ ${body}
 <p id="photocredit" class="m photocredit" ${anyPhoto()?"":"hidden"}>음식 사진은 식품의약품안전처 식품안전나라 레시피 DB의 비슷한 요리 예시 사진이에요. 실제로 만들 요리와 다를 수 있어요.</p>`;}
 
 // 밥풀이 탭(첫 화면) — 밥풀이 · 누적 집밥 · 이번 달 남은 장보기 예산 · [장보러 가기] 버튼 하나
-function todayTab(){const n=homeCount(),nx=nextStage(n),mb=monthBudget(),left=leftMonth(),sv=savingsOf(),h=new Date().getHours();
- const noRec=!mealList().some(m=>m.date===todayKey())&&h>=11;
- const msg=!n?"첫 집밥을 기록하면<br>밥풀이가 반겨줘요":noRec?"오늘 끼니를<br>아직 안 적었어요":`집밥 <b>${n}</b>번째,<br>오늘도 잘 먹어요!`;
+function todayTab(){const n=homeCount(),nx=nextStage(n),mb=monthBudget(),left=leftMonth(),qs=qSlot(),qm=qMealNow();
+ const msg=qm?(n?`집밥 <b>${n}</b>번째,<br>오늘도 잘 먹어요!`:`${slotName(qs)}은 ${typeName(qm.type)}이었군요<br>다음은 집밥 어때요?`):`${slotName(qs)} 뭐 먹었어요?`;
  return `<section class="today">
 <h2 class="tmsg">${msg}</h2>
-<div class="hero">${bapImg(noRec&&n?"empty":n&&stageOf(n)>=STAGES.length?"grow":"hero","hero-img")}</div>
-<div class="growline">${n?`<b>누적 집밥 ${n}끼</b>${nx?` · 다음 성장까지 ${nx-n}끼`:" · 최고 단계예요"}`:`<b>누적 집밥 0끼</b> · 기록 탭에서 끼니를 적어요`}${noRec&&n?` · <button class="tlink" onclick="goTab('history')">기록하기</button>`:""}</div>
+<div class="hero">${bapImg(n&&stageOf(n)>=STAGES.length?"grow":"hero","hero-img")}</div>
+${qm?`<div class="qdone">${qm.type==="home"?"🍚":qm.type==="deliv"?"🛵":"🍽️"} ${slotName(qs)} ${typeName(qm.type)}${qm.menu?` · ${esc(qm.menu)}`:""} <button class="tlink" onclick="openMeal('${todayKey()}','${qs}')">고치기</button></div>`
+ :`<div class="qmeal">${MTYPES.map(([k,t])=>`<button onclick="quickMeal('${k}')">${k==="home"?"🍚":k==="deliv"?"🛵":"🍽️"} ${t}</button>`).join("")}</div>`}
+<div class="growline"><b>누적 집밥 ${n}끼</b>${nx?` · 다음 성장까지 ${nx-n}끼`:" · 최고 단계예요"}</div>
 <div class="tbud ${mb&&left<0?"over":""}">
  <small>${ymLabel(NOW_YM)} 남은 장보기 예산</small><b>${mb?(left<0?`${won(-left)} 초과`:won(left)):"월 예산을 정해 주세요"}</b>
  ${mb?`<span class="tbud-bar"><i style="width:${Math.max(0,Math.min(100,left/mb*100))}%"></i></span>`:""}</div>
@@ -2252,10 +2263,10 @@ function historyPage(){const now=new Date(),n=homeCount(),nx=nextStage(n),st=sta
  page(`<h1 style="margin-top:18px">기록</h1>
 <section class="card mealtop">${bapImg(st>=STAGES.length?"grow":"hero","bmini")}<div><b>누적 집밥 ${n}끼</b><span class="m">${nx?`다음 성장까지 ${nx-n}끼`:"최고 단계예요"}</span>
 <div class="meter"><i style="width:${nx?Math.round((n-(STAGES[st-1]||0))/(nx-(STAGES[st-1]||0))*100):100}%"></i></div></div></section>
-<button class="btn" style="margin:6px 0 4px" onclick="openMeal()">${ic("plus")} 끼니 기록</button>
+<div class="row" style="margin:14px 2px 0"><span class="mcount">${(()=>{const ym=NOW_YM,ms=mealList().filter(m=>m.date.slice(0,7)===ym);return MTYPES.map(([k,t])=>`${t} <b>${ms.filter(m=>m.type===k).length}</b>`).join(" · ");})()}</span><button class="tlink" onclick="openMeal()">${ic("plus")} 지난 끼니 적기</button></div>
 ${days.length?days.map(d=>`<p class="sec">${dayTxt(d)}</p><div class="list">${SLOTS.map(([k])=>mealList().find(m=>m.date===d&&m.slot===k)).filter(Boolean).map(m=>`<div class="li" onclick="openMeal('${m.date}','${m.slot}')"><div class="em">${m.type==="home"?"🍚":m.type==="deliv"?"🛵":"🍽️"}</div>
 <div class="tx"><b>${slotName(m.slot)} · ${esc(m.menu||typeName(m.type))}</b><span class="m">${typeName(m.type)}${+m.cost?` · ${won(m.cost)}`:""}</span></div>${ic("right")}</div>`).join("")}</div>`).join("")
- :`<p class="m" style="margin:14px 2px">아직 적은 끼니가 없어요. 오늘 먹은 끼니부터 적어 볼까요?</p>`}
+ :`<p class="m" style="margin:14px 2px">밥풀이 홈에서 한 번 누르면 여기에 쌓여요</p>`}
 ${us?`<section class="card usecard" style="margin-top:22px">
  <div class="row"><h3>남김없이 다 쓰기</h3><span class="m">${wkLabel(uk)}에 산 재료 ${us.n}개</span></div>
  <div class="usebig"><b>${us.pct}%</b><span>다 썼어요</span></div>
