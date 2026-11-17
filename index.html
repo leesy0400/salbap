@@ -2014,7 +2014,7 @@ function budgetTab(){const ym=S.bym||NOW_YM,mb=monthBudget(ym),sp=spentMonth(ym)
  :`<small>장보기 예산</small><b class="bbig none">아직 없어요</b><button class="btn" style="margin-top:12px" onclick="S.editB=true;keep()">월 예산 정하기</button>`}
  ${S.editB?`<div class="row" style="gap:6px;margin-top:10px;justify-content:flex-start"><input id="bIn" class="priceIn" style="width:140px" inputmode="numeric" value="${mb?mb.toLocaleString():""}" placeholder="예: 300,000"><span class="chip on" onclick="saveMonthBudget('${ym}')">저장</span></div>`:""}
 </section>
-${sv.n?`<section class="bsave ${sv.total>0?"":"flat"}">${bapImg(sv.total>0?"grow":"home","bsv")}<div><small>배달 대신 집밥 ${sv.meals}끼</small><b>${sv.total>0?`${won(sv.total)} 아꼈어요`:`배달보다 ${won(-sv.total)} 더 썼어요`}</b></div></section>`:""}
+${sv.n?`<section class="bsave ${sv.total>0?"":"flat"}">${bapImg(sv.total>0?"grow":"home","bsv")}<div><small>배달 ${sv.meals}끼 ${won(sv.deliv)} → 장보기 ${won(sv.paid)}</small><b>${sv.total>0?`${won(sv.total)} 아꼈어요`:`배달보다 ${won(-sv.total)} 더 썼어요`}</b></div></section>`:""}
 <div class="row" style="margin:22px 2px 6px"><b class="sec" style="margin:0">결제 내역</b><button class="tlink" onclick="openPay('new')">${ic("plus")} 직접 기록</button></div>
 ${pays.length?`<div class="list">${pays.map(x=>`<div class="li" ${x.kind==="legacy"?'style="cursor:default"':`onclick="openPay('edit','${x.id}')"`}><div class="em">${ic(x.kind==="manual"?"wallet":"basket")}</div><div class="tx"><b>${esc(x.kind==="trip"?x.label:`${new Date(x.at).getMonth()+1}월 ${new Date(x.at).getDate()}일 ${x.label}`)}</b></div><div class="pr">${won(x.amount)}</div></div>`).join("")}</div>`
  :`<p class="m" style="margin:4px 2px">아직 결제 기록이 없어요</p>`}`;}
