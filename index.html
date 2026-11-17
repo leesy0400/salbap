@@ -162,6 +162,11 @@ h1{font-size:25px;line-height:1.32;font-weight:800;margin:12px 0 8px;letter-spac
 /* 레시피 카드 */
 .rc{display:flex;gap:14px;align-items:center;background:var(--card);border-radius:20px;padding:12px;box-shadow:var(--sh);margin:8px 0;cursor:pointer;text-align:left;width:100%;border:0}
 .rc .th{width:70px;height:70px;border-radius:16px;background:var(--food);color:var(--pri);display:grid;place-items:center;font-size:36px;flex:none}
+.rth{width:84px;height:84px;border-radius:22px;background:var(--card);color:var(--pri);box-shadow:var(--sh);display:grid;place-items:center;font-size:46px;margin:0 auto}
+.th.ph,.rth.ph{position:relative;overflow:hidden;padding:0}.th.ph img,.rth.ph img{width:100%;height:100%;object-fit:cover;display:block}
+.rth.ph{width:100%;height:180px;border-radius:20px}
+.phtag{position:absolute;left:4px;bottom:4px;font-style:normal;font-size:9.5px;line-height:1;padding:3px 5px;border-radius:6px;background:rgba(0,0,0,.55);color:#fff}
+.photocredit{font-size:11.5px;line-height:1.5;margin:14px 2px 0}
 .rc b{font-size:16px;display:block;margin-bottom:6px}
 .meta{display:flex;gap:10px;align-items:center;color:var(--m);font-size:12.5px;margin-top:6px;flex-wrap:wrap}
 .meta>span{display:inline-flex;align-items:center;gap:3px}
@@ -242,7 +247,7 @@ h1{font-size:25px;line-height:1.32;font-weight:800;margin:12px 0 8px;letter-spac
 .tabbar .on{color:var(--prd)}.tabbar .on .i{color:var(--pri);stroke-width:2}
 .foot.tab{bottom:calc(60px + env(safe-area-inset-bottom))}
 main.tab{padding-bottom:100px}
-main.tab.hasfoot{padding-bottom:190px}
+main.tab.hasfoot{padding-bottom:160px}
 
 /* 홈 상단 — 로고 + 인사 + 바로가기 */
 .hdr{padding:22px 22px 6px}
@@ -275,7 +280,7 @@ h3{font-size:15px;margin:0}
 .flowline{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:12px}
 .flowline button{display:block;padding:6px 0 10px;border:0;background:none;width:100%;cursor:pointer}.flowline button:disabled{cursor:default}
 .flowline i{display:block;height:4px;border-radius:4px;background:#e6dfd2}.flowline .on i{background:var(--sage)}
-main.flow{padding-top:30px}
+main.flow{padding-top:18px}
 /* 화면 본문 머리말 */
 .lead{font-size:20px;line-height:1.45;font-weight:800;letter-spacing:-.035em;margin:0 0 8px}
 .meta{display:flex;align-items:center;gap:4px;font-size:13px;color:var(--m);margin:0 0 22px}.meta .i{color:var(--pri)}
@@ -295,7 +300,7 @@ main.flow{padding-top:30px}
 .prow .tx .m{display:block;line-height:1.5}.prow .tx .sub2{color:#a8a092;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pcol{display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex:none}
 .prow .pr{font-size:15px}
-main.flow .sec{margin-top:34px;margin-bottom:10px}
+main.flow .sec{margin-top:22px;margin-bottom:8px}
 /* 예산 유도 안내 */
 .note.guide b{display:block;font-size:14px;margin-bottom:4px;color:var(--t)}.note.guide .chip{margin:12px 8px 0 0;font-size:13px;padding:7px 13px}.note.guide .m{font-size:12px}
 /* 우리집 냉장고 — 스테인리스 문 + 안쪽 선반 */
@@ -346,6 +351,11 @@ main.tab>section.card{margin:0 0 22px;padding:26px 22px}
 .steps .done b{color:var(--t)}
 .steps .now .node{background:var(--prs);color:var(--pri);box-shadow:0 0 0 2px var(--sage)}
 .steps .now b{color:var(--t);font-weight:800}.steps .now small{color:var(--m)}
+.alldone small{display:block;font-size:12.5px;font-weight:500;color:var(--m);line-height:1.5;margin-top:6px;word-break:keep-all}
+.starthint{text-align:center;font-size:13.5px;font-weight:700;color:var(--pri);margin:0 0 8px}
+.startbtn{margin:0 0 14px}
+.cheer{margin:8px 0 0;font-size:13px;line-height:1.5;word-break:keep-all}
+.onceweek{margin:8px 0 12px}
 .alldone{text-align:center;font-size:14.5px;font-weight:700;color:var(--prd);padding:6px 0 4px}.alldone .link{margin-top:10px;color:var(--pri);font-weight:600;text-decoration:underline}
 .fridgeline{display:flex;align-items:center;gap:8px;width:100%;margin-top:24px;padding:18px 2px 0;border:0;border-top:1px solid #efe8db;background:none;cursor:pointer;color:var(--t);font-size:13.5px;text-align:left}
 .fridgeline .ibox{width:40px;height:40px;border-radius:12px;font-size:21px}
@@ -454,7 +464,7 @@ input[type=range]:focus-visible{outline:2px solid var(--pri);outline-offset:6px}
 .sbar i{position:absolute;left:0;width:100%;border-radius:4px;background:var(--sage);opacity:.75}
 @media (prefers-reduced-motion:reduce){.seek::before,.brandload .steam path{animation:none;opacity:.6}}
 /* v17 메뉴 정하기 — 먹고 싶은 메뉴 입력 · 추천 메뉴 · 장볼 재료 */
-.wish{resize:none;line-height:1.6;min-height:116px}
+.wish{resize:none;line-height:1.6;min-height:76px}
 .wishecho{background:var(--tile);border-radius:14px;padding:12px 14px;font-size:14px;line-height:1.5;color:var(--t);margin:0 0 4px}
 .mrow{cursor:default;padding:12px 0}
 .mrow .tx .m{display:block;line-height:1.5;margin-top:2px}
@@ -469,11 +479,12 @@ input[type=range]:focus-visible{outline:2px solid var(--pri);outline-offset:6px}
 .making-t{display:flex;align-items:center;color:var(--prd);font-weight:700}
 .btn:disabled .spin{opacity:1}
 .okline{color:var(--g)}.okline .i{color:var(--g)}
-.combo{display:block;width:100%;text-align:left;margin-top:12px;padding:16px;border:1.5px solid var(--l);border-radius:18px;background:var(--card);font-family:inherit;color:inherit;cursor:pointer}
+.combo{display:block;width:100%;text-align:left;margin-top:10px;padding:13px 16px;border:1.5px solid var(--l);border-radius:18px;background:var(--card);font-family:inherit;color:inherit;cursor:pointer}
 .combo.on{border-color:var(--pri);box-shadow:0 0 0 2px var(--prs)}
-.ctop{display:flex;align-items:center;justify-content:space-between}.ctop b{font-size:15.5px}.cck{color:var(--pri)}.cck .i{font-size:20px}
-.cdesc{margin:4px 0 0;font-size:13px;line-height:1.5}
-.cmenus{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}.cm{font-size:13px;padding:6px 10px;border-radius:999px;background:var(--neu);font-weight:600}
+.ctop{display:flex;align-items:center;justify-content:space-between}.ctop b{font-size:15.5px;flex:none}.cck{color:var(--pri);flex:none;margin-left:6px}.cck .i{font-size:20px}
+.cdesc{flex:1;min-width:0;margin:0 0 0 8px;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wisherr{margin:8px 2px 0;font-size:13.5px;line-height:1.5;color:var(--r);font-weight:600}
+.cmenus{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}.cm{font-size:13px;padding:6px 10px;border-radius:999px;background:var(--neu);font-weight:600}
 .cm.w{background:var(--prs);color:var(--prd)}.cm em{font-style:normal;font-weight:800}
 .cfoot{display:flex;justify-content:space-between;align-items:baseline;margin-top:14px;padding-top:12px;border-top:1px dashed var(--l);font-size:13.5px}.cfoot b{font-size:17px}
 .cleft{margin:6px 0 0;font-size:12.5px;line-height:1.5}
@@ -490,6 +501,63 @@ input[type=range]:focus-visible{outline:2px solid var(--pri);outline-offset:6px}
 .loginscr .skip{display:block;margin:26px auto 0;font-size:14px}.loginscr .skip small{display:block;color:var(--m);font-size:12px;margin-top:2px}
 .acct{margin:14px 0 4px}.acrow{display:flex;align-items:center;gap:12px}.acrow .tx{display:flex;flex-direction:column;gap:2px;min-width:0}.acrow .tx b{font-size:15px;overflow:hidden;text-overflow:ellipsis}.acrow .tx span{font-size:12.5px;color:var(--m)}
 .acbtns{display:flex;gap:18px;margin-top:10px}.acbtns .link{margin-top:6px;font-size:13.5px}
+/* ── v2 홈 상단 탭 [오늘·장보기·예산] — 고른 탭은 진하게 + 짧은 밑줄, 나머지는 중간 톤 ── */
+.htop{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:22px 22px 4px}
+.htabs{display:flex;gap:20px}
+.htabs button{position:relative;border:0;background:none;padding:4px 0 10px;font:inherit;font-size:22px;font-weight:800;letter-spacing:-.02em;color:#b9b0a3;cursor:pointer}
+.htabs button.on{color:var(--t)}
+.htabs button.on::after{content:"";position:absolute;left:50%;bottom:2px;width:18px;height:3px;border-radius:3px;background:var(--pri);transform:translateX(-50%)}
+.htop .loc{max-width:40%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* 오늘 — 밥풀이를 크게, 버튼은 하나 */
+.today{display:flex;flex-direction:column;align-items:center;text-align:center;padding-top:6px}
+.tmsg{font-size:22px;line-height:1.4;font-weight:800;margin:14px 0 0;letter-spacing:-.02em}
+.tmsg b{color:var(--pri)}
+.hero{width:100%;display:grid;place-items:center;margin:6px 0 0;min-height:230px}
+.bap{display:block;user-select:none;-webkit-user-drag:none}
+.hero-img{width:min(64vw,250px);height:auto;animation:bob 3.2s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.growline{font-size:13.5px;color:var(--m);margin:2px 0 0}.growline b{color:var(--t)}
+.tlink{border:0;background:none;padding:0;font:inherit;font-size:13.5px;font-weight:700;color:var(--pri);text-decoration:underline;cursor:pointer}
+.footrow{display:flex;gap:8px}.footrow .btn.ghost{flex:0 0 auto;width:auto;padding:0 18px}.footrow .btn:not(.ghost){flex:1}
+.tbud{display:flex;align-items:center;gap:14px;width:100%;margin:20px 0 0;padding:16px 16px 16px 18px;border:0;border-radius:22px;background:var(--tile);text-align:left;cursor:pointer;color:var(--t);font:inherit}
+.tbud-l{width:44px;height:44px;border-radius:15px;background:var(--card);display:grid;place-items:center;color:var(--pri);flex:none}.tbud-l .i{width:22px;height:22px}
+.tbud-tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.tbud-tx small{font-size:13px;font-weight:600;color:var(--m)}
+.tbud-tx b{font-size:23px;font-weight:800;letter-spacing:-.03em;color:var(--prd);line-height:1.25}
+.tbud-bar{display:block;height:6px;margin-top:8px;border-radius:99px;background:var(--card);overflow:hidden}.tbud-bar i{display:block;height:100%;border-radius:99px;background:var(--pri)}
+.tbud>.i{color:var(--m);flex:none}
+.tbud.over{background:var(--rs)}.tbud.over b{color:var(--r)}.tbud.over .tbud-l{color:var(--r)}
+.gobtn{margin:18px 0 0;height:60px;font-size:17px;background:var(--t)}
+/* 장보기 탭 */
+.tripcard{margin:14px 0 0!important}.tripcard.empty{text-align:center;display:flex;flex-direction:column;align-items:center}
+.tripcard.empty .m{margin:6px 0 0;line-height:1.55}
+.ttl2{font-size:17px;font-weight:800}
+.tripmeta{font-size:15px;font-weight:700;margin:10px 0 0;color:var(--prd)}
+.tsteps{display:flex;gap:6px;list-style:none;padding:0;margin:14px 0 0}.tsteps li{flex:1;height:5px;border-radius:5px;background:#ece6da}
+.tsteps li.done{background:var(--pri)}.tsteps li.now{background:var(--sagel)}
+.bap.bmini{width:96px;max-width:none;height:auto;flex:none}.tripcard.empty .bap.bmini{width:120px;margin-bottom:6px}
+/* 예산 탭 */
+.mnav{display:flex;align-items:center;justify-content:center;gap:18px;margin:14px 0 4px}.mnav b{font-size:17px;min-width:90px;text-align:center}
+.mnav button{width:36px;height:36px;border-radius:50%;border:1.5px solid var(--l);background:var(--card);display:grid;place-items:center;cursor:pointer;color:var(--t)}
+.mnav button:disabled{opacity:.35;cursor:default}
+.bud2 .big{font-size:30px;margin:10px 0 2px}
+.savecard{display:block;width:100%;text-align:left;font:inherit;color:var(--t);cursor:pointer}.savecard .big{font-size:26px;margin:6px 0 0}
+/* 기록 탭 */
+.mealtop{display:flex;align-items:center;gap:14px}.mealtop>div{flex:1;display:flex;flex-direction:column;gap:3px}.mealtop b{font-size:17px}.mealtop .m{font-size:13px}
+.checkrow{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;margin-top:14px;font-size:14px;font-weight:700;cursor:pointer}
+.checkrow input{width:20px;height:20px;accent-color:var(--pri)}.checkrow .m{flex-basis:100%;font-weight:500;font-size:12.5px;padding-left:28px}
+/* 이번 장보기 끼니 수 */
+.tmrow{display:flex;align-items:center;justify-content:center;gap:22px;margin:10px 0 0}
+.tmb{width:48px;height:48px;border-radius:50%;border:1.5px solid var(--l);background:var(--card);font-size:24px;font-weight:700;color:var(--t);display:grid;place-items:center;cursor:pointer}
+.tmb:disabled{opacity:.35}
+.tmv{font-size:18px;font-weight:700}.tmv b{font-size:44px;font-weight:800;color:var(--prd);margin-right:2px}
+/* 밥풀이 반응 — 저장 직후 크게 */
+.react{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;background:rgba(247,243,235,.94);animation:fadein .2s ease;cursor:pointer;text-align:center;padding:24px}
+.react b{font-size:26px;font-weight:800;letter-spacing:-.02em}.react small{font-size:15px;color:var(--m)}
+.bap.pop{width:min(70vw,280px);height:auto;animation:hop .9s ease-out}
+@keyframes hop{0%{transform:scale(.6) translateY(30px);opacity:0}45%{transform:scale(1.06) translateY(-18px);opacity:1}70%{transform:scale(.98) translateY(0)}85%{transform:translateY(-6px)}100%{transform:none}}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.hero-img,.bap.pop,.react{animation:none}}
 </style>
 </head>
 <body>
@@ -781,7 +849,7 @@ function save(){try{localStorage.setItem(KEY,JSON.stringify(DB))}catch(e){}pushR
 const stats=()=>{const t=DB.stats||(DB.stats={});t.days=t.days||[];t.combo=t.combo||{};return t;};
 function markVisit(){if(!DB.onboarded)return;const t=stats(),d=ymd(new Date());if(t.days.includes(d))return;t.days=[...t.days,d].slice(-180);save();}
 // 조합이 규칙에 걸린 이유를 종류별로 세요 (가장 자주 틀리는 유형을 보려고)
-function comboWhy(p){return /끼니 합/.test(p)?"끼니 수":/먹고 싶은 메뉴/.test(p)?"먹고 싶은 메뉴 빠짐":/못 먹는 재료/.test(p)?"못 먹는 재료":/구할 수 없는|가격 데이터/.test(p)?"목록 밖 재료":/한 끼에만|조금밖에/.test(p)?"적은 재료 여러 번":/두 번/.test(p)?"같은 메뉴 중복":/비어/.test(p)?"재료 없음":"기타";}
+function comboWhy(p){return /끼니 합/.test(p)?"끼니 수":/먹고 싶은 메뉴/.test(p)?"먹고 싶은 메뉴 빠짐":/고른 냉장고 재료/.test(p)?"고른 재료 빠짐":/못 먹는 재료/.test(p)?"못 먹는 재료":/구할 수 없는|가격 데이터/.test(p)?"목록 밖 재료":/한 끼에만|조금밖에/.test(p)?"적은 재료 여러 번":/두 번/.test(p)?"같은 메뉴 중복":/비어/.test(p)?"재료 없음":"기타";}
 function countCombo(round,kind,why){const c=stats().combo;c[round]=(c[round]||0)+1;if(kind==="pass")c[round==="first"?"pass1":"pass2"]=(c[round==="first"?"pass1":"pass2"]||0)+1;
  if(kind==="err")c.err=(c.err||0)+1;if(why){c.why=c.why||{};c.why[why]=(c.why[why]||0)+1;}}
 
@@ -841,7 +909,7 @@ async function deleteAccount(){if(!A.user)return;A.busy=true;render();
  A.busy=false;render();}
 
 /* 화면 상태 (저장 안 됨) */
-const S={step:0,busy:null,sheet:null,agree:false,p:null,err:"",view:"app",tab:"home",editKey:null,editW:false,
+const S={htab:"today",bym:null,editB:false,tm:null,picked:[],mf:null,pay:null,react:null,paidJust:0,step:0,busy:null,sheet:null,agree:false,p:null,err:"",view:"app",tab:"home",editKey:null,editW:false,
   mcat:"채소",recorded:0,rview:"make",rsel:null,rcount:3,extra:"",req:"",results:[],note:"",
   openR:null,rtab:"uses",left:null,seasCtx:null,seasDraft:[...DEFAULT_SEASONINGS],openWk:null,
   wish:"",noWish:false,planEdit:false,planNote:"",
@@ -870,24 +938,63 @@ const daysAgo=t=>Math.max(0,Math.floor((Date.now()-t)/DAY));
 function presets(){let last=0;return BUDGET_PRESETS.map(([t,base])=>{let m=Math.max(100000,Math.round(base*hh()*P().meals/15/100000)*100000);if(m<=last)m=last+100000;last=m;return [t,m];});}
 const presetMonthly=i=>presets()[i][1];
 const minMonthly=()=>Math.ceil(P().meals*RULES.minPerMeal*hh()*daysIn()/7/10000)*10000;
-// 이번 달 예산 — 앱을 이번 달 중간에 시작했다면 남은 날만큼만 잡아요
-function monthBudget(){const p=DB.profile;if(!p)return 0;
- if(sameMonth(p.startedAt)){const d=new Date(p.startedAt).getDate();return Math.round(p.monthly*(daysIn()-d+1)/daysIn()/100)*100;}
- return p.monthly;}
+// 월 장보기 예산 — 그달에 따로 고친 금액이 있으면 그 금액, 없으면 기본 예산 (가입한 달도 나누지 않아요)
+const ymOf=(t=Date.now())=>{const d=new Date(t);return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;};
+const NOW_YM=ymOf();
+const ymArg=x=>typeof x==="string"?x:ymOf(x?x.getTime():Date.now());
+const ymAdd=(ym,n)=>ymOf(new Date(+ym.slice(0,4),+ym.slice(5)-1+n,1).getTime());
+const ymLabel=ym=>`${+ym.slice(0,4)!==new Date().getFullYear()?ym.slice(0,4)+"년 ":""}${+ym.slice(5)}월`;
+function monthBudget(ym=NOW_YM){const p=DB.profile;if(!p)return 0;const o=(DB.months||{})[ymArg(ym)];return o&&o.budget>0?o.budget:(+p.monthly||0);}
 const spentIn=f=>DB.purchases.filter(f).reduce((a,x)=>a+(+x.price||0),0);
-const spentMonth=(d=new Date())=>spentIn(x=>sameMonth(x.at,d));
+// 결제 내역 — 장보기를 마칠 때 기록한 실제 결제액(장보기 한 건 = 한 줄)만 예산에서 빼요.
+// 예전 방식(품목마다 가격을 적던 때) 기록은 장 본 날 하루치를 한 줄로 묶어 보여줘요.
+function payments(ym){ym=ymArg(ym);
+ const t=(DB.trips||[]).filter(x=>x.paid!=null&&ymOf(x.paidAt||x.at)===ym).map(x=>({id:x.id,kind:x.manual?"manual":"trip",at:x.paidAt||x.at,amount:+x.paid||0,label:x.manual?(x.memo||"직접 기록한 장보기"):(x.label||`${x.meals}끼 장보기`),meals:x.meals,n:x.n||0}));
+ const by={};DB.purchases.filter(x=>!x.trip&&ymOf(x.at)===ym).forEach(x=>{const k=ymd(new Date(x.at));(by[k]=by[k]||[]).push(x);});
+ const old=Object.entries(by).map(([k,a])=>({id:"d:"+k,kind:"legacy",at:a[0].at,amount:a.reduce((s,x)=>s+(+x.price||0),0),label:`장보기 ${a.length}개 품목`,n:a.length}));
+ return [...t,...old].sort((a,b)=>b.at-a.at);}
+const spentMonth=d=>payments(d).reduce((a,x)=>a+x.amount,0);
+const leftMonth=(ym=NOW_YM)=>monthBudget(ym)-spentMonth(ym);
 const spentWeek=(k=NOW_WK)=>spentIn(x=>x.week===k);
-// 이번 주 예산 = (이번 달 남은 예산) ÷ (이번 달 남은 주 수). 한 주에 한 번 계산해서 고정해요.
-function calcWeekly(){const left=daysIn()-new Date().getDate()+1;
- const remain=Math.max(0,monthBudget()-spentMonth()+spentWeek());
- return Math.round(Math.min(remain,remain/Math.max(1,left/7))/100)*100;}
-function weekly(){if(!DB.weeks[NOW_WK]){DB.weeks[NOW_WK]={budget:calcWeekly()};save();}return DB.weeks[NOW_WK].budget;}
-function saveW(){const v=+String($("#wIn").value).replace(/[^0-9]/g,"");if(v>0){weekly();DB.weeks[NOW_WK].budget=v;save();}S.editW=false;render();}
+// (주 단위 예산·응원 문구·주별 절약 계산은 v2에서 월 예산·실제 결제액·끼니 기록으로 바뀌었어요)
 
-// 절약 효과 — 해먹은 끼니 × (배달 한 끼 − 집밥 한 끼). 집밥 한 끼 = 그 주 장본 돈 ÷ 주당 집밥 횟수
-function savings(k=NOW_WK){const cooked=DB.recipes.filter(r=>r.cooked&&r.cookedWeek===k).length;if(!cooked)return null;
- const sp=spentWeek(k)||(DB.weeks[k]?.budget||0),home=sp/Math.max(1,DB.profile.meals),deliv=DELIVERY.perMeal*hh();
- const r=n=>Math.round(n/100)*100;return {cooked,home:r(home),deliv:r(deliv*cooked),saved:r(Math.max(0,(deliv-home)*cooked))};}
+/* ============================================================
+   v2 장보기 건 · 끼니 기록 · 밥풀이
+   trip   : 진행 중인 장보기 {id,at,meals,picked:[냉장고에서 이번에 쓸 재료]}  ← 장보기마다 끼니 수를 따로 정해요
+   trips  : 마친 장보기 {id,at,meals,paid,paidAt,label,n,menus} · 직접 기록한 결제는 {manual:true,memo}
+   meals  : 끼니 기록 {id,date:"YYYY-MM-DD",slot,type:home|deliv|out,menu,cost,inst(배달 대신 해 먹음)}
+   months : 달마다 고친 장보기 예산 {"2026-11":{budget}}
+   ============================================================ */
+const trip=()=>DB.trip||null;
+// 예전(주 단위) 기록을 쓰던 사람 — 이번 주에 짜다 만 장보기가 있으면 장보기 한 건으로 옮겨요
+function migrateV2(){if(DB.v2)return;DB.v2=1;DB.trips=DB.trips||[];DB.meals=DB.meals||[];DB.months=DB.months||{};
+ const pl=DB.plan&&DB.plan.wk===NOW_WK&&Array.isArray(DB.plan.recipes)?DB.plan:null,dr=DB.draft&&DB.draft.wk===NOW_WK?DB.draft:null;
+ if((pl||dr)&&!DB.purchases.some(x=>x.week===NOW_WK)&&!DB.trip){const t={id:uid(),at:(pl||dr).at||Date.now(),meals:(pl||dr).meals||P().meals,picked:[]};
+  DB.trip=t;if(pl)pl.trip=t.id;if(dr)dr.trip=t.id;if(DB.cart&&DB.cart.wk===NOW_WK)DB.cart.trip=t.id;}
+ save();}
+function newTrip(meals){const t={id:uid(),at:Date.now(),meals,picked:[]};DB.trip=t;DB.draft=null;DB.cart={wk:NOW_WK,trip:t.id,items:[]};return t;}
+// 진행 중인 장보기 그만두기 — 받은 조합·장볼 목록은 지우고, 만들어 둔 레시피(해먹을 메뉴)는 남겨요
+function dropTrip(){DB.trip=null;DB.draft=null;DB.cart={wk:NOW_WK,trip:null,items:[]};S.sheet=null;save();}
+// 장보기 마치기 — 실제 결제액을 한 번만 기록해요 (월 예산은 이 금액만 빼요)
+function finishTrip(paid){const t=trip();if(!t)return;const pl=plan();
+ Object.assign(t,{paid:Math.max(0,Math.round(+paid||0)),paidAt:Date.now(),label:`${t.meals}끼 장보기${pl&&pl.label?` · ${pl.label}`:""}`,
+  n:cart().length,menus:pl?pl.recipes.map(findR).filter(Boolean).map(r=>r.title):[]});
+ DB.trips=[...(DB.trips||[]),t];DB.trip=null;}
+// 끼니 기록
+const SLOTS=[["b","아침"],["l","점심"],["d","저녁"],["s","간식"]], MTYPES=[["home","집밥"],["deliv","배달"],["out","외식"]];
+const slotName=k=>(SLOTS.find(x=>x[0]===k)||[,""])[1], typeName=k=>(MTYPES.find(x=>x[0]===k)||[,""])[1];
+const mealList=()=>DB.meals||(DB.meals=[]);
+const homeCount=()=>mealList().filter(m=>m.type==="home").length;
+const todayKey=()=>ymd(new Date());
+const nowSlot=()=>{const h=new Date().getHours();return h<10?"b":h<15?"l":h<21?"d":"s";};
+// 밥풀이 성장 단계 — 집밥 누적 횟수 기준 (단계별 끼니 수는 기획에서 추후 확정, 지금은 임시 값)
+const STAGES=[5,15,30];
+const stageOf=n=>STAGES.filter(v=>n>=v).length, nextStage=n=>STAGES.find(v=>v>n)||null;
+// 배달 대비 예상 절약액 — '배달 대신 해 먹었어요'를 고르고 재료비를 적은 집밥만, (평소 배달 한 끼 − 그 집밥 재료비)
+const delivCost=()=>+(DB.profile&&DB.profile.delivCost)||0;
+function savingsOf(ym=NOW_YM){const dc=delivCost(),list=mealList().filter(m=>m.type==="home"&&m.inst&&+m.cost>0&&m.date.slice(0,7)===ym).sort((a,b)=>a.date<b.date?1:-1);
+ return{dc,list,n:list.length,total:dc?list.reduce((a,m)=>a+Math.max(0,dc-m.cost),0):0};}
+const bapImg=(k,cls="")=>`<img class="bap ${cls}" src="img/bapuri-${k}.webp" alt="밥풀이" draggable="false">`;
 
 /* 식재료·가격 */
 // 가격 — 가게를 골랐으면 그 가게에서 조사된 값만, '구 평균'을 골랐으면 그 구 가게들 평균(같은 규격·단위끼리만)
@@ -960,7 +1067,32 @@ const emojiOf=n=>{const it=itemByName(n);if(it)return it.emoji;if(SEASONINGS.inc
 const ingIc=n=>emo(emojiOf(n));
 // 레시피에 이 재료가 들어가는지 (이름 전체, 3글자 이상이면 앞 2글자로도 확인)
 function mentions(r,n){const t=(r.title||"")+" "+(r.uses||[]).join(" "),c=coreName(n);return !!c&&(t.includes(c)||(c.length>=3&&t.includes(c.slice(0,2))));}
-function recipeIc(r){const it=ITEMS.find(i=>i.name.length>=2&&mentions(r,i.name))||ITEMS.find(i=>mentions(r,i.name));return emo(it?it.emoji:"🍲");}
+// 메뉴 이모지 — 메뉴 이름에 나온 주재료(고기·생선 먼저, 그다음 이름에서 앞에 나온 것)를 먼저 봐요.
+//   이름에 재료가 없을 때만 들어가는 재료 목록에서 찾아요 (예전엔 목록 순서라 닭고기 요리에 마늘이 떴어요)
+const IC_PRI={meat:0,fish:0,processed:1,dairy:1,staple:2,veg:3,fruit:4};
+function titleIc(t){t=String(t||"");let best=null;
+ for(const i of ITEMS){if(!(i.group in IC_PRI))continue;
+  const ns=[coreName(i.name),...i.alias.map(coreName)].filter(n=>n.length>=2||(i.group==="meat"&&n.length===1));
+  const p=Math.min(...ns.map(n=>{const k=t.indexOf(n);return k<0?1e9:k;}));if(p>=1e9)continue;
+  const sc=IC_PRI[i.group]*1000+p;if(!best||sc<best.sc)best={i,sc};}
+ return best&&best.i;}
+// 메뉴 예시 사진 — /api/photo가 식품안전나라 레시피 DB에서 비슷한 요리 사진을 찾아줘요. 없으면 이모지 그대로.
+const PHOTO={};   // 메뉴명 → 사진 주소 | null(없음) | 0(찾는 중)
+const photoOn=()=>location.protocol.startsWith("http");
+const photoImg=u=>`<img src="${esc(u)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="photoFail(this)"><em class="phtag">예시 사진</em>`;
+// 사진을 못 불러오면 이모지로 돌아가고, 다시 그려도 그 사진은 안 써요
+function photoFail(img){const el=img.parentNode,t=el.dataset.photo;PHOTO[t]=null;el.classList.remove("ph");el.innerHTML=recipeIc({title:t});}
+function thumb(r,cls="th",style=""){const t=String(r.title||""),u=PHOTO[t];
+ return `<div class="${cls}${u?" ph":""}" data-photo="${esc(t)}"${style?` style="${style}"`:""}>${u?photoImg(u):recipeIc(r)}</div>`;}
+function setPhoto(el,u){if(el.classList.contains("ph"))return;el.classList.add("ph");el.innerHTML=photoImg(u);const c=document.getElementById("photocredit");if(c)c.hidden=false;}
+function fillPhotos(){if(!photoOn())return;
+ document.querySelectorAll("[data-photo]").forEach(el=>{const t=el.dataset.photo;if(!t)return;
+  if(PHOTO[t])return setPhoto(el,PHOTO[t]);if(t in PHOTO)return;PHOTO[t]=0;
+  fetch("/api/photo?q="+encodeURIComponent(t)).then(r=>r.ok?r.json():{url:null}).then(j=>{PHOTO[t]=j&&j.url||null;
+   if(PHOTO[t])document.querySelectorAll("[data-photo]").forEach(e=>{if(e.dataset.photo===t)setPhoto(e,PHOTO[t]);});})
+  .catch(()=>{PHOTO[t]=null;});});}
+const anyPhoto=()=>Object.values(PHOTO).some(Boolean);
+function recipeIc(r){const tt=titleIc(r.title);if(tt)return emo(tt.emoji);const it=ITEMS.find(i=>i.name.length>=2&&mentions(r,i.name))||ITEMS.find(i=>mentions(r,i.name));return emo(it?it.emoji:"🍲");}
 
 /* ============================================================
    ③-1 냉장고 — 재료는 넉넉/보통/조금/다 씀, 조미료는 있음/조금/다 떨어짐
@@ -1039,7 +1171,7 @@ function saveSeas(){const nw={};
 /* ============================================================
    ③-2 장보기 — 장볼 목록 담기 → 산 것 체크(가격 수정·직접 추가) → 기록하면 냉장고로
    ============================================================ */
-function cart(){if(DB.cart.wk!==NOW_WK){DB.cart={wk:NOW_WK,items:DB.cart.items||[]};save();}return DB.cart.items;}
+function cart(){const id=trip()?.id||null;if((DB.cart.trip||null)!==id){DB.cart={wk:NOW_WK,trip:id,items:[]};}return DB.cart.items;}
 const inCart=key=>cart().some(x=>x.key===key);
 const cartTotal=()=>cart().reduce((a,x)=>a+(+x.price||0),0);
 function cartItemOf(key){
@@ -1062,12 +1194,12 @@ function addManual(){const n=$("#mName").value.trim(),pr=+String($("#mPrice").va
 const QTY=[["full","많이"],["mid","보통"],["low","적게"]];
 const qtyLabel=k=>(QTY.find(x=>x[0]===k)||[])[1]||"";
 function setQty(k){S.mqty=k;document.querySelectorAll(".qseg button").forEach(b=>b.classList.toggle("on",b.dataset.k===k));}
-function commitCart(){const c=cart(),b=c;if(!b.length)return;weekly();   // 목록에 남아 있는 건 전부 산 것 (안 산 건 ✕로 빼요)
+function commitCart(paid){const c=cart(),b=[...c],tid=trip()?.id||null;   // 목록에 남아 있는 건 전부 산 것 (안 산 건 ✕로 빼요)
  b.forEach(x=>{const pid=uid();
-  DB.purchases.push({id:pid,week:NOW_WK,at:Date.now(),name:x.name,price:+x.price||0,kind:x.kind,src:x.kind==="manual"?"manual":"rec"});
+  DB.purchases.push({id:pid,week:NOW_WK,at:Date.now(),name:x.name,price:+x.price||0,kind:x.kind,src:x.kind==="manual"?"manual":"rec",trip:tid});
   if(x.kind==="seas")DB.seas[coreName(x.name)]=x.qty==="low"?"low":"have";else putPantry(x.name,x.qty||"full","buy",pid);});   // 얼마나 샀는지 → 냉장고 남은 양
- DB.cart.items=[];S.recorded=b.length;save();
- toast(`${b.length}개를 냉장고에 넣었어요`);   // 조미료는 온보딩·냉장고·내 정보·'오늘 뭐 해먹지?'에서 따로 확인해요
+ S.paidJust=Math.max(0,Math.round(+paid||0));finishTrip(paid);DB.cart={wk:NOW_WK,trip:null,items:[]};S.recorded=b.length||-1;S.sheet=null;save();
+ toast(b.length?`${b.length}개를 냉장고에 넣고 결제액을 기록했어요`:"결제액을 기록했어요");   // 조미료는 온보딩·냉장고·내 정보·'오늘 뭐 해먹지?'에서 따로 확인해요
  render();scrollTo(0,0);}
 function delPurchase(id){DB.purchases=DB.purchases.filter(x=>x.id!==id);DB.pantry=DB.pantry.filter(x=>x.pid!==id);save();keep();}
 
@@ -1077,9 +1209,8 @@ function delPurchase(id){DB.purchases=DB.purchases.filter(x=>x.id!==id);DB.pantr
    생각해서 실제 판매 단위로 잡고, 남으면 뭘 해먹을 수 있는지(also)도 같이 받아요.
    가격: 실제 데이터에 있는 재료만 프로그램이 계산하고, 없으면 '가격 데이터 없음'으로 보여요 (AI는 가격을 만들지 않아요).
    ============================================================ */
-const WISH_QUICK=["국물 요리 하나는 꼭","간단한 한 그릇 요리","고기 반찬 위주","매운 건 빼고"];
-const plan=()=>DB.plan&&DB.plan.wk===NOW_WK&&Array.isArray(DB.plan.recipes)?DB.plan:null;   // 예전 형식(레시피 없는 계획)은 다시 짜요
-function addWish(t){const el=$("#wish");const v=(el?el.value:S.wish).trim();S.wish=v?`${v}, ${t}`:t;S.noWish=false;keep();}
+const lastPlan=()=>DB.plan&&Array.isArray(DB.plan.recipes)?DB.plan:null;
+const plan=()=>{const pl=lastPlan(),t=trip();return pl&&t&&pl.trip===t.id?pl:null;};   // 진행 중인 장보기의 장볼 목록   // 예전 형식(레시피 없는 계획)은 다시 짜요
 function setNoWish(){S.noWish=!S.noWish;if(S.noWish)S.wish="";keep();}
 function typeWish(el){S.wish=el.value;if(S.noWish){S.noWish=false;document.querySelector(".chip.nowish")?.classList.remove("on");}}
 function openPlanEdit(){const pl=draft()||plan();S.planEdit=true;S.pview="wish";S.wish=pl?pl.wish:"";S.noWish=!!pl&&!pl.wish;S.planNote="";render();scrollTo(0,0);}
@@ -1196,38 +1327,67 @@ function seasLines(skip){return Object.entries(seasMapNow()).filter(([k,v])=>v!=
 function normRecipe(x,wish){/* meals: 이 메뉴로 몇 끼를 먹는지 (먹고 싶은 메뉴는 2끼) */const ings=(x.ingredients||[]).map(g=>({name:String(g.name||"").trim(),qty:+g.qty||0,unit:String(g.unit||"").trim()})).filter(g=>g.name);
  return{title:String(x.title||"").trim(),wish:!!wish,time_min:x.time_min,level:x.level,ingredients:ings,steps:(x.steps||[]).map(String).filter(Boolean),
   uses:ings.map(g=>`${g.name}${g.qty?` ${g.qty}${g.unit}`:""}`)};}
-async function askRecipes(sys,usr){const r=JSON.parse(await callLLM(sys,usr,LLM.model,LLM_FAST));if(!Array.isArray(r.recipes))throw new Error("형식 오류");return r.recipes;}
+async function askRecipes(sys,usr){const r=await askJSON(sys,usr,LLM.model,LLM_FAST);if(!Array.isArray(r.recipes))throw new Error("형식 오류");return r.recipes;}
 function leftLines(al){return al.items.map(b=>`${b.it.name}${specOf(b.pr)?`[${specOf(b.pr)}]`:""}: ${b.q.label} 사서 ${b.q.need!=null?fmtAmt(b.q.need,b.q.lu)+" 씀":"일부 씀"} → ${b.q.left!=null?`${fmtAmt(b.q.left,b.q.lu)} 남음`:"남은 양 모름(남았다고 보고 꼭 쓰기)"}`).join("\n")||"없음";}
 
 // ── ③ 먹고 싶은 메뉴로 N끼 조합 3안 (AI) → 프로그램이 안마다 검사·가격 계산 → 사용자가 하나 고르면 장볼 목록 ──
 //   먹고 싶은 메뉴는 모든 안에 꼭 들어가고, 한 번 만들어 2끼로 먹어요(끼니가 모자라면 1끼).
-const WISH_MEALS=2;
+// 먹고 싶은 메뉴는 메뉴 이름만 받아요 (AI가 아니라 코드 규칙으로 검사)
+//   통과: "김치찌개", "김치찌개와 파스타", "김치찌개랑 제육볶음 먹고 싶어요", "닭가슴살 샐러드"
+//   막음: "고기 반찬 위주", "매운 건 빼고", "간단한 한 그릇 요리" → 메뉴 이름만 다시 적어 달라고 해요
+const MENU_END=["찌개","전골","국","탕","볶음","밥","면","국수","라면","라멘","우동","소바","파스타","스파게티","리조또","그라탕","피자","구이","조림","찜","무침","나물","전","부침개","튀김","까스","가스","카츠","샐러드","카레","커리","짜장","짬뽕","볶이","스테이크","죽","수프","스프","샌드위치","토스트","버거","오믈렛","말이","쌈","샤브샤브","수육","보쌈","족발","불고기","갈비","제육","잡채","강정","꼬치","스튜","볼","만두","수제비","순대","동","나베","야키","라이스","커틀릿","치킨","두부","후라이","프라이","냉채","주물럭","두루치기","볶음밥","덮밥","김밥","초밥","비빔밥"];
+const MENU_NAMES=["라면","라멘","우동","소바","냉면","쫄면","파스타","스파게티","리조또","그라탕","라자냐","뇨끼","피자","카레","커리","짜장","짬뽕","스테이크","샌드위치","토스트","버거","햄버거","오믈렛","샤브샤브","수육","보쌈","족발","불고기","갈비","제육","잡채","만두","수제비","순대","스튜","치킨","부침개","김밥","초밥","비빔밥","떡볶이","라볶이","감바스","마파두부","순두부","라따뚜이","에그인헬","샥슈카","찜닭","백숙","통닭","삼겹살","목살","주물럭","두루치기","짜글이","누룽지","컵밥","짜파게티","고로케","크로켓","핫도그","팬케이크","와플","동그랑땡","팟타이","나시고렝","분짜","반미","훠궈","마라샹궈","포케","빠에야","하이라이스","오므라이스","타코","부리또","브리또","퀘사디아","가라아게","유린기","깐풍기","탕수육","육회","월남쌈","떡갈비","빈대떡","겉절이","월남쌈","미트볼","함박스테이크","돈가스","돈까스","카츠"];
+const NOT_MENU=["위주","빼고","빼줘","말고","제외","없이","반찬","요리","음식","메뉴","아무","건강","다이어트","저렴","싸게","싼거","많이","적게","간단","쉬운","쉽게","종류","스타일","느낌","같은","하나","매일","주로","좋은","좋게","싫어","안매운","덜맵","단백질","칼로리","가볍게","든든","영양","국물"];
+const WISH_FILL=/^(먹고|싶어요|싶어|싶다|싶네요|싶습니다|싶음|먹고싶어요|먹고싶어|먹고싶다|먹고싶음|해먹고|해먹고싶어요|만들고|해주세요|해줘|주세요|부탁해요|부탁드려요|좋아요|좋겠어요|정도|요|랑|와|과|하고|이랑|및|그리고|또는|아니면|이나|나|등|도)$/;
+const WISH_PART=["이랑","하고","이나","와","과","랑","을","를","이","가","은","는","도","나","요","등"];
+const isMenuName=t=>{if(t.length<2||t.length>15||!/^[가-힣]+$/.test(t))return false;
+ if(NOT_MENU.some(w=>t.includes(w)))return false;
+ return MENU_NAMES.includes(t)||MENU_END.some(e=>t.length>e.length&&t.endsWith(e));};
+// 문장 → {menus:[메뉴 이름], bad:[메뉴가 아닌 말]}
+function parseWish(text){const menus=[],bad=[];let cur=[];
+ const flush=()=>{if(!cur.length)return;const t=cur.join("");(isMenuName(t)?menus:bad).push(cur.join(" "));cur=[];};
+ const words=String(text||"").replace(/[.!?~…"'“”]/g," ").split(/[\s,，、·\/&+\n]+/).filter(Boolean)
+  .map(w=>w.replace(/(을|를)?(해)?(먹고|만들어)?싶\S*$/,"").replace(/(해주세요|해줘|주세요)$/,"")).filter(Boolean);
+ for(const w of words){
+  if(WISH_FILL.test(w)){flush();continue;}
+  const head=cur.join("");
+  if(isMenuName(head)&&isMenuName(w)){flush();cur.push(w);continue;}   // "김치찌개 파스타" → 두 메뉴
+  if(isMenuName(head+w)){cur.push(w);continue;}
+  const p=WISH_PART.find(p=>w.length>p.length&&w.endsWith(p)&&isMenuName(head+w.slice(0,-p.length)));
+  if(p){cur.push(w.slice(0,-p.length));flush();continue;}   // "김치찌개와" → 김치찌개 + (다음 메뉴)
+  cur.push(w);}
+ flush();
+ return {menus:[...new Set(menus.map(m=>m.replace(/\s/g,"")))],bad};}
 const COMBO_FMT='{"wishes":["먹고 싶은 메뉴명"],"combos":[{"label":"짧은 이름","desc":"이 안의 특징 한 줄","menus":[{"title":"메뉴명","wish":true,"meals":2,"time_min":20,"level":"쉬움|보통","ingredients":[{"name":"재료명","qty":300,"unit":"g"}]}]}]}';
-const draft=()=>DB.draft&&DB.draft.wk===NOW_WK?DB.draft:null;
+const draft=()=>{const t=trip();return DB.draft&&t&&DB.draft.trip===t.id?DB.draft:null;};
 // 한 안이 규칙에 맞는지 — 끼니 합, 먹고 싶은 메뉴 포함, 못 먹는 재료, 구할 수 있는 재료, 크로스체크
 function comboProblem(recs,wishes,N){if(!recs.length)return "메뉴가 없어요";
  const sum=recs.reduce((a,r)=>a+r.meals,0);if(sum!==N)return `끼니 합이 ${sum}끼예요`;
- for(const w of wishes)if(!recs.some(r=>r.wish&&(r.title.includes(w)||w.includes(r.title))))return `먹고 싶은 메뉴 '${w}'이(가) 빠졌어요`;
+ for(const w of wishes){const b=squash(w);if(!recs.some(r=>{const a=squash(r.title);return r.wish&&(a.includes(b)||b.includes(a));}))return `먹고 싶은 메뉴 '${w}'이(가) 빠졌어요`;}
+ for(const n of (trip()?.picked||[])){const b=squash(n);if(!recs.some(r=>r.ingredients.some(g=>{const a=squash(g.name);return a===b||(a.length>=2&&b.length>=2&&(a.includes(b)||b.includes(a)));})))return `고른 냉장고 재료 '${n}'을(를) 안 썼어요`;}
  for(const r of recs){const h=recipeAvoid(r);if(h)return `'${r.title}'에 못 먹는 재료(${h})가 있어요`;}
  const al=allocate(recs);if(al.bad.length)return `'${al.bad[0].r.title}' — ${al.bad[0].reason}`;
  const iss=crossCheck(recs,al);if(iss.length)return `'${iss[0].title}' — ${iss[0].msg}`;
  return null;}
 // 조합 3안은 동시에 요청해요 — 안마다 방향을 하나씩 맡겨 짧게 답하게 하면 한 번에 3안을 받는 것보다 훨씬 빨라요
 const COMBO_DIRS=[["남김없이","사고 남는 재료(판매 단위가 큰 재료)를 여러 메뉴에 나눠 끝까지 쓰기"],["알뜰하게","새로 살 재료 합계를 가장 적게, 냉장고 재료를 최대한 쓰기"],["간단하게","조리가 짧고 재료 가짓수가 적은 메뉴 위주"]];
-const COMBO_ONE='{"wishes":["먹고 싶은 메뉴명"],"desc":"이 조합의 특징 한 줄","menus":[{"t":"메뉴명","w":1,"m":2,"i":[["재료명",300,"g"]]}]}';
-function parseCombo(txt){const c=JSON.parse(txt);
+const COMBO_ONE='{"wishes":["먹고 싶은 메뉴명"],"desc":"이 조합의 특징 한 줄","menus":[{"t":"메뉴명","w":1,"m":1,"i":[["재료명",300,"g"]]}]}';
+function parseCombo(c){
  const recs=(c.menus||[]).map(m=>{const ings=(m.i||m.ingredients||[]).map(g=>Array.isArray(g)?{name:g[0],qty:g[1],unit:g[2]}:g);
   return{...normRecipe({title:m.t||m.title,ingredients:ings,steps:[]},!!(m.w??m.wish)),meals:Math.max(1,Math.round(+(m.m??m.meals)||1))};}).filter(r=>r.title);
  return{wishes:(c.wishes||[]).map(x=>String(x).trim()).filter(Boolean),desc:String(c.desc||""),recipes:recs};}
 async function makeCombos(){const el=$("#wish");S.wish=(el?el.value:S.wish||"").trim().slice(0,WISH_MAX);const wish=S.wish;
  {const m=safetyHit(wish);if(m){S.planNote=m;S.wish="";return render();}}
- if(S.work)return;S.work="plan";S.planNote="";render();
- const N=P().meals,room=Math.max(0,weekly()-spentWeek()),why=[],errs=[],valid=[];
- const sysBase=`당신은 "냉장고 털기" 집밥 식단 도우미입니다. ${N}끼 메뉴 조합 1개를 만듭니다. 반드시 JSON만, 아래 형식 그대로 짧게 출력하세요(설명·코드블록 금지): ${COMBO_ONE}. t=메뉴명, w=먹고 싶은 메뉴면 1 아니면 0, m=이 메뉴로 먹는 끼니 수, i=[재료명, 분량, 단위] 목록(그 메뉴 m끼 전체 분량). 규칙: 사용자가 먹고 싶다고 한 메뉴는 wishes에 적고 w:1, m:${WISH_MEALS}로 꼭 넣기. m 합은 정확히 ${N}(먹고 싶은 메뉴×${WISH_MEALS}가 ${N}보다 많으면 일부만 1). 나머지 메뉴는 w:0, m:1, 서로 겹치지 않게. 먹고 싶은 메뉴가 없으면 wishes는 빈 배열. 사고 남는 재료와 냉장고 재료는 다른 메뉴에서 이어 써서 남김없이 쓰기. ${ingRules()}`;
- const usr=`먹고 싶은 메뉴: ${wish||"없음"}\n끼니 수: ${N}끼\n이번 주 남은 예산: ${room}원\n[냉장고 재료] ${fridgeLines()}\n[가진 조미료] ${seasLines()}\n[살 수 있는 재료(${placeOf(P())} 실제 가격)] ${catLinesShort()}\n인원: ${P().people}명\n기피/알레르기: ${avoidText()}`;
+ const N=tripMeals(),pw=parseWish(wish),wishM=pw.menus;
+ if(wish&&(pw.bad.length||!wishM.length)){S.planNote=`${pw.bad.length?`'${esc(pw.bad[0])}'은(는) 메뉴 이름이 아니에요. `:""}김치찌개처럼 메뉴 이름만 적어주세요.`;return render();}
+ if(wishM.length>N){S.planNote=`먹고 싶은 메뉴가 ${N}끼보다 많아요. 끼니 수를 늘리거나 메뉴를 줄여주세요.`;return render();}
+ if(S.work)return;S.work="plan";S.planNote="";startProg("plan");render();if(!trip())newTrip(N);Object.assign(trip(),{meals:N,picked:pickedNow()});
+ const room=Math.max(0,leftMonth()),pk=trip().picked,why=[],errs=[],valid=[];
+ const sysBase=`당신은 "냉장고 털기" 집밥 식단 도우미입니다. ${N}끼 메뉴 조합 1개를 만듭니다. 반드시 JSON만, 아래 형식 그대로 짧게 출력하세요(설명·코드블록 금지): ${COMBO_ONE}. t=메뉴명, w=먹고 싶은 메뉴면 1 아니면 0, m=이 메뉴로 먹는 끼니 수, i=[재료명, 분량, 단위] 목록(그 메뉴 m끼 전체 분량). 규칙: 사용자가 먹고 싶다고 한 메뉴는 wishes에 그대로 적고 w:1로 꼭 넣기. 나머지 메뉴는 w:0, 서로 겹치지 않게. m은 기본 1. 김치찌개·카레·곰탕처럼 한 끼 분량만 만들기 어려운 메뉴는 m:2로 해도 되지만 꼭 그럴 필요는 없음(먹고 싶은 메뉴라고 무조건 2끼로 하지 말기). m 합은 정확히 ${N}. 먹고 싶은 메뉴가 없으면 wishes는 빈 배열. 사고 남는 재료와 냉장고 재료는 다른 메뉴에서 이어 써서 남김없이 쓰기.${pk.length?` 사용자가 이번에 꼭 쓰겠다고 고른 냉장고 재료(${pk.join(", ")})는 모두 어떤 메뉴에든 넣고, 여러 개면 그 재료들을 함께 쓰는 메뉴를 menus 맨 앞에 두기.`:""} ${ingRules()}`;
+ const usr=`먹고 싶은 메뉴: ${wishM.join(", ")||"없음"}\n끼니 수: ${N}끼\n이번 달 남은 장보기 예산: ${room}원\n[냉장고 재료] ${fridgeLines()}${pk.length?`\n[이번에 꼭 쓸 냉장고 재료] ${pk.join(", ")}`:""}\n[가진 조미료] ${seasLines()}\n[살 수 있는 재료(${placeOf(P())} 실제 가격)] ${catLinesShort()}\n인원: ${P().people}명\n기피/알레르기: ${avoidText()}`;
  const keyOf=c=>c.recipes.map(r=>r.title).sort().join("+");
- const ask=(k,prev)=>callLLM(sysBase+` 이번 조합의 방향: '${COMBO_DIRS[k][0]}' — ${COMBO_DIRS[k][1]}.`,usr+(prev.length?`\n이미 나온 조합(이것과 다르게): ${prev.join(" / ")}`:""),LLM.planModel,LLM_PLAN)
-  .then(t=>({k,label:COMBO_DIRS[k][0],...parseCombo(t)}));
+ const ask=(k,prev)=>askJSON(sysBase+` 이번 조합의 방향: '${COMBO_DIRS[k][0]}' — ${COMBO_DIRS[k][1]}.`,usr+(prev.length?`\n이미 나온 조합(이것과 다르게): ${prev.join(" / ")}`:""),LLM.planModel,LLM_PLAN)
+  .then(t=>({k,label:COMBO_DIRS[k][0],...parseCombo(t),wishes:wishM}));   // 먹고 싶은 메뉴는 코드가 읽은 이름으로 검사해요
  // 받은 안 검사 — 규칙에 안 맞으면 그 자리만 다시 요청해요 (시간 초과·연결 오류는 다시 요청하지 않아요)
  const take=(settled,ks,round)=>{const retry=[];settled.forEach((r,j)=>{const k=ks[j];
   if(r.status!=="fulfilled"){const m=r.reason?.message||"오류";errs.push(m);countCombo(round,"err",/형식|JSON|Unexpected/.test(m)?"형식 오류":"연결·시간 초과");return;}
@@ -1238,45 +1398,41 @@ async function makeCombos(){const el=$("#wish");S.wish=(el?el.value:S.wish||"").
  if(retry.length){const prev=valid.map(keyOf);take(await Promise.allSettled(retry.map(k=>ask(k,prev))),retry,"retry");}
  save();S.work=null;S.tab="pick";S.view="app";
  if(!valid.length){
-  S.planNote=errs.length&&!why.length?(LLM.proxy?`메뉴 조합을 만들지 못했어요. 잠시 후 다시 시도해 주세요. (${esc(errs[0])})`:"AI가 연결되지 않아 메뉴 조합을 만들 수 없어요. LLM 설정에 API 키를 넣거나 Claude 미리보기에서 열어주세요.")
+  S.planNote=errs.length&&!why.length?(LLM.proxy?`메뉴 조합을 만들지 못했어요. 잠시 후 다시 시도해 주세요.${errTail(errs[0])}`:"AI가 연결되지 않아 메뉴 조합을 만들 수 없어요. LLM 설정에 API 키를 넣거나 Claude 미리보기에서 열어주세요.")
    :`조건에 맞는 메뉴 조합을 만들지 못했어요. ${esc(why.slice(0,2).join(" / "))}`;
   return render();}
  valid.sort((a,b)=>a.k-b.k);
- DB.draft={wk:NOW_WK,at:Date.now(),wish,meals:N,wishes:valid[0].wishes,combos:valid.map(({k,wishes,...c})=>c),dropped:3-valid.length};
+ DB.draft={wk:NOW_WK,trip:trip().id,at:Date.now(),wish,meals:N,wishes:valid[0].wishes,combos:valid.map(({k,wishes,...c})=>c),dropped:3-valid.length};
  S.comboSel=null;S.planEdit=false;S.pview="combo";S.planNote="";save();render();scrollTo(0,0);}
 
 // 고른 조합으로 장볼 목록 확정 — 지금 냉장고·가격으로 다시 배정하고 크로스체크한 뒤 저장
 function confirmCombo(){const dr=draft(),c=dr&&dr.combos[S.comboSel];if(!c)return;
  const recs=c.recipes,al=allocate(recs),p=comboProblem(recs,dr.wishes,dr.meals);
  if(p){S.planNote=`이 조합은 지금 쓸 수 없어요: ${p}. 메뉴를 다시 받아주세요.`;return render();}
- const notes=[],room=Math.max(0,weekly()-spentWeek()),total=al.items.reduce((a,b)=>a+b.q.cost,0);
- if(total>room)notes.push(`장볼 재료 합계가 이번 주 남은 예산보다 ${won(total-room)} 많아요.`);
+ const notes=[],room=Math.max(0,leftMonth()),total=al.items.reduce((a,b)=>a+b.q.cost,0);
+ if(total>room)notes.push(`장볼 재료 합계가 ${ymLabel(NOW_YM)} 남은 장보기 예산보다 ${won(total-room)} 많아요.`);
  const old=plan();if(old)DB.recipes=DB.recipes.filter(r=>!(old.recipes.includes(r.id)&&!r.cooked&&!isScrap(r.id)));
  const ids=recs.map(r=>{const rec={...r,steps:[],id:uid(),at:Date.now(),week:NOW_WK,planWk:NOW_WK,cooked:false};DB.recipes.push(rec);return rec.id;});   // 조리법은 열어볼 때 만들어요
  const items=al.items.map(b=>({key:"p:"+b.it.id,name:b.it.name,unit:b.q.label,spec:specOf(b.pr),price:b.q.cost,pr:b.pr,date:b.pr.date,
   kind:b.it.group==="seas"?"seas":"item",for:[...new Set(b.recipes)],left:b.q.left,lu:b.q.lu,unknown:!!b.q.unknown}));
- DB.plan={wk:NOW_WK,at:Date.now(),wish:dr.wish,meals:dr.meals,label:c.label,recipes:ids,items,notes,
+ DB.plan={wk:NOW_WK,trip:trip()?.id,at:Date.now(),wish:dr.wish,meals:dr.meals,label:c.label,recipes:ids,items,notes,
   fridge:al.fridge.map(f=>({name:f.item.name,level:f.item.level,recipes:[...new Set(f.recipes)]})),
   check:{ok:true,avoid:avoidText()==="없음"?"":avoidText()}};
  cart();DB.cart.items=DB.cart.items.filter(x=>!x.key.startsWith("p:")).concat(items.map(({pr,...x})=>({...x,bought:true})));
  dr.sel=S.comboSel;DB.plan.draftAt=dr.at;   // 조합은 지우지 않고 남겨둬요 (2단계로 돌아가 다시 고를 수 있게)
  S.comboSel=null;S.menus=null;S.pview="list";save();render();scrollTo(0,0);}
-// 조합 미리보기용 — 안마다 장볼 재료 수·합계·많이 남는 재료 (실제 데이터로 계산)
-function comboSummary(c){const al=allocate(c.recipes),total=al.items.reduce((a,b)=>a+b.q.cost,0);
- const lefts=al.items.filter(b=>b.q.left>0).sort((a,b)=>b.q.cost-a.q.cost).slice(0,2).map(b=>`${b.it.name} 약 ${fmtAmt(b.q.left,b.q.lu)}`);
- return{n:al.items.length,total,lefts};}
 
 // 레시피 조리법은 처음 열어볼 때 만들어요 (재료·분량은 고른 조합 그대로, 새 재료 추가 금지)
 async function ensureSteps(id){const r=findR(id);if(!r||(r.steps&&r.steps.length)||S.stepsWork)return;
- S.stepsWork=id;S.stepsErr="";render();
+ S.stepsWork=id;S.stepsErr="";startProg("steps");render();
  const sys='당신은 집밥 레시피 도우미입니다. 반드시 JSON만 출력하세요(설명·코드블록 금지). 형식: {"steps":["조리 단계"],"time_min":20,"level":"쉬움|보통"}. 규칙: 주어진 재료와 분량만 사용(물 제외, 새 재료 추가 금지). 기피·알레르기 재료는 절대 쓰지 말기. 가격 숫자 금지. 의료·치료 조언 금지.';
  const usr=`메뉴: ${r.title}${r.meals>1?` (${r.meals}끼분을 한 번에 만들어요)`:""}\n재료: ${(r.uses||[]).join(", ")}\n인원: ${P().people}명\n기피/알레르기: ${avoidText()}`;
- try{const x=JSON.parse(await callLLM(sys,usr,LLM.model,LLM_FAST)),st=(x.steps||[]).map(String).filter(Boolean);if(!st.length)throw new Error("형식 오류");
+ try{const x=await askJSON(sys,usr,LLM.model,LLM_FAST),st=(x.steps||[]).map(String).filter(Boolean);if(!st.length)throw new Error("형식 오류");
   const h=recipeAvoid({...r,steps:st});if(h)throw new Error(`조리법에 못 먹는 재료(${h})가 들어가 보여드리지 않았어요`);
   Object.assign(r,{steps:st,time_min:r.time_min||x.time_min,level:r.level||x.level});save();}
- catch(e){S.stepsErr=LLM.proxy||!/연결/.test(e.message)?`조리법을 불러오지 못했어요. (${esc(e.message)})`:"AI가 연결되지 않아 조리법을 만들 수 없어요.";}
+ catch(e){S.stepsErr=LLM.proxy||!/연결/.test(e.message)?`조리법을 불러오지 못했어요. 잠시 후 다시 시도해 주세요.${errTail(e.message)}`:"AI가 연결되지 않아 조리법을 만들 수 없어요.";}
  S.stepsWork=null;render();}
-const planRecs=()=>{const pl=plan();return pl?pl.recipes.map(findR).filter(Boolean):[];};
+const planRecs=()=>{const pl=lastPlan();return pl?pl.recipes.map(findR).filter(Boolean):[];};
 const planMeals=()=>planRecs().reduce((a,r)=>a+(r.meals||1),0);
 
 /* ============================================================
@@ -1287,6 +1443,21 @@ const isScrap=id=>DB.scraps.some(r=>r.id===id);
 function toggleScrap(id){if(isScrap(id)){DB.scraps=DB.scraps.filter(r=>r.id!==id);toast("저장을 취소했어요");}
  else{const r=findR(id);DB.scraps.unshift({...r});toast("저장한 레시피에 담았어요");}save();keep();}
 function openRecipe(id){S.openR=id;S.rtab="uses";S.left=null;S.stepsErr="";render();const r=findR(id);if(r&&!(r.steps||[]).length)ensureSteps(id);}
+
+// AI 답 검사 — 화면에 나갈 글자에 **강조**, ## 제목, </태그> 같은 형식 기호가 섞이면 걷어내요.
+//   걷어내도 이상한 기호가 남거나 JSON이 깨졌으면 한 번 더 요청하고, 그래도 안 되면 "형식 오류"로 실패시켜요.
+//   (화면에는 이상한 글자 대신 "다시 시도해 주세요"만 보여요)
+const AI_TAG=/<\/?[a-zA-Z][^>]*>/g, AI_MD=/\*{2,}|_{2,}|^\s*#{1,6}\s+|^\s*\*\s+|`+/gm, AI_BAD=/[<>*`#]|&[a-z]+;|\\[nt"]/;
+function cleanAIText(v){const c=String(v).replace(AI_TAG,"").replace(AI_MD,"").replace(/[ \t]{2,}/g," ").trim();
+ if(AI_BAD.test(c))throw new Error("형식 오류");return c;}
+function cleanAI(v){if(typeof v==="string")return cleanAIText(v);if(Array.isArray(v))return v.map(cleanAI);
+ if(v&&typeof v==="object"){const o={};for(const k of Object.keys(v))o[k]=cleanAI(v[k]);return o;}return v;}
+const isFmtErr=e=>/형식|JSON|Unexpected|token|position/i.test(e?.message||"");
+async function askJSON(sys,usr,model,opts,tries=2){
+ for(let i=0;;i++){try{return cleanAI(JSON.parse(await callLLM(sys,usr,model,opts)));}
+  catch(e){if(!isFmtErr(e))throw e;if(i+1>=tries)throw new Error("형식 오류");}}}
+// 사용자에게 보여줄 오류 꼬리말 — 영어·기술 오류(JSON, HTTP 등)는 화면에 안 보여요. 통계에는 그대로 남겨요.
+const errTail=m=>!m||isFmtErr({message:m})||/^HTTP|fetch|network/i.test(m)||!/[가-힣]/.test(m)?"":` (${esc(m)})`;
 
 // callLLM(system, user, model, opts) — opts: {thinking, max_tokens, timeoutMs}
 //   응답의 text 블록만 모아요 (thinking을 켜면 생각 블록이 같이 오는데 그건 버려요)
@@ -1315,6 +1486,18 @@ async function callLLM(system,user,model=LLM.model,opts={}){
   if(!r.ok)throw await errOf(r);
   return textOf(await Promise.race([r.json(),timeout]));
  }finally{clearTimeout(tm);}}
+// AI가 일하는 동안 몇 초마다 바뀌는 진행 안내 — 남은 재료와 시장가격이 반영되고 있다는 걸 보여줘요
+const PROG={
+ plan:()=>["냉장고 재료를 확인하는 중",`${placeOf(P())} 시장가격을 비교하는 중`,"이번 주 예산에 맞추는 중","남는 재료 없이 끼니를 나누는 중","거의 다 됐어요"],
+ menus:()=>["냉장고 재료를 확인하는 중","오래된 재료부터 쓸 메뉴를 고르는 중","거의 다 됐어요"],
+ recipe:()=>["냉장고 재료를 확인하는 중","남은 재료로 레시피를 짜는 중","거의 다 됐어요"],
+ steps:()=>["재료와 분량을 맞추는 중","만드는 순서를 정리하는 중","거의 다 됐어요"]};
+let progT=null;
+function progTxt(k){const L=PROG[k]();return L[Math.min(S.progI||0,L.length-1)];}
+function startProg(k){S.progI=0;S.progK=k;clearInterval(progT);
+ progT=setInterval(()=>{if(!S.work&&!S.stepsWork){clearInterval(progT);progT=null;return;}
+  S.progI++;document.querySelectorAll(".progtx").forEach(e=>e.textContent=progTxt(S.progK)+"…");},3500);}
+const progSpan=k=>`<span class="progtx">${progTxt(k)}…</span>`;
 // 호출별 설정 — 메뉴 정하기(조합 짜기)만 생각(thinking)을 켜고 길게, 나머지는 생각 끄고 빠르게
 // 메뉴 조합: 3안을 한 번에 길게 받지 않고, 안마다 따로 짧게 동시에 요청해요 (생각 끄고, 출력 짧게, 20초 제한)
 const LLM_PLAN={thinking:{type:"disabled"},max_tokens:1500,timeoutMs:20000};
@@ -1330,14 +1513,14 @@ function seasLine(){const m=DB.seasSet?DB.seas:Object.fromEntries(DEFAULT_SEASON
 async function suggestMenus(){if(S.work)return;S.req=($("#req")?.value??S.req).trim().slice(0,WISH_MAX);
  {const m=safetyHit(S.req);if(m){S.note=m;S.req="";return render();}}
  if(!stock().length){S.menus=[];return render();}
- S.work="menus";S.tab="recipe";S.rview="make";S.view="app";render();   // 메뉴 자리에 '찾는 중' 표시
+ S.work="menus";startProg("menus");S.tab="recipe";S.rview="make";S.view="app";render();   // 메뉴 자리에 '찾는 중' 표시
  const sys='당신은 "냉장고 털기" 집밥 도우미입니다. 반드시 JSON만 출력하세요(설명·코드블록 금지). 형식: {"menus":[{"title":"메뉴명","desc":"지금 이 메뉴가 좋은 이유 한 줄(예: 오래된 양파를 다 써요)","uses":["쓰는 냉장고 재료명"],"time_min":20}]}. 규칙: 메뉴 5개, 서로 겹치지 않게. 냉장고 재료·보유 조미료·물만으로 만들 수 있는 것만(전부 쓸 필요는 없음). 오래됐거나 넉넉한 재료를 많이 쓰는 메뉴를 앞에. 이번 주 먹고 싶다고 한 메뉴를 만들 수 있으면 맨 앞에. 기피 재료는 절대 사용 금지. 가격 숫자 금지. 의료·치료 조언 금지.';
- const usr=`냉장고 재료(남은 양, 보관 일수): ${ingLine()}\n보유 조미료: ${seasLine()}\n이번 주 먹고 싶다고 한 메뉴: ${plan()?.wish||"없음"}\n기피/알레르기: ${avoidText()}\n인원: ${P().people}명\n추가 요청: ${S.req||"없음"}`;
+ const usr=`냉장고 재료(남은 양, 보관 일수): ${ingLine()}\n보유 조미료: ${seasLine()}\n이번 장보기 때 먹고 싶다고 한 메뉴: ${lastPlan()?.wish||"없음"}\n기피/알레르기: ${avoidText()}\n인원: ${P().people}명\n추가 요청: ${S.req||"없음"}`;
  let list;
- try{const m=JSON.parse(await callLLM(sys,usr,LLM.model,LLM_FAST)).menus;if(!Array.isArray(m)||!m.length)throw new Error("형식 오류");
+ try{const m=(await askJSON(sys,usr,LLM.model,LLM_FAST)).menus;if(!Array.isArray(m)||!m.length)throw new Error("형식 오류");
   list=m.slice(0,5).map(x=>({title:String(x.title||""),desc:String(x.desc||""),uses:(x.uses||[]).map(String),time_min:x.time_min}));S.note="";}
  catch(e){list=[];   // 실패하면 예시 메뉴로 채우지 않아요
-  S.note=LLM.proxy?`메뉴를 불러오지 못했어요. 잠시 후 다시 시도해 주세요. (${esc(e.message)})`:"AI가 연결되지 않아 메뉴를 추천할 수 없어요. LLM 설정에 API 키를 넣거나 Claude 미리보기에서 열어주세요.";}
+  S.note=LLM.proxy?`메뉴를 불러오지 못했어요. 잠시 후 다시 시도해 주세요.${errTail(e.message)}`:"AI가 연결되지 않아 메뉴를 추천할 수 없어요. LLM 설정에 API 키를 넣거나 Claude 미리보기에서 열어주세요.";}
  list=list.filter(m=>!avoidHit(m.title)&&!m.uses.some(u=>avoidHit(u)||(matchItem(u)&&!allowed(matchItem(u)))));   // 못 먹는 재료 크로스체크
  S.menus=list;S.menuSig=fridgeSig();
  S.work=null;S.tab="recipe";S.rview="make";S.view="app";render();scrollTo(0,0);}
@@ -1345,13 +1528,13 @@ async function suggestMenus(){if(S.work)return;S.req=($("#req")?.value??S.req).t
 // 메뉴를 고르면 그 메뉴의 레시피를 만들어 바로 열어요 (한 번 만든 건 다시 열기만)
 async function makeRecipe(i){const m=(S.menus||[])[i];if(!m)return;
  if(m.rid&&findR(m.rid))return openRecipe(m.rid);
- if(S.work)return;S.work="recipe:"+i;render();   // 고른 메뉴 카드에 '만드는 중' 표시
+ if(S.work)return;S.work="recipe:"+i;startProg("recipe");render();   // 고른 메뉴 카드에 '만드는 중' 표시
  const sys='당신은 집밥 레시피 도우미입니다. 반드시 JSON만 출력하세요(설명·코드블록 금지). 형식: {"recipes":[{"title":"","time_min":20,"level":"쉬움|보통","uses":["재료 분량"],"steps":["단계"]}]}. 규칙: 요청한 메뉴 1개의 레시피만. 제공된 재료·조미료·물만 사용(전부 쓸 필요는 없음). "넉넉"이거나 오래된 재료를 우선 쓰고, "조금" 남은 재료는 적게. "조금" 남은 조미료는 적게 쓰거나 다른 조미료로 대체. 기피 재료는 절대 사용 금지. 인원수에 맞는 분량. 가격·금액 숫자는 쓰지 말 것. 의료·치료 조언 금지.';
  const usr=`만들 메뉴: ${m.title}\n냉장고 재료(남은 양, 보관 일수): ${ingLine()}\n보유 조미료: ${seasLine()}\n기피/알레르기: ${avoidText()}\n인원: ${P().people}명`;
  let r;
- try{r=JSON.parse(await callLLM(sys,usr,LLM.model,LLM_FAST)).recipes?.[0];if(!r||!Array.isArray(r.steps)||!r.steps.length)throw new Error("형식 오류");r.title=r.title||m.title;S.note="";}
+ try{r=(await askJSON(sys,usr,LLM.model,LLM_FAST)).recipes?.[0];if(!r||!Array.isArray(r.steps)||!r.steps.length)throw new Error("형식 오류");r.title=r.title||m.title;S.note="";}
  catch(e){S.work=null;   // 실패하면 예시 레시피로 채우지 않아요
-  S.note=LLM.proxy?`'${esc(m.title)}' 레시피를 불러오지 못했어요. 잠시 후 다시 시도해 주세요. (${esc(e.message)})`:"AI가 연결되지 않아 레시피를 만들 수 없어요. LLM 설정에 API 키를 넣거나 Claude 미리보기에서 열어주세요.";
+  S.note=LLM.proxy?`'${esc(m.title)}' 레시피를 불러오지 못했어요. 잠시 후 다시 시도해 주세요.${errTail(e.message)}`:"AI가 연결되지 않아 레시피를 만들 수 없어요. LLM 설정에 API 키를 넣거나 Claude 미리보기에서 열어주세요.";
   return render();}
  {const chk={title:r.title,steps:r.steps||[],ingredients:(r.uses||[]).map(u=>({name:String(u)}))};const h=recipeAvoid(chk);
   if(h){S.work=null;S.note=`'${esc(r.title)}' 레시피에 못 먹는 재료(${esc(h)})가 들어가서 보여드리지 않았어요. 다른 메뉴를 골라주세요.`;return render();}}
@@ -1378,7 +1561,7 @@ function finishCook(){const {rid,rows}=S.left;
 const chip=(t,on,fn)=>`<span class="chip ${on?"on":""}" onclick="${fn}">${t}</span>`;
 // 준비 중 화면 로고: 심볼 + 김 세 줄 + 손글씨 로고
 const brandLoad=()=>`<div class="brandload"><svg class="steam" width="40" height="22" viewBox="0 0 40 22" aria-hidden="true"><g stroke="var(--sage)" stroke-width="2.4" stroke-linecap="round" fill="none"><path d="M12 19c-3-4 3-6 0-10"/><path d="M20 17c-3-4 3-6 0-11"/><path d="M28 19c-3-4 3-6 0-10"/></g></svg>${symbol(78)}<span class="word">살림밥상</span></div>`;
-const overlays=()=>`${S.sheet==="onblogout"&&A.user?onbLogoutSheet():""}${S.sheet==="delacct"?delAcctSheet():""}${S.sheet==="wipe"?wipeSheet():""}${S.sheet==="manual"?manualSheet():""}${S.sheet==="agree"?agreeModal():""}${S.sheet==="seas"?seasSheet():""}${S.left?leftSheet():S.openR?recipeSheet():""}`;
+const overlays=()=>`${S.sheet==="meal"&&S.mf?mealSheet():""}${S.sheet==="pay"&&S.pay?paySheet():""}${S.sheet==="save"?saveSheet():""}${S.sheet==="droptrip"?dropTripSheet():""}${reactLayer()}${S.sheet==="onblogout"&&A.user?onbLogoutSheet():""}${S.sheet==="delacct"?delAcctSheet():""}${S.sheet==="wipe"?wipeSheet():""}${S.sheet==="manual"?manualSheet():""}${S.sheet==="agree"?agreeModal():""}${S.sheet==="seas"?seasSheet():""}${S.left?leftSheet():S.openR?recipeSheet():""}`;
 
 // 온보딩·초기정보 수정 화면 뼈대: 위에 [← + 진행 막대], 아래에 고정 버튼
 function shell(body,foot){const edit=S.view==="edit";
@@ -1400,22 +1583,23 @@ const TAB_TITLE={pick:"메뉴 정하기",record:"산 것 기록",pantry:"우리�
 // 이번 주 집밥 루틴 — 홈 단계와 각 화면 위 흐름 막대가 같은 이름을 써요. phase: before=장 보기 전, after=장 보고 와서
 const FLOW=[["pick"],["record"]];   // 위에 4단계 진행선을 보여주는 화면
 // 이번 주 장보기 루틴 4단계 — 앞 단계를 마쳐야 다음 단계가 열리고, 뒤로는 언제든 돌아가 고칠 수 있어요
-function routine(){const pl=plan(),dr=draft(),bought=DB.purchases.some(x=>x.week===NOW_WK);
+function routine(){const pl=plan(),dr=draft(),bought=false;   // 결제액을 기록하면 장보기 건이 끝나요
  const R=[
-  {k:"wish",  i:"bulb",  t:"메뉴 정하기",           done:!!dr||!!pl,                 go:"goTab('pick','wish')"},
+  {k:"wish",  i:"bulb",  t:"끼니·메뉴 정하기",           done:!!dr||!!pl,                 go:"goTab('pick','wish')"},
   {k:"combo", i:"pot",   t:"메뉴 조합",             done:!!pl,                       go:"goTab('pick','combo')"},
   {k:"list",  i:"cart",  t:"장볼 목록",             done:!!pl&&(!!pl.seen||bought),  go:"goTab('pick','list')"},
-  {k:"record",i:"basket",t:"장 보고 와서 기록하기", done:bought,                     go:"goTab('record')"}];
+  {k:"record",i:"basket",t:"장 보고 와서 결제 기록", done:bought,                     go:"goTab('record')"}];
  R.forEach((x,j)=>x.on=j===0||R[j-1].done);
  return R;}
 // 단계 화면 상단: [뒤로] [루틴 n/3 · 제목] [다음 단계 ›] + 아래 3칸 진행선(눌러서 이동)
 // 단계 화면 상단 — 진행선은 지금 위치 표시만 해요. 단계 이동은 화면 안의 진한 초록 버튼으로만.
 function flowHead(){const R=routine(),k=S.tab==="record"?3:{wish:0,combo:1,list:2}[pickView()];
- return `<header class="fhead"><div class="fhrow"><button class="back" onclick="navBack()" aria-label="뒤로가기">${ic("back")}</button>
+ return `<header class="fhead"><div class="fhrow"><button class="back" onclick="flowBack()" aria-label="뒤로가기">${ic("back")}</button>
 <div class="ttl"><b>${R[k].t}</b></div></div>
 <div class="flowline" aria-label="4단계 중 ${k+1}단계">${R.map((x,i)=>`<button class="${i<=k?"on":""}" ${x.on&&i!==k?`onclick="${x.go}"`:"disabled"} aria-label="${i+1}단계 ${x.t}"><i></i></button>`).join("")}</div></header>`;}
 const tabbar=()=>`<nav class="tabbar">${TABS.map(([k,i,t])=>`<button class="${S.tab===k||(k==="home"&&!TABS.some(x=>x[0]===S.tab))?"on":""}" onclick="goTab('${k}')">${ic(i)}${t}</button>`).join("")}</nav>`;
-function goTab(k,sub){S.tab=k;S.view="app";S.inErr=null;if(k==="recipe"&&sub)S.rview=sub;
+function goTab(k,sub){if(k==="home")S.htab="today";S.tab=k;S.view="app";S.inErr=null;   // 아래 홈을 누르면 첫 탭(밥풀이)부터
+ if(k==="recipe"&&sub)S.rview=sub;
  if(k==="pick"){S.pview=sub||null;if(sub==="wish"&&!S.wish){const pl=draft()||plan();S.wish=pl?pl.wish:"";S.noWish=!!pl&&!pl.wish;}S.planNote="";}if(k!=="record")S.recorded=0;
  if(k==="recipe"&&S.rview==="make"&&needMenus()&&!planRecs().length)return suggestMenus();   // 짜둔 메뉴가 있으면 그걸 먼저 보여줘요   // 오늘 뭐 해먹지? → 만들 수 있는 메뉴부터
  render();scrollTo(0,0);}
@@ -1428,7 +1612,7 @@ function page(body,foot,head){const isTab=TABS.some(t=>t[0]===S.tab);
 
 /* 로딩 화면 — 온보딩을 마칠 때 한 번만 써요 (재료·메뉴·레시피는 화면 안에서 '~하는 중'으로 보여줘요) */
 const LOADERS={
- build:{title:()=>"살림밥상을 준비하는 중...", checks:["한 달 예산을 이번 주 예산으로 나누는 중",()=>`${placeOf(P())} 가격 불러오는 중`,"냉장고 준비하는 중"]},
+ build:{title:()=>"살림밥상을 준비하는 중...", checks:["한 달 장보기 예산 준비하는 중",()=>`${placeOf(P())} 가격 불러오는 중`,"냉장고 준비하는 중"]},
 };
 function loader(){const L=LOADERS[S.busy.kind],i=S.busy.i;
  $("#app").innerHTML=`<div class="load">${L.checks
@@ -1585,7 +1769,7 @@ function sPeople(){const p=S.p;
 const MEAL_PRESETS=[[3,"가볍게"],[5,"평일 저녁"],[7,"하루 한 끼"],[10,"넉넉히"]];
 // 추천 표시 — 이 선택지에 배지를 달고 굵게 보여줘요. 기본값(RULES.mealsDefault)과 같은 끼니로 맞춰요.
 //   ※ '가장 많이 골라요' 같은 문구는 실제 사용자 선택 통계가 생긴 뒤에 label만 바꿔주세요 (지금은 근거가 없어서 '추천').
-const MEAL_PICK={value:RULES.mealsDefault, label:"추천", why:"일주일에 한 번 장 볼 때 남기지 않고 다 쓰기 좋아요"};
+const MEAL_PICK={value:RULES.mealsDefault, label:"추천", why:"한 번 장 볼 때 남기지 않고 다 쓰기 좋아요"};
 function sMeals(){const n=S.p.meals;
  shell(`<h1>몇 끼니씩<br>추천받고 싶으세요?</h1><p class="sub">한 번 장 볼 때 이만큼 먹을 재료를 골라드려요.<br>산 재료는 이 끼니 안에 남김없이 쓰도록 맞춰요.</p>
 <div class="center">
@@ -1595,7 +1779,7 @@ function sMeals(){const n=S.p.meals;
 <button class="rb" ${n>=RULES.mealsMax?"disabled":""} onclick="setMeals(${n+1})">+</button></div>
 <div class="presets" style="margin-top:22px">${MEAL_PRESETS.map(([v,t])=>`<span class="chip ${n===v?"on":""} ${v===MEAL_PICK.value?"best":""}" onclick="setMeals(${v})">${v===MEAL_PICK.value?`<em class="pickb">${MEAL_PICK.label}</em>`:""}${v}끼 <span class="m">${t}</span></span>`).join("")}</div>
 <div class="mealnotes"><p class="m pickwhy">${ic("bulb")} ${MEAL_PICK.value}끼: ${MEAL_PICK.why}</p>
-<p class="m">보통 일주일에 한 번 장 본다고 보고 예산을 나눠요.</p></div>
+<p class="m">장볼 때마다 몇 끼 해 먹을지 다시 정할 수 있어요. 여기서 고른 끼니 수는 처음 추천에 써요.</p></div>
 </div>`,`<button class="btn" onclick="nextFrom('meals')">${nextLabel()}</button>`);}
 function setMeals(v){S.p.meals=Math.min(RULES.mealsMax,Math.max(RULES.mealsMin,v));if(S.view!=="edit")S.p.monthly=null;render();}   // 끼니가 바뀌면 예산 추천값도 다시 계산
 
@@ -1624,7 +1808,7 @@ function slideMonthly(r){const v=+r.value;fillRange(r);$("#mIn").value=v.toLocal
 function typeMonthly(el){const v=+el.value.replace(/[^0-9]/g,"");el.value=v?v.toLocaleString():"";syncBudget(v);glide(v);}
 function updBudget(){const v=S.p.monthly||0,min=minMonthly(),ok=v>=min;
  const meals=S.p.meals*daysIn()/7*hh(),per=Math.round(v/Math.max(1,meals)/100)*100;   // 한 끼(1인) 재료비
- $("#bweek").textContent=`일주일에 약 ${won(Math.round(v*7/daysIn()/100)*100)}, 한 끼에 약 ${won(per)}꼴이에요`;
+ $("#bweek").textContent=`한 끼에 약 ${won(per)}꼴이에요. 장볼 때마다 실제 결제액만 빼요`;
  $("#bwarn").innerHTML=!v?`<div class="note bad">예산을 입력해 주세요.</div>`
   :ok?"":`<div class="note warn guide"><b>예산을 조금만 올려볼까요?</b>한 끼 ${won(per)}으로는 담을 수 있는 재료가 많지 않아서, 원하는 메뉴를 담기 어려울 수 있어요. ${S.p.meals}끼씩이라면 한 달 ${min/10000}만 원 이상을 추천해요.
 <button class="chip on" onclick="setMonthly(${min})">${min/10000}만 원으로 맞추기</button><span class="m">이대로 진행해도 괜찮아요</span></div>`;
@@ -1671,109 +1855,137 @@ const SCR={landing,area:sArea,shop:sShop,people:sPeople,meals:sMeals,budget:sBud
 /* ============================================================
    ⑤-1 홈 — 이번 달 예산 · 이번 주 할 일 · 냉장고 · 저장한 레시피 · 지난 기록
    ============================================================ */
-function home(){const p=DB.profile,w=weekly(),sw=spentWeek(),mb=monthBudget(),sm=spentMonth(),now=new Date(),sv=savings();
- const bought=DB.purchases.some(x=>x.week===NOW_WK),made=DB.recipes.some(r=>r.week===NOW_WK),planned=!!plan();
- const STEPS=routine();
- const nx=STEPS.findIndex(x=>!x.done);
- const uk=lastBuyWeek(),us=uk&&useStats(uk);
- const s=stock(),old=s.find(x=>daysAgo(x.addedAt)>=5),low=s.filter(x=>x.level==="low");
- const fridge=s.length?(old?`${esc(coreName(old.name))}이(가) ${daysAgo(old.addedAt)}일째예요. 먼저 써 보세요`:low.length?`조금 남은 재료가 ${low.length}개 있어요`:"남은 양을 확인해 보세요")
-  :"장 본 걸 기록하면 자동으로 채워져요";
- page(`
-<section class="card flow">
- <div class="row"><h3>이번 주 집밥 루틴</h3><span class="m">${wkLabel(NOW_WK)}</span></div>
- <ol class="steps">${STEPS.map((x,k)=>`<li class="${x.done?"done":k===nx?"now":""} ${x.on?"":"lock"}"${k===nx?' aria-current="step"':""}><button class="sbtn" ${x.on?`onclick="${x.go}"`:"disabled"} aria-label="${k+1}단계 ${x.t}${x.done?" (완료)":x.on?"":" (이전 단계를 먼저 해주세요)"}"><span class="node">${x.done?ic("check"):ic(x.i)}</span><b>${x.t}</b></button></li>`).join("")}</ol>
- ${nx<0?`<div class="alldone">이번 주 장보기를 다 했어요</div>`:""}
- <button class="fridgeline" onclick="goTab('pantry')"><span class="ibox">${ic("fridge")}</span><span class="fl-tx"><b>냉장고 보기 <em>${s.length?`재료 ${s.length}개`:"비어 있어요"}</em></b><small>${fridge}</small></span>${ic("right")}</button>
- ${s.length?`<button class="btn ghost" style="margin-top:12px" onclick="goTab('recipe','make')">${ic("pot")} 이 재료로 뭐 해먹지?</button>`:""}
+/* ============================================================
+   ⑤-1 홈 — 위쪽 탭 [오늘 · 장보기 · 예산]. 탭을 바꾸면 본문만 바뀌고 아래 메뉴는 그대로예요
+   ============================================================ */
+const HTABS=[["today","밥풀이"],["shop","장보기"],["budget","예산"]];
+function setHtab(k){S.htab=k;S.editB=false;render();scrollTo(0,0);}
+function home(){const t=HTABS.some(x=>x[0]===S.htab)?S.htab:"today",p=DB.profile;
+ const body=t==="shop"?shopTab():t==="budget"?budgetTab():todayTab();
+ page(body,null,`<header class="htop"><nav class="htabs" role="tablist">${HTABS.map(([k,n])=>`<button role="tab" aria-selected="${t===k}" class="${t===k?"on":""}" onclick="setHtab('${k}')">${n}</button>`).join("")}</nav>
+<span class="loc locline">${ic("pin")} ${esc(placeOf(p))}</span></header>`);}
+
+// 밥풀이 탭(첫 화면) — 밥풀이 · 누적 집밥 · 이번 달 남은 장보기 예산 · [장보러 가기] 버튼 하나
+function todayTab(){const n=homeCount(),nx=nextStage(n),mb=monthBudget(),left=leftMonth(),sv=savingsOf(),h=new Date().getHours();
+ const noRec=!mealList().some(m=>m.date===todayKey())&&h>=11;
+ const msg=!n?"첫 집밥을 기록하면<br>밥풀이가 반겨줘요":noRec?"오늘 끼니를<br>아직 안 적었어요":`집밥 <b>${n}</b>번째,<br>오늘도 잘 먹어요!`;
+ return `<section class="today">
+<h2 class="tmsg">${msg}</h2>
+<div class="hero">${bapImg(noRec&&n?"empty":n&&stageOf(n)>=STAGES.length?"grow":"hero","hero-img")}</div>
+<div class="growline">${n?`<b>누적 집밥 ${n}끼</b>${nx?` · 다음 성장까지 ${nx-n}끼`:" · 최고 단계예요"}`:`<b>누적 집밥 0끼</b> · 기록 탭에서 끼니를 적어요`}${noRec&&n?` · <button class="tlink" onclick="goTab('history')">기록하기</button>`:""}</div>
+<button class="tbud ${mb&&left<0?"over":""}" onclick="setHtab('budget')" aria-label="예산 탭으로">
+ <span class="tbud-l">${ic("wallet")}</span>
+ <span class="tbud-tx"><small>${ymLabel(NOW_YM)} 남은 장보기 예산</small><b>${mb?(left<0?`${won(-left)} 초과`:won(left)):"월 예산 설정하기"}</b>
+ ${mb?`<span class="tbud-bar"><i style="width:${Math.max(0,Math.min(100,left/mb*100))}%"></i></span>`:""}</span>${ic("right")}</button>
+<button class="btn gobtn" onclick="setHtab('shop')">${ic("cart")} 장보러 가기</button>
+</section>`;}
+
+// 장보기 — 진행 중인 장보기 이어서 하기 또는 새 장보기 시작 · 지난 장보기
+function tripStep(){const R=routine(),k=R.findIndex(x=>!x.done);return {k:k<0?3:k,R};}
+function startTrip(){if(trip()&&(draft()||plan()||cart().length)){S.sheet="droptrip";return render();}
+ if(trip())dropTrip();Object.assign(S,{tm:P().meals||5,picked:[],wish:"",noWish:false,planEdit:false});goTab("pick","wish");}
+function continueTrip(){const t=trip();if(!t)return startTrip();Object.assign(S,{tm:t.meals,picked:[...(t.picked||[])]});const {k,R}=tripStep();
+ if(k===3)return goTab("record");goTab("pick",R[k].k==="wish"?"wish":R[k].k);}
+function shopTab(){const t=trip(),done=[...(DB.trips||[])].filter(x=>!x.manual).sort((a,b)=>b.paidAt-a.paidAt).slice(0,5);
+ let cur;
+ if(t){const {k,R}=tripStep(),pl=plan(),ct=cartTotal();
+  cur=`<section class="card tripcard"><div class="row"><b class="ttl2">진행 중인 장보기</b><span class="tag o">${k+1}/4 단계</span></div>
+<p class="tripmeta">${t.meals}끼 · ${R[k].t}</p>
+${pl?`<p class="m" style="margin:6px 0 0">${pl.recipes.map(findR).filter(Boolean).slice(0,4).map(r=>esc(r.title)).join(", ")}${pl.recipes.length>4?" 외":""}</p>`:""}
+${ct?`<p class="m" style="margin:6px 0 0">예상 장보기 금액 ${won(ct)}</p>`:""}
+<ol class="tsteps">${R.map((x,i)=>`<li class="${x.done?"done":i===k?"now":""}"></li>`).join("")}</ol>
+<button class="btn" style="margin-top:16px" onclick="continueTrip()">이어서 하기 ${ic("right")}</button>
+<button class="link" onclick="startTrip()">새로 시작하기</button></section>`;}
+ else cur=`<section class="card tripcard empty">${bapImg("tofu","bmini")}<b class="ttl2">새 장보기를 시작해 볼까요?</b>
+<p class="m">몇 끼를 해 먹을지 정하면, 냉장고 재료를 먼저 쓰는 메뉴 조합과 장볼 목록을 만들어 드려요.</p>
+<button class="btn" style="margin-top:16px" onclick="startTrip()">${ic("plus")} 새 장보기 시작</button></section>`;
+ return `${cur}
+${done.length?`<p class="sec">지난 장보기</p><div class="list">${done.map(x=>`<div class="li" style="cursor:default"><div class="em">${ic("basket")}</div><div class="tx"><b>${esc(x.label||`${x.meals}끼 장보기`)}</b><span class="m">${new Date(x.paidAt).getMonth()+1}월 ${new Date(x.paidAt).getDate()}일${x.menus&&x.menus.length?` · ${esc(x.menus.slice(0,3).join(", "))}`:""}</span></div><div class="pr">${won(x.paid)}</div></div>`).join("")}</div>`:""}`;}
+
+// 예산 — 고른 달의 장보기 예산 · 남은 금액 · 예상 절약액 · 결제 내역
+function budgetTab(){const ym=S.bym||NOW_YM,mb=monthBudget(ym),sp=spentMonth(ym),left=mb-sp,pays=payments(ym),sv=savingsOf(ym),cur=ym===NOW_YM;
+ return `<div class="mnav"><button onclick="S.bym=ymAdd('${ym}',-1);S.editB=false;keep()" aria-label="이전 달">${ic("back")}</button><b>${ymLabel(ym)}</b><button onclick="S.bym=ymAdd('${ym}',1);S.editB=false;keep()" ${cur?"disabled":""} aria-label="다음 달">${ic("right")}</button></div>
+<section class="card bud2">
+ <div class="row"><span class="m">장보기 예산 ${mb?won(mb):"없음"}</span><button class="tlink" onclick="S.editB=!S.editB;keep()">${S.editB?"닫기":mb?"예산 수정":"월 예산 설정하기"}</button></div>
+ ${S.editB?`<div class="row" style="gap:6px;margin-top:10px;justify-content:flex-start"><input id="bIn" class="priceIn" style="width:140px" inputmode="numeric" value="${mb?mb.toLocaleString():""}" placeholder="예: 300,000"><span class="chip on" onclick="saveMonthBudget('${ym}')">저장</span></div><p class="m" style="font-size:12.5px;margin:6px 2px 0">${ymLabel(ym)} 예산만 바꿔요. 다른 달의 기본 예산은 내 정보에서 바꿀 수 있어요.</p>`:""}
+ ${mb?`<div class="big ${left<0?"up":""}">${left<0?`${won(-left)} 초과`:`${won(left)} 남음`}</div>
+ <div class="meter ${left<0?"over":""}"><i style="width:${Math.min(100,sp/mb*100)}%"></i></div>
+ <p class="m" style="margin:10px 0 0">장보기 결제 ${pays.length}건 · ${won(sp)} 썼어요</p>`:`<p class="m" style="margin:12px 0 0">월 예산을 정하면 남은 금액을 보여드려요.</p>`}
 </section>
-
-${us?`<section class="card usecard">
- <div class="row"><h3>남김없이 다 쓰기</h3><span class="m">${uk===NOW_WK?"이번 주":wkLabel(uk)}에 산 재료 ${us.n}개</span></div>
- <div class="usebig"><b>${us.pct}%</b><span>다 썼어요</span></div>
- <div class="meter3"><i class="u" style="width:${us.used/us.n*100}%"></i><i class="t" style="width:${us.tossed/us.n*100}%"></i></div>
- <div class="uselegend"><span><i class="u"></i>다 씀 ${us.used}</span><span><i class="l"></i>남음 ${us.left}</span><span><i class="t"></i>버림 ${us.tossed}</span></div>
- ${us.tossed?`<p class="m" style="margin:12px 0 0">버린 재료 ${us.tossed}개${us.left?` · 남은 ${us.left}개는 먼저 써 보세요`:""}</p>`
-  :`<p class="saveline">버린 재료 0개${us.left?` · 남은 ${us.left}개도 다 써 봐요`:" · 산 재료를 남김없이 다 썼어요!"}</p>`}
-</section>`:""}
-
-<section class="card budget">
- <div class="row"><span class="m">${wkLabel(NOW_WK)} 남은 돈</span><span class="m editw" onclick="S.editW=!S.editW;render()">${S.editW?"닫기":"예산 수정"}</span></div>
- ${S.editW?`<div class="row" style="gap:6px;margin-top:8px;justify-content:flex-start"><input id="wIn" class="priceIn" style="width:120px" inputmode="numeric" value="${w}"><span class="chip on" onclick="saveW()">저장</span></div>`:""}
- <div class="big ${sw>w?"up":""}">${won(w-sw)}</div>
- <div class="meter ${sw>w?"over":""}"><i style="width:${Math.min(100,w?sw/w*100:0)}%"></i></div>
- <p class="m" style="margin:10px 0 0">이번 주 예산 ${won(w)} 중 ${won(sw)} 썼어요</p>
- ${sv?`<p class="saveline">배달 대신 집밥으로 이번 주 ${won(sv.saved)} 아꼈어요</p>`:""}
-</section>
-
-</div>`,null,
- `<div class="hdr"><div class="row">${logo(28,25)}<span class="loc locline">${ic("pin")} ${esc(placeOf(p))}</span></div>
-<div class="greet">오늘도, 좋은 식탁이에요!</div></div>`);}
+<button class="card savecard" onclick="S.sheet='save';render()">
+ <div class="row"><span class="m">배달 대비 예상 절약액</span>${ic("right")}</div>
+ ${sv.n&&sv.dc?`<div class="big dn">${won(sv.total)}</div><p class="m" style="margin:6px 0 0">배달 대신 해 먹은 ${sv.n}끼를 평소 배달 한 끼 ${won(sv.dc)}과 비교했어요</p>`
+  :`<b class="ttl2" style="display:block;margin-top:6px">배달 비용과 비교해 보기</b><p class="m" style="margin:6px 0 0">${sv.dc?"기록에서 집밥을 적을 때 재료비를 넣고 '배달 대신 해 먹었어요'를 고르면 계산돼요":"평소 배달 한 끼 비용을 정하면 집밥으로 아낀 돈을 계산해요"}</p>`}
+</button>
+<div class="row" style="margin:24px 2px 8px"><b class="sec" style="margin:0">결제 내역</b><button class="tlink" onclick="openPay('new')">${ic("plus")} 직접 기록</button></div>
+${pays.length?`<div class="list">${pays.map(x=>`<div class="li" ${x.kind==="legacy"?'style="cursor:default"':`onclick="openPay('edit','${x.id}')"`}><div class="em">${ic(x.kind==="manual"?"wallet":"basket")}</div><div class="tx"><b>${esc(x.label)}</b><span class="m">${new Date(x.at).getMonth()+1}월 ${new Date(x.at).getDate()}일${x.kind==="legacy"?" · 예전 방식(품목별 가격) 기록":""}</span></div><div class="pr">${won(x.amount)}</div></div>`).join("")}</div>`
+ :`<p class="m" style="margin:4px 2px">${ymLabel(ym)}에 기록한 결제가 없어요. 장보기를 마칠 때 실제 결제액을 적으면 여기에 쌓여요.</p>`}`;}
+function saveMonthBudget(ym){const v=+String($("#bIn").value).replace(/[^0-9]/g,"");DB.months=DB.months||{};
+ if(v>0)DB.months[ym]={budget:v};else delete DB.months[ym];if(!DB.profile.monthly&&v>0)DB.profile.monthly=v;S.editB=false;save();toast("예산을 저장했어요");keep();}
 
 /* ============================================================
-   ⑤-2 장보기 — 예산 카드
+   ⑤-2 장보기 — 예산 카드 (장볼 목록 아래): 예상 장보기 금액과 이번 달 남는 예산
    ============================================================ */
-// 예산 카드: '담고 나면 남는 돈' 하나만 크게, 쓴 돈·담은 것은 막대 색과 한 줄 범례로
-function budgetCard(){const w=weekly(),sw=spentWeek(),ct=cartTotal(),left=w-sw-ct,over=left<0,ml=monthBudget()-spentMonth()-ct;
- const pct=n=>w?Math.min(100,Math.max(0,n/w*100)):0;
- return `<section class="bcard"><div class="row" style="align-items:flex-end"><div><span class="m">담고 나면 <b class="hl">이번 주</b> 남는 돈</span><div class="bnum ${over?"up":""}">${over?"-":""}${won(Math.abs(left))}</div></div>
-<div class="bside"><span>이번 주 예산 ${won(w)}</span><span>이번 달 남는 돈 ${won(ml)}</span></div></div>
-<div class="bmeter"><i class="sp" style="width:${pct(sw)}%"></i><i class="ct ${over?"over":""}" style="width:${pct(ct)}%"></i></div>
-<div class="legend"><span><i class="sp"></i>쓴 돈 ${won(sw)}</span><span><i class="ct"></i>담은 것 ${won(ct)}</span></div>
-${over?`<p class="overmsg">담은 걸 다 사면 예산을 ${won(-left)} 넘어요.</p>`:""}</section>`;}
+function budgetCard(){const ct=cartTotal(),mb=monthBudget(),sp=spentMonth(),left=mb-sp-ct,over=left<0,unk=cart().some(x=>!(+x.price));
+ const pct=n=>mb?Math.min(100,Math.max(0,n/mb*100)):0;
+ return `<section class="bcard"><div class="row" style="align-items:flex-end"><div><span class="m">예상 장보기 금액${unk?` <span class="tag">가격 확인된 품목 기준</span>`:""}</span><div class="bnum">${won(ct)}</div></div>
+<div class="bside"><span>${ymLabel(NOW_YM)} 장보기 예산 ${mb?won(mb):"없음"}</span><span>지금까지 결제 ${won(sp)}</span></div></div>
+${mb?`<div class="bmeter"><i class="sp" style="width:${pct(sp)}%"></i><i class="ct ${over?"over":""}" style="width:${pct(ct)}%"></i></div>
+<div class="legend"><span><i class="sp"></i>결제한 돈 ${won(sp)}</span><span><i class="ct"></i>이번 장보기 ${won(ct)}</span></div>
+${over?`<p class="overmsg">다 사면 ${ymLabel(NOW_YM)} 예산을 ${won(-left)} 넘어요. 빼도 되는 재료가 있는지 살펴봐요.</p>`:`<p class="m cheer">다 사도 ${ymLabel(NOW_YM)} 예산이 ${won(left)} 남아요</p>`}`
+:`<p class="m cheer">월 예산을 정하면 남는 금액도 보여드려요</p>`}</section>`;}
 
 /* ① 메뉴 정하기 — 장 보러 가기 전: 먹고 싶은 메뉴 입력 → AI가 필요한 식재료만 리스트업 */
 // 메뉴 정하기 화면 안의 단계: wish(먹고 싶은 메뉴) → combo(메뉴 조합) → list(장볼 목록)
 function pickView(){const pl=plan(),dr=draft();let v=S.pview;
  if(v==="combo"&&!dr)v=null;if(v==="list"&&!pl)v=null;
  return v||(dr&&(!pl||dr.at>pl.at)?"combo":pl?"list":"wish");}
-function pickPage(){const pl=plan(),dr=draft(),p=DB.profile,N=P().meals,v=pickView();
+// 이번 장보기 끼니 수 (장보기마다 따로) · 냉장고에서 이번에 쓸 재료
+const tripMeals=()=>Math.min(21,Math.max(1,+S.tm||trip()?.meals||P().meals||5));
+const pickedNow=()=>{const have=new Set(stock().map(x=>coreName(x.name)));return (S.picked||[]).filter(n=>have.has(n));};
+function setTm(d){S.tm=Math.min(21,Math.max(1,tripMeals()+d));keep();}
+function togglePick(n){const a=S.picked||[];S.picked=a.includes(n)?a.filter(x=>x!==n):[...a,n];keep();}
+function pickPage(){const pl=plan(),dr=draft(),p=DB.profile,N=tripMeals(),v=pickView();
  if(v==="combo")return comboPage(dr);
- if(v==="wish"){const s=stock(),room=Math.max(0,weekly()-spentWeek());
-  return page(`<h2 class="lead">이번엔 뭐 먹고 싶으세요?</h2>
-<p class="meta">${ic("calendar")} ${N}끼 · ${p.people}명 · 이번 주 남은 예산 ${won(room)}</p>
-<textarea id="wish" class="field wish" rows="4" maxlength="200" oninput="typeWish(this)" placeholder="예) 김치찌개랑 제육볶음 먹고 싶어요" aria-label="먹고 싶은 메뉴">${esc(S.wish)}</textarea>
-<div class="chips" style="margin-top:12px"><span class="chip nowish ${S.noWish?"on":""}" onclick="setNoWish()">${ic("check")} 딱히 없어요, 알아서</span>${WISH_QUICK.map(t=>chip(`${ic("plus")} ${t}`,false,`addWish('${t}')`)).join("")}</div>
-<div class="note" style="margin-top:22px">먹고 싶은 메뉴는 ${WISH_MEALS}끼로 넣고, 사고 남는 재료와 냉장고 재료로 나머지 끼니를 채운 ${N}끼 조합을 3가지 보여드려요. 하나를 고르면 그 조합에 필요한 재료만 장볼 목록에 담아요.${s.length?` 냉장고에 있는 ${esc(s.slice(0,3).map(x=>coreName(x.name)).join(", "))}${s.length>3?` 외 ${s.length-3}개`:""}부터 써요.`:""}</div>
-${S.planNote?`<div class="note warn">${S.planNote}</div>`:""}
+ if(v==="wish"){const s=stock(),room=Math.max(0,leftMonth()),pk=pickedNow();
+  return page(`<h2 class="lead">이번 장보기로<br>몇 끼를 해 먹을까요?</h2>
+<div class="tmrow"><button class="tmb" onclick="setTm(-1)" ${N<=1?"disabled":""} aria-label="한 끼 줄이기">−</button><div class="tmv"><b>${N}</b>끼</div><button class="tmb" onclick="setTm(1)" ${N>=21?"disabled":""} aria-label="한 끼 늘리기">${ic("plus")}</button></div>
+${s.length?`<p class="sec" style="margin-bottom:2px">${ic("fridge")} 냉장고에서 이번에 쓸 재료</p><p class="m" style="margin:0 2px 10px;font-size:13px">안 골라도 돼요. 고르면 꼭 넣어서 짜요.</p>
+<div class="chips">${s.slice(0,12).map(x=>{const n=coreName(x.name),on=pk.includes(n);return `<span class="chip ${on?"on":""}" onclick="togglePick('${q(n)}')">${on?ic("check"):""}${ingIc(n)} ${esc(n)}</span>`;}).join("")}</div>
+${pk.length>1?`<p class="m" style="margin:8px 2px 0">고른 ${pk.length}가지를 함께 쓰는 메뉴부터 보여드려요.</p>`:""}`:""}
+<p class="sec">${ic("bulb")} 먹고 싶은 메뉴</p>
+<textarea id="wish" class="field wish" rows="2" maxlength="200" oninput="typeWish(this)" placeholder="예) 김치찌개, 김치찌개와 파스타" aria-label="먹고 싶은 메뉴">${esc(S.wish)}</textarea>
+${S.planNote?`<p class="wisherr">${S.planNote}</p>`:""}
+<div class="chips" style="margin-top:10px"><span class="chip nowish ${S.noWish?"on":""}" onclick="setNoWish()">${ic("check")} 딱히 없어요</span></div>
 ${pl||dr?`<button class="link" onclick="S.planEdit=false;S.pview='${dr&&(!pl||dr.at>pl.at)?"combo":"list"}';render()">${dr&&(!pl||dr.at>pl.at)?"받은 메뉴 조합 보기":"지난번에 받은 목록 보기"}</button>`:""}`,
-   S.work==="plan"?`<button class="btn" disabled><span class="spin"></span>${N}끼 메뉴 조합 짜는 중…</button>`:`<button class="btn" onclick="makeCombos()">${N}끼 메뉴 조합 받기</button>`);}
+   S.work==="plan"?`<button class="btn" disabled><span class="spin"></span>${progSpan("plan")}</button>`:`<button class="btn" onclick="makeCombos()">${N}끼 메뉴 조합 받기</button>`);}
  if(!pl.seen){pl.seen=true;save();}   // 3단계(장볼 목록)를 봤다고 표시 → 4단계가 열려요
  const c=cart(),ct=cartTotal(),prs=planRecs(),wishT=prs.filter(r=>r.wish).map(r=>r.title);
- const leftTxt=x=>x.unknown?"남는 양은 직접 확인해 주세요":x.left!=null&&x.left<=0?"남김없이 다 써요":x.left!=null?`다 쓰고 약 ${fmtAmt(x.left,x.lu)} 남아요`:"";
  const row=x=>{const on=inCart(x.key);return `<div class="li prow" onclick="toggleCart('${q(x.key)}')"><div class="em">${ingIc(x.name)}</div>
-<div class="tx"><b>${esc(x.name)}${x.pr?staleTag(x.pr):""}</b><span class="m">${esc([x.spec,x.unit].filter(Boolean).join(" · "))}</span><span class="m" style="display:block;font-size:12.5px;line-height:1.5"><span class="for">${esc(x.for.join(", "))}</span>에 써요 · ${leftTxt(x)}</span><span class="m" style="display:block;font-size:12px;line-height:1.5">${dateTxt(x.pr)}</span></div>
+<div class="tx"><b>${esc(x.name)}${x.pr?staleTag(x.pr):""}</b><span class="m">${esc([x.spec,x.unit].filter(Boolean).join(" · "))}</span><span class="m" style="display:block;font-size:12.5px;line-height:1.5"><span class="for">${esc(x.for.join(", "))}</span>에 써요</span><span class="m" style="display:block;font-size:12px;line-height:1.5">${dateTxt(x.pr)}</span></div>
 <div class="pcol"><div class="pr">${won(x.price)}</div><button class="add ${on?"on":""}" aria-pressed="${on}" aria-label="${esc(x.name)} ${on?"빼기":"담기"}">${on?ic("check")+" 담음":"담기"}</button></div></div>`;};
- page(`<h2 class="lead">${planMeals()}끼에 필요한<br>재료를 골랐어요</h2>
+ page(`<h2 class="lead">필요한 재료를 골랐어요</h2>
 <p class="meta">${ic("pin")} ${esc(placeOf(p))} 조사 가격 · 조사일은 재료마다 달라요</p>
 ${pl.notes.map(n=>`<div class="note warn">${esc(n)}</div>`).join("")}
-${pl.wish?`<div class="wishecho">“${esc(pl.wish)}”</div>`:""}
 ${pl.check.ok&&pl.check.avoid?`<p class="tip okline">${ic("check")} 못 먹는 재료(${esc(pl.check.avoid)})가 없는지 한 번 더 확인했어요</p>`:""}
-<p class="m" style="line-height:1.55;margin:10px 2px 0">고른 조합${pl.label?`(${esc(pl.label)})`:""}: ${prs.map(r=>`${esc(r.title)}${r.meals>1?` ×${r.meals}끼`:""}`).join(", ")}. 레시피는 '오늘 뭐 해먹지?'에서 볼 수 있어요.</p>
-${pl.fridge.length?`<p class="sec">${ic("fridge")} 냉장고에서 꺼내 쓰는 재료</p><div class="chips">${pl.fridge.map(f=>`<span class="chip" style="cursor:default">${esc(f.name)} <span class="m">${f.level==="low"?"조금 · 이번에 다 써요":LV[f.level]}</span></span>`).join("")}</div>`:""}
-<div style="margin-top:20px">${budgetCard()}</div>
 <p class="sec">${ic("basket")} 장볼 재료 ${pl.items.length}개</p>
 ${pl.items.length?`<div class="list">${pl.items.map(row).join("")}</div>`:`<div class="note">냉장고 재료만으로 충분해요. 이번엔 장 안 봐도 돼요.</div>`}
-<button class="btn ghost" style="margin-top:22px" onclick="openPlanEdit()">${ic("refresh")} 먹고 싶은 메뉴 다시 적기</button>`,
-  c.length?`<button class="btn" onclick="goTab('record')">장 보고 와서 기록하기 <span class="btn-sub">${c.length}개 · ${won(ct)}</span>${ic("right")}</button>`:null);}
+<div style="margin-top:16px">${budgetCard()}</div>
+${pl.fridge.length?`<p class="sec">${ic("fridge")} 냉장고에서 꺼내 쓰는 재료</p><div class="chips">${pl.fridge.map(f=>`<span class="chip" style="cursor:default">${esc(f.name)} <span class="m">${f.level==="low"?"조금 · 이번에 다 써요":LV[f.level]}</span></span>`).join("")}</div>`:""}`,
+  c.length?`<button class="btn" onclick="goTab('record')">장 보고 와서 기록하기 <span class="btn-sub">${c.length}개 · ${won(ct)}</span>${ic("right")}</button>`
+  :pl.items.length?null:`<button class="btn" onclick="commitCart(0);S.tab='home';setHtab('shop')">이번 장보기 마치기</button>`);}
 
-// 메뉴 조합 3안 — 하나 고르면 그 조합으로 장볼 목록을 만들어요 (합계·남는 재료는 실제 데이터로 계산)
+// 메뉴 조합 3안 — 하나 고르면 그 조합으로 장볼 목록을 만들어요 (가격·남는 재료는 장볼 목록에서 실제 데이터로 보여줘요)
 function comboPage(dr){const pl=plan(),sel=S.comboSel??(pl&&pl.draftAt===dr.at?dr.sel:null);
- page(`<h2 class="lead">${dr.meals}끼 메뉴 조합을<br>${dr.combos.length}가지 짰어요</h2>
-<p class="meta">${ic("pin")} ${esc(placeOf(P()))} 조사 가격으로 계산했어요</p>
+ page(`<h2 class="lead">${dr.meals}끼 메뉴 조합</h2>
 ${S.planNote?`<div class="note warn">${S.planNote}</div>`:""}
 ${dr.wish?`<div class="wishecho">“${esc(dr.wish)}”</div>`:""}
-${dr.wishes.length?`<p class="m" style="margin:10px 2px 0">${esc(dr.wishes.join(", "))}은(는) 모든 조합에 ${WISH_MEALS}끼로 들어가 있어요. 하나를 골라주세요.</p>`:`<p class="m" style="margin:10px 2px 0">하나를 골라주세요.</p>`}
-${dr.combos.map((c,i)=>{const sm=comboSummary(c),on=sel===i;return `<button class="combo ${on?"on":""}" onclick="S.comboSel=${i};render()" aria-pressed="${on}">
-<div class="ctop"><b>${i+1}안 · ${esc(c.label)}</b><span class="cck">${on?ic("check"):""}</span></div>
-${c.desc?`<p class="m cdesc">${esc(c.desc)}</p>`:""}
+${dr.combos.map((c,i)=>{const on=sel===i;return `<button class="combo ${on?"on":""}" onclick="S.comboSel=${i};render()" aria-pressed="${on}">
+<div class="ctop"><b>${i+1}안 · ${esc(c.label)}</b>${c.desc?`<span class="m cdesc">${esc(c.desc)}</span>`:""}<span class="cck">${on?ic("check"):""}</span></div>
 <div class="cmenus">${c.recipes.map(r=>`<span class="cm ${r.wish?"w":""}">${esc(r.title)}${r.meals>1?` <em>×${r.meals}끼</em>`:""}</span>`).join("")}</div>
-<div class="cfoot"><span>새로 살 재료 ${sm.n}개</span><b>${won(sm.total)}</b></div>
-${sm.lefts.length?`<p class="m cleft">다 먹고 남는 재료: ${esc(sm.lefts.join(", "))}</p>`:`<p class="m cleft">산 재료를 남김없이 다 써요</p>`}
-</button>`;}).join("")}
-${dr.dropped?`<p class="m" style="margin-top:10px">조건(못 먹는 재료·가게 데이터·끼니 수)에 맞지 않은 조합 ${dr.dropped}개는 빼고 보여드려요.</p>`:""}
-<div style="display:flex;gap:8px;margin-top:18px"><button class="btn ghost" style="flex:1" onclick="openPlanEdit()">메뉴 다시 적기</button><button class="btn ghost" style="flex:1" ${S.work?"disabled":""} onclick="S.wish=draft().wish;makeCombos()">${S.work==="plan"?`<span class="spin dark"></span>짜는 중…`:`${ic("refresh")} 다른 조합`}</button></div>`,
- `<button class="btn" ${sel==null?"disabled":""} onclick="confirmCombo()">${sel==null?"조합을 골라주세요":`${sel+1}안으로 장볼 목록 만들기`}</button>`);}
+</button>`;}).join("")}`,
+ S.work==="plan"?`<button class="btn" disabled><span class="spin"></span>${progSpan("plan")}</button>`
+ :`<div class="footrow"><button class="btn ghost" onclick="S.wish=draft().wish;makeCombos()">${ic("refresh")} 다른 조합</button><button class="btn" ${sel==null?"disabled":""} onclick="confirmCombo()">${sel==null?"조합을 골라주세요":`${sel+1}안으로 장보기`}</button></div>`);}
 
 /* ② 산 것 기록 — 장 보고 와서: 추천 재료는 산 걸로 보고, 추가로 산 것만 입력(얼마나 샀는지도) */
 // 추가로 산 것 (바텀시트)
@@ -1787,13 +1999,13 @@ function manualSheet(){const cat=catOf(S.mcat);return `<div class="modal-bg" onc
 </div>
 <button class="btn" style="margin-top:20px" onclick="addManual()">산 것에 추가하기</button>
 <button class="link" onclick="S.sheet=null;render()">닫기</button></div></div>`;}
-function recordPage(){const c=cart(),tot=c.reduce((a,x)=>a+(+x.price||0),0),done=S.recorded&&!c.length;
+function recordPage(){const c=cart(),tot=c.reduce((a,x)=>a+(+x.price||0),0),done=S.recorded&&!c.length&&!trip();
  const rec=c.filter(x=>x.key.startsWith("p:")),extra=c.filter(x=>!x.key.startsWith("p:"));
  const row=x=>`<div class="li" style="cursor:default"><div class="em">${ingIc(x.name)}</div>
 <div class="tx"><b>${esc(x.name)}</b><span class="m">${x.qty?`${qtyLabel(x.qty)} 샀어요`:esc(x.unit||"")}</span></div>
 <input class="priceIn" inputmode="numeric" value="${+x.price?(+x.price).toLocaleString():""}" placeholder="가격" onchange="setPrice('${q(x.key)}',this.value)" aria-label="${esc(x.name)} 산 가격">
 <button class="x" onclick="removeCart('${q(x.key)}')" aria-label="${esc(x.name)} 안 샀어요">${ic("x")}</button></div>`;
- page(done?`<div class="card donecard"><b>${ic("check")} 기록을 마쳤어요</b><p class="m">산 재료 ${S.recorded}개가 냉장고에 들어갔어요. 이제 이 재료로 뭘 만들 수 있는지 볼까요?</p>
+ page(done?`<div class="card donecard"><b>${ic("check")} 장보기를 마쳤어요</b><p class="m">${S.recorded>0?`산 재료 ${S.recorded}개가 냉장고에 들어갔어요. `:""}결제액 ${won(S.paidJust||0)}을 ${ymLabel(NOW_YM)} 장보기 예산에 반영했어요. 남은 예산은 ${won(leftMonth())}이에요.</p>
 <button class="btn" onclick="goTab('recipe','make')">오늘 뭐 해먹지? ${ic("right")}</button><button class="link" onclick="goTab('pantry')">냉장고 보기</button></div>`
  :`<h2 class="lead">장 보고 오셨군요!<br>추천 재료는 산 걸로 기록할게요</h2><p class="meta">안 산 건 ✕로 빼고, 가격이 달랐다면 고쳐주세요.</p>
 ${rec.length?`<p class="sec">${ic("check")} 추천받은 재료 ${rec.length}개</p><div class="list">${rec.map(row).join("")}</div>`
@@ -1801,13 +2013,38 @@ ${rec.length?`<p class="sec">${ic("check")} 추천받은 재료 ${rec.length}개
 <p class="sec">${ic("plus")} 추가로 산 것${extra.length?` ${extra.length}개`:""}</p>
 ${extra.length?`<div class="list">${extra.map(row).join("")}</div>`:`<p class="m" style="margin:0 0 4px">추천 말고 더 산 게 있으면 넣어주세요. 얼마나 샀는지도 같이 적으면 냉장고에 남은 양으로 들어가요.</p>`}
 <button class="btn ghost extra" style="margin-top:12px" onclick="S.sheet='manual';S.mqty='mid';render()">${ic("plus")} 추가로 산 게 있어요</button>`,
- c.length?`<button class="btn two" onclick="commitCart()">기록 완료<small>${c.length}개가 냉장고에 들어가요 · ${won(tot)}</small></button>`:null);}
+ c.length?`<button class="btn two" onclick="openPay('trip')">기록 완료하고 결제액 적기<small>${c.length}개가 냉장고에 들어가요 · 예상 ${won(tot)}</small></button>`:null);}
+// 결제액 시트 — trip: 장보기 마칠 때 / new: 직접 기록 / edit: 내역 고치기·지우기
+function openPay(mode,id){const x=id&&(DB.trips||[]).find(t=>t.id===id);
+ S.pay={mode,id:id||null,amount:mode==="trip"?cart().reduce((a,y)=>a+(+y.price||0),0):x?x.paid:"",date:ymd(new Date(x?(x.paidAt||x.at):Date.now())),memo:x?.memo||""};S.sheet="pay";render();}
+function paySheet(){const y=S.pay,trip1=y.mode==="trip",x=y.id&&(DB.trips||[]).find(t=>t.id===y.id);
+ return `<div class="modal-bg" onclick="if(event.target===this){S.sheet=null;render()}"><div class="modal"><div class="grab"></div>
+<h1 style="margin-top:0">${trip1?"실제로 얼마<br>결제했나요?":y.mode==="edit"?"결제 기록 고치기":"장 본 금액<br>직접 기록하기"}</h1>
+<p class="sub">${trip1?`영수증 금액을 적어 주세요. 장볼 목록 가격으로 계산한 예상 금액을 미리 넣어 뒀어요.`:"월 장보기 예산에서 이 금액만큼 빠져요."}</p>
+<label class="fl">결제액<span class="won"><input id="payIn" class="field" inputmode="numeric" value="${y.amount!==""?(+y.amount).toLocaleString():""}" placeholder="0"><em>원</em></span></label>
+${trip1?"":`<label class="fl" style="margin-top:14px">날짜<input id="payDate" type="date" class="field" value="${y.date}" max="${todayKey()}"></label>
+${!x||x.manual?`<label class="fl" style="margin-top:14px">메모 (선택)<input id="payMemo" class="field" maxlength="30" value="${esc(y.memo)}" placeholder="예: 동네 시장"></label>`:""}`}
+<button class="btn" style="margin-top:20px" onclick="savePay()">${trip1?"결제액 기록하고 장보기 마치기":"저장하기"}</button>
+${y.mode==="edit"?`<button class="link" style="color:var(--r)" onclick="delPay('${y.id}')">이 결제 기록 지우기</button>`:""}
+<button class="link" onclick="S.sheet=null;render()">닫기</button></div></div>`;}
+function savePay(){const y=S.pay,v=Math.max(0,+String($("#payIn").value).replace(/[^0-9]/g,"")||0);
+ if(y.mode==="trip"){commitCart(v);scrollTo(0,0);return;}
+ const d=$("#payDate")?.value||todayKey(),at=new Date(d+"T12:00:00").getTime(),memo=($("#payMemo")?.value||"").trim().slice(0,30);
+ if(y.mode==="edit"){const x=(DB.trips||[]).find(t=>t.id===y.id);if(x){x.paid=v;x.paidAt=at;if(x.manual)x.memo=memo;}}
+ else{if(!v){toast("금액을 적어주세요");return;}DB.trips=[...(DB.trips||[]),{id:uid(),manual:true,at,paidAt:at,paid:v,memo}];}
+ S.sheet=null;save();toast("결제 기록을 저장했어요");keep();}
+function delPay(id){DB.trips=(DB.trips||[]).filter(t=>t.id!==id);S.sheet=null;save();toast("결제 기록을 지웠어요");keep();}
+function dropTripSheet(){const t=trip();return `<div class="modal-bg" onclick="if(event.target===this){S.sheet=null;render()}"><div class="modal" role="alertdialog"><div class="grab"></div>
+<h1 style="margin-top:0">진행 중인 장보기를<br>그만두고 새로 시작할까요?</h1><p class="sub">${t?t.meals:""}끼 장보기에서 받은 메뉴 조합과 장볼 목록이 지워져요. 이미 만든 레시피는 '오늘 뭐 해먹지?'에 남아요.</p>
+<button class="btn" onclick="dropTrip();startTrip()">새로 시작하기</button>
+<button class="link" onclick="S.sheet=null;render()">취소</button></div></div>`;}
 
 /* ============================================================
    ⑤-3 냉장고 — 탭하면 남은 양이 바뀌어요
    ============================================================ */
 function pantryPage(){const s=stock(),o=outs(),own=Object.keys(DB.seas),quick=[...HOME_STAPLES.map(c=>FOOD_BY_CODE[c]),...ITEMS.filter(i=>i.group==="veg")].filter((i,k,a)=>i&&a.indexOf(i)===k&&allowed(i)&&!s.some(x=>coreName(x.name)===coreName(i.name))).slice(0,6);
  page(`<h1 style="margin-top:18px">우리집 냉장고</h1><p class="sub" style="margin-top:4px">장 본 재료가 여기로 자동으로 모여요.<br>남은 양 버튼으로 양을 바꾸고, 다 쓰면 '다 씀', 상해서 버렸으면 '버림'을 눌러주세요.</p>
+${s.length?`<button class="btn ghost" style="margin:2px 0 14px" onclick="goTab('recipe','make')">${ic("pot")} 이 재료로 뭐 해먹지?</button>`:""}
 <section class="fridge" aria-label="냉장고 안 재료"><div class="fr-top"><i class="fr-handle"></i><span>재료 ${s.length}개</span></div><div class="fr-in">
 ${s.length?`<div class="shelves">${s.map(x=>{const d=daysAgo(x.addedAt);return `<div class="li" style="cursor:default"><div class="em">${ingIc(x.name)}</div>
 <div class="tx"><b>${esc(x.name)}</b><span class="m ${d>=5?"up":""}">${d?d+"일째":"오늘 넣음"}${x.src==="manual"?" · 직접 추가":""}</span></div>
@@ -1829,8 +2066,8 @@ ${o.length?`<p class="sec">다 쓴 재료 · 버린 재료</p><p class="m" style
 /* ============================================================
    ⑤-4 레시피 — [추천받기] [저장한 레시피]
    ============================================================ */
-const rcard=r=>`<button class="rc" onclick="openRecipe('${r.id}')"><div class="th">${recipeIc(r)}</div>
-<div style="flex:1"><b>${esc(r.title)}</b><span class="tag o">${esc(r.level||"")}</span><div class="meta"><span>${ic("clock")} ${esc(r.time_min||"-")}분</span><span>${ic("user")} ${DB.profile.people}명</span>${r.meals>1?`<span class="tag g">${r.meals}끼분</span>`:""}${DB.recipes.some(x=>x.cooked&&x.title===r.title)?`<span class="tag g">해먹음</span>`:""}</div></div>
+const rcard=r=>`<button class="rc" onclick="openRecipe('${r.id}')">${thumb(r)}
+<div style="flex:1"><b>${esc(r.title)}</b>${r.level?`<span class="tag o">${esc(r.level)}</span>`:""}<div class="meta">${r.time_min?`<span>${ic("clock")} ${esc(r.time_min)}분</span>`:""}<span>${ic("user")} ${DB.profile.people}명</span>${r.meals>1?`<span class="tag g">${r.meals}끼분</span>`:""}${DB.recipes.some(x=>x.cooked&&x.title===r.title)?`<span class="tag g">해먹음</span>`:""}</div></div>
 <span class="heart">${ic("heart",isScrap(r.id)?"fill":"")}</span></button>`;
 function recipePage(){const v=S.rview,s=stock();
  let body;
@@ -1841,9 +2078,9 @@ function recipePage(){const v=S.rview,s=stock();
 ${pr.length?`<p class="sec" style="margin-top:6px">${ic("basket")} 이번 장보기로 고른 메뉴 · ${planMeals()}끼</p>${pr.map(rcard).join("")}<p class="sec">냉장고 재료로 다른 메뉴</p>`:""}
 ${!s.length?`<div class="card"><p class="m" style="margin:0 0 12px">냉장고가 비어 있어요. 장 본 걸 기록하면 그 재료로 만들 수 있는 메뉴를 보여드려요.</p><button class="btn" onclick="goTab('record')">${ic("basket")} 산 것 기록하기</button></div>`
  :`${ms.length&&S.menuSig!==fridgeSig()?`<div class="note warn">냉장고 재료가 바뀌었어요. <span style="text-decoration:underline;cursor:pointer;font-weight:700" onclick="suggestMenus()">바뀐 재료로 다시 보기</span></div>`:""}
-${S.work==="menus"?`<div class="card workcard"><span class="spin dark"></span>냉장고 재료로 만들 수 있는 메뉴를 찾고 있어요…</div>`
- :ms.length?ms.map((m,i)=>`<button class="rc ${S.work==="recipe:"+i?"making":""}" ${S.work?"disabled":""} onclick="makeRecipe(${i})"><div class="th">${recipeIc(m)}</div>
-<div style="flex:1"><b>${esc(m.title)}</b>${m.desc?`<p class="m" style="margin:0 0 6px;line-height:1.45">${esc(m.desc)}</p>`:""}<div class="meta" style="margin:0">${S.work==="recipe:"+i?`<span class="making-t"><span class="spin dark"></span>레시피 만드는 중…</span>`:`<span>${ic("clock")} ${esc(m.time_min||"-")}분</span><span>${esc(m.uses.slice(0,3).join(", "))}</span>`}</div></div>
+${S.work==="menus"?`<div class="card workcard"><span class="spin dark"></span>${progSpan("menus")}</div>`
+ :ms.length?ms.map((m,i)=>`<button class="rc ${S.work==="recipe:"+i?"making":""}" ${S.work?"disabled":""} onclick="makeRecipe(${i})">${thumb(m)}
+<div style="flex:1"><b>${esc(m.title)}</b>${m.desc?`<p class="m" style="margin:0 0 6px;line-height:1.45">${esc(m.desc)}</p>`:""}<div class="meta" style="margin:0">${S.work==="recipe:"+i?`<span class="making-t"><span class="spin dark"></span>${progSpan("recipe")}</span>`:`${m.time_min?`<span>${ic("clock")} ${esc(m.time_min)}분</span>`:""}<span>${esc(m.uses.slice(0,3).join(", "))}</span>`}</div></div>
 <span style="color:var(--pri);flex:none">${ic("right")}</span></button>`).join("")
  :S.note?"":pr.length&&!S.menus?`<p class="m" style="margin:0">아래 '다른 메뉴 보기'로 지금 냉장고 재료로 만들 수 있는 메뉴를 더 찾아볼 수 있어요.</p>`:`<div class="note">지금 재료로 만들 수 있는 메뉴를 찾지 못했어요. 아래 버튼으로 다시 찾아보세요.</div>`}
 ${DB.seasSet?`<p class="m" style="margin-top:14px">조미료: ${esc(seasTxt||"없음")} · <span style="text-decoration:underline;cursor:pointer" onclick="openSeas('recipe')">고치기</span></p>`
@@ -1853,19 +2090,20 @@ ${DB.seasSet?`<p class="m" style="margin-top:14px">조미료: ${esc(seasTxt||"�
 ${res.length?`<p class="sec">최근에 본 레시피</p>${res.map(rcard).join("")}`:""}`;
  }else body=DB.scraps.length?DB.scraps.map(rcard).join(""):`<div class="card"><p class="m" style="margin:0">아직 저장한 레시피가 없어요. 레시피에서 하트를 눌러 보세요.</p></div>`;
  page(`<h2 class="lead">${v==="make"?"지금 냉장고 재료로<br>이런 걸 만들 수 있어요":"저장한 레시피"}</h2><div class="seg"><button class="${v==="make"?"on":""}" onclick="S.rview='make';needMenus()?suggestMenus():render()">만들 수 있는 메뉴</button><button class="${v==="scrap"?"on":""}" onclick="S.rview='scrap';render()">저장한 레시피 ${DB.scraps.length||""}</button></div>
-${body}`,v==="make"&&s.length?`<button class="btn" ${S.work?"disabled":""} onclick="suggestMenus()">${S.work==="menus"?`<span class="spin"></span>메뉴 찾는 중…`:`${ic("refresh")} 다른 메뉴 보기`}</button>`:null);}
+${body}
+<p id="photocredit" class="m photocredit" ${anyPhoto()?"":"hidden"}>음식 사진은 식품의약품안전처 식품안전나라 레시피 DB의 비슷한 요리 예시 사진이에요. 실제로 만들 요리와 다를 수 있어요.</p>`,v==="make"&&s.length?`<button class="btn" ${S.work?"disabled":""} onclick="suggestMenus()">${S.work==="menus"?`<span class="spin"></span>${progSpan("menus")}`:`${ic("refresh")} 다른 메뉴 보기`}</button>`:null);}
 
 /* 레시피 상세 (바텀시트) */
 function recipeSheet(){const r=findR(S.openR);if(!r)return "";const sc=isScrap(r.id),done=DB.recipes.some(x=>x.cooked&&x.title===r.title);
  return `<div class="modal-bg" onclick="if(event.target===this){S.openR=null;render()}"><div class="modal"><div class="grab"></div>
-<div style="text-align:center"><div style="width:84px;height:84px;border-radius:22px;background:var(--card);color:var(--pri);box-shadow:var(--sh);display:grid;place-items:center;font-size:46px;margin:0 auto">${recipeIc(r)}</div>
-<h1 style="margin:14px 0 6px">${esc(r.title)}</h1><div class="meta" style="justify-content:center"><span>${ic("clock")} ${esc(r.time_min||"-")}분</span><span>${ic("user")} ${DB.profile.people}명</span>${r.meals>1?`<span>${r.meals}끼분</span>`:""}<span class="tag o">${esc(r.level||"")}</span></div>
+<div style="text-align:center">${thumb(r,"rth")}
+<h1 style="margin:14px 0 6px">${esc(r.title)}</h1><div class="meta" style="justify-content:center">${r.time_min?`<span>${ic("clock")} ${esc(r.time_min)}분</span>`:""}<span>${ic("user")} ${DB.profile.people}명</span>${r.meals>1?`<span>${r.meals}끼분</span>`:""}<span class="tag o">${esc(r.level||"")}</span></div>
 <span class="chip ${sc?"on":""}" style="margin-top:12px" onclick="toggleScrap('${r.id}')">${ic("heart",sc?"fill":"")} ${sc?"저장했어요":"저장하기"}</span></div>
 <div class="seg" style="margin-top:18px"><button class="${S.rtab==="uses"?"on":""}" onclick="S.rtab='uses';render()">재료</button><button class="${S.rtab==="steps"?"on":""}" onclick="S.rtab='steps';render()">조리법</button></div>
 <div class="list">${S.rtab==="uses"
  ?(r.uses||[]).map(u=>`<div class="li" style="cursor:default"><div class="em" style="width:10px;height:10px;border-radius:50%;background:var(--sage);margin:0 4px"></div><div class="tx"><b style="font-weight:500">${esc(u)}</b></div></div>`).join("")
  :(r.steps||[]).length?r.steps.map((s,k)=>`<div class="step"><span>${k+1}</span>${esc(s)}</div>`).join("")
-  :S.stepsWork===r.id?`<div class="workcard" style="padding:16px"><span class="spin dark"></span>조리법을 만드는 중…</div>`
+  :S.stepsWork===r.id?`<div class="workcard" style="padding:16px"><span class="spin dark"></span>${progSpan("steps")}</div>`
   :`<div style="padding:14px"><p class="m" style="margin:0 0 10px">${S.stepsErr||"조리법이 아직 없어요."}</p><span class="chip on" onclick="ensureSteps('${r.id}')">조리법 다시 받기</span></div>`}</div>
 <button class="btn" style="margin-top:14px" onclick="startCook('${r.id}')">${done?"또 해먹었어요":"해먹었어요"}</button>
 <button class="link" onclick="S.openR=null;render()">닫기</button></div></div>`;}
@@ -1903,39 +2141,94 @@ function eatoutCard(mine,now){if(!mine)return "";
 <div class="eattr"><i style="width:${pct}%"></i></div>
 <div class="eatlg"><span><em class="me"></em>나 ${won(mine)}</span><span><em></em>평균 ${won(soFar)}</span></div>
 <p class="eatsrc">${now.getMonth()+1}월 ${day}일까지 · ${EATOUT_SRC}</p></div>`;}
-function historyPage(){const now=new Date();
+function historyPage(){const now=new Date(),n=homeCount(),nx=nextStage(n),st=stageOf(n);
  const months=[5,4,3,2,1,0].map(i=>{const d=new Date(now.getFullYear(),now.getMonth()-i,1);return{d,v:spentMonth(d),cur:i===0};});
  const max=Math.max(1,...months.map(m=>m.v));
- const weeks=[...new Set([...DB.purchases.map(x=>x.week),...DB.recipes.filter(r=>r.cooked).map(r=>r.cookedWeek),NOW_WK])].sort().reverse();
- const monthSaved=weeks.filter(k=>sameMonth(new Date(k+"T00:00:00").getTime()+3*DAY)).reduce((a,k)=>a+(savings(k)?.saved||0),0);
+ const days=[...new Set(mealList().map(m=>m.date))].sort().reverse().slice(0,14);
+ const weeks=[...new Set([...DB.purchases.map(x=>x.week),...DB.recipes.filter(r=>r.cooked).map(r=>r.cookedWeek)])].filter(Boolean).sort().reverse();
+ const uk=lastBuyWeek(),us=uk&&useStats(uk);
+ const dayTxt=d=>{const x=new Date(d+"T12:00:00");return `${x.getMonth()+1}월 ${x.getDate()}일 (${"일월화수목금토"[x.getDay()]})${d===todayKey()?" · 오늘":""}`;};
  page(`<h1 style="margin-top:18px">기록</h1>
-<div class="card"><div class="row"><h3>${now.getMonth()+1}월 장보기 지출</h3><span class="m">최근 6개월</span></div>
-<div class="big">${won(months[5].v)}</div>${sameMonth(DB.profile.startedAt)&&new Date(DB.profile.startedAt).getDate()>1?`<p class="m" style="margin:4px 0 0">이번 달은 ${new Date(DB.profile.startedAt).getDate()}일부터라 남은 날만큼만 예산을 잡았어요.</p>`:""}${months[4].v?`<span class="cmp">지난달에는 ${won(months[4].v)} 썼어요</span>`:""}
-<div class="bars">${months.map(m=>`<div class="${m.cur?"cur":""}">${m.v?Math.round(m.v/1000)+"천":""}<i style="height:${m.v/max*85}%"></i>${m.d.getMonth()+1}월</div>`).join("")}</div>
-${monthSaved?`<div class="save"><b>${now.getMonth()+1}월에 집밥으로 ${won(monthSaved)} 아꼈어요</b><small>${DELIVERY.label} 기준</small></div>`:""}</div>
+<section class="card mealtop">${bapImg(st>=STAGES.length?"grow":"hero","bmini")}<div><b>누적 집밥 ${n}끼</b><span class="m">${nx?`다음 성장까지 ${nx-n}끼`:"최고 단계예요"}</span>
+<div class="meter"><i style="width:${nx?Math.round((n-(STAGES[st-1]||0))/(nx-(STAGES[st-1]||0))*100):100}%"></i></div></div></section>
+<button class="btn" style="margin:6px 0 4px" onclick="openMeal()">${ic("plus")} 끼니 기록</button>
+${days.length?days.map(d=>`<p class="sec">${dayTxt(d)}</p><div class="list">${SLOTS.map(([k])=>mealList().find(m=>m.date===d&&m.slot===k)).filter(Boolean).map(m=>`<div class="li" onclick="openMeal('${m.date}','${m.slot}')"><div class="em">${m.type==="home"?"🍚":m.type==="deliv"?"🛵":"🍽️"}</div>
+<div class="tx"><b>${slotName(m.slot)} · ${esc(m.menu||typeName(m.type))}</b><span class="m">${typeName(m.type)}${+m.cost?` · ${won(m.cost)}`:""}${m.inst?" · 배달 대신 해 먹음":""}</span></div>${ic("right")}</div>`).join("")}</div>`).join("")
+ :`<p class="m" style="margin:14px 2px">아직 적은 끼니가 없어요. 오늘 먹은 끼니부터 적어 볼까요?</p>`}
+${us?`<section class="card usecard" style="margin-top:22px">
+ <div class="row"><h3>남김없이 다 쓰기</h3><span class="m">${wkLabel(uk)}에 산 재료 ${us.n}개</span></div>
+ <div class="usebig"><b>${us.pct}%</b><span>다 썼어요</span></div>
+ <div class="meter3"><i class="u" style="width:${us.used/us.n*100}%"></i><i class="t" style="width:${us.tossed/us.n*100}%"></i></div>
+ <div class="uselegend"><span><i class="u"></i>다 씀 ${us.used}</span><span><i class="l"></i>남음 ${us.left}</span><span><i class="t"></i>버림 ${us.tossed}</span></div></section>`:""}
+<div class="card" style="margin-top:22px"><div class="row"><h3>${now.getMonth()+1}월 장보기 결제</h3><span class="m">최근 6개월</span></div>
+<div class="big">${won(months[5].v)}</div>${months[4].v?`<span class="cmp">지난달에는 ${won(months[4].v)} 썼어요</span>`:""}
+<div class="bars">${months.map(m=>`<div class="${m.cur?"cur":""}">${m.v?Math.round(m.v/1000)+"천":""}<i style="height:${m.v/max*85}%"></i>${m.d.getMonth()+1}월</div>`).join("")}</div></div>
 ${eatoutCard(months[5].v,now)}
-<p class="sec">주차별 기록</p>
-${weeks.map(k=>{const sp=spentWeek(k),bud=DB.weeks[k]?.budget,ck=DB.recipes.filter(r=>r.cooked&&r.cookedWeek===k),buys=DB.purchases.filter(x=>x.week===k),sv=savings(k),open=S.openWk===k;
+${weeks.length?`<p class="sec">주차별 장본 재료</p>
+${weeks.map(k=>{const ck=DB.recipes.filter(r=>r.cooked&&r.cookedWeek===k),buys=DB.purchases.filter(x=>x.week===k),open=S.openWk===k;
  return `<div class="card wk" onclick="S.openWk=${open?"null":`'${k}'`};keep()">
 <div class="row"><b>${wkLabel(k)}${k===NOW_WK?` <span class="tag o">이번 주</span>`:""}</b><span class="m">${ic(open?"up":"down")}</span></div>
-<div class="row" style="margin-top:8px"><span class="m">장보기 ${won(sp)}${bud?` / 예산 ${won(bud)}`:""}</span><span class="m">${ck.length}끼 해먹음</span></div>
-${bud?`<div class="meter ${sp>bud?"over":""}"><i style="width:${Math.min(100,sp/bud*100)}%"></i></div>`:""}
+<div class="row" style="margin-top:8px"><span class="m">산 재료 ${buys.filter(x=>x.kind!=="seas").length}개</span><span class="m">${ck.length}끼 해먹음</span></div>
 ${useStats(k)?`<p class="m" style="font-size:13px;margin:8px 0 0">산 재료 ${useStats(k).pct}% 다 씀 · 버림 ${useStats(k).tossed}개</p>`:""}
-${sv?`<p class="dn" style="font-size:13px;margin:8px 0 0">배달 대비 ${won(sv.saved)} 아낌</p>`:""}
 ${open?`<div class="open" onclick="event.stopPropagation()">
-<p class="m" style="margin:0 0 6px">산 것 ${buys.length}개</p>${buys.length?`<div class="buys">${buys.map(x=>`<div class="row"><span>${ingIc(x.name)} ${esc(x.name)}</span><span class="row" style="gap:4px">${won(x.price)}<button class="x" onclick="delPurchase('${x.id}')" aria-label="${esc(x.name)} 기록 지우기">${ic("x")}</button></span></div>`).join("")}</div>`:`<p class="m">없어요</p>`}
+<p class="m" style="margin:0 0 6px">산 것 ${buys.length}개</p>${buys.length?`<div class="buys">${buys.map(x=>`<div class="row"><span>${ingIc(x.name)} ${esc(x.name)}</span><span class="row" style="gap:4px">${x.trip?"":won(x.price)}<button class="x" onclick="delPurchase('${x.id}')" aria-label="${esc(x.name)} 기록 지우기">${ic("x")}</button></span></div>`).join("")}</div>`:`<p class="m">없어요</p>`}
 <p class="m" style="margin:14px 0 6px">해먹은 레시피</p>${ck.length?ck.map(r=>`<div class="row" style="padding:6px 0;cursor:pointer" onclick="openRecipe('${r.id}')"><span>${recipeIc(r)} ${esc(r.title)}</span><span class="m">${new Date(r.cookedAt).getMonth()+1}/${new Date(r.cookedAt).getDate()}</span></div>`).join(""):`<p class="m">없어요</p>`}
-</div>`:""}</div>`;}).join("")}`);}
+</div>`:""}</div>`;}).join("")}`:""}`);}
+
+// 끼니 기록 시트 — 날짜(기본 오늘)·끼니·식사 유형은 꼭, 메뉴명·비용은 선택. 같은 날짜·끼니가 있으면 그 기록을 고쳐요
+function openMeal(date,slot){const d=date||todayKey(),k=slot||nowSlot(),ex=mealList().find(m=>m.date===d&&m.slot===k);
+ S.mf=ex?{...ex}:{id:null,date:d,slot:k,type:"home",menu:"",cost:"",inst:false};S.sheet="meal";render();}
+function mfSync(){const f=S.mf;if(!f)return;const g=id=>document.getElementById(id);
+ if(g("mfDate"))f.date=g("mfDate").value||f.date;if(g("mfMenu"))f.menu=g("mfMenu").value;if(g("mfCost"))f.cost=String(g("mfCost").value).replace(/[^0-9]/g,"");if(g("mfInst"))f.inst=g("mfInst").checked;}
+function setMf(k,v){mfSync();S.mf[k]=v;if(k==="date"||k==="slot"){const ex=mealList().find(m=>m.date===S.mf.date&&m.slot===S.mf.slot);if(ex)S.mf={...ex};else S.mf.id=null;}render();}
+function mealSheet(){const f=S.mf,home1=f.type==="home",recent=[...new Set([...planRecs().map(r=>r.title),...mealList().filter(m=>m.menu).slice(-6).map(m=>m.menu)])].slice(0,6);
+ return `<div class="modal-bg" onclick="if(event.target===this){S.sheet=null;render()}"><div class="modal"><div class="grab"></div>
+<h1 style="margin-top:0">${f.id?"끼니 기록 고치기":"어떤 끼니를<br>먹었나요?"}</h1>
+${f.id?`<p class="sub">이 날짜·끼니에 적은 기록이 있어서 그 기록을 고쳐요.</p>`:""}
+<label class="fl">날짜<input id="mfDate" type="date" class="field" value="${f.date}" max="${todayKey()}" onchange="setMf('date',this.value)"></label>
+<div class="fl" style="margin-top:14px">끼니<div class="seg">${SLOTS.map(([k,n])=>`<button type="button" class="${f.slot===k?"on":""}" onclick="setMf('slot','${k}')">${n}</button>`).join("")}</div></div>
+<div class="fl">식사 유형<div class="seg">${MTYPES.map(([k,n])=>`<button type="button" class="${f.type===k?"on":""}" onclick="setMf('type','${k}')">${n}</button>`).join("")}</div></div>
+<label class="fl">메뉴 (선택)<input id="mfMenu" class="field" maxlength="30" value="${esc(f.menu||"")}" placeholder="${home1?"예: 김치찌개":"예: 치킨"}"></label>
+${recent.length&&home1?`<div class="chips" style="margin-top:8px">${recent.map(t=>`<span class="chip" style="padding:6px 12px;font-size:13px" onclick="setMf('menu','${q(t)}')">${esc(t)}</span>`).join("")}</div>`:""}
+<label class="fl" style="margin-top:14px">${home1?"이 끼니에 쓴 재료비":"쓴 돈"} (선택)<span class="won"><input id="mfCost" class="field" inputmode="numeric" value="${f.cost?(+f.cost).toLocaleString():""}" placeholder="0"><em>원</em></span></label>
+${home1?`<label class="checkrow"><input id="mfInst" type="checkbox" ${f.inst?"checked":""}> 배달 대신 해 먹었어요 <span class="m">재료비를 적으면 배달 비용과 비교해요</span></label>`:""}
+<button class="btn" style="margin-top:20px" onclick="saveMeal()">저장하기</button>
+${f.id?`<button class="link" style="color:var(--r)" onclick="delMeal('${f.id}')">이 기록 지우기</button>`:""}
+<button class="link" onclick="S.sheet=null;render()">닫기</button></div></div>`;}
+function saveMeal(){mfSync();const f=S.mf;if(!/^\d{4}-\d{2}-\d{2}$/.test(f.date)||f.date>todayKey())return toast("날짜를 확인해 주세요");
+ const before=homeCount(),rec={id:f.id||uid(),date:f.date,slot:f.slot,type:f.type,menu:String(f.menu||"").trim().slice(0,30),cost:+f.cost||0,inst:f.type==="home"&&!!f.inst,at:Date.now()};
+ DB.meals=mealList().filter(m=>m.id!==rec.id&&!(m.date===rec.date&&m.slot===rec.slot));DB.meals.push(rec);
+ const n=homeCount(),up=stageOf(n)>stageOf(before);S.sheet=null;S.mf=null;save();
+ if(rec.type==="home"&&n>before)showReact(up?"grow":"home",up?`집밥 ${n}끼 달성!`:`집밥 ${n}번째!`,up?"밥풀이가 한 뼘 자랐어요":"맛있게 먹었어요");
+ else if(rec.type!=="home")showReact("empty",rec.type==="deliv"?"오늘은 배달이었군요":"오늘은 외식이었군요","다음 끼니는 집밥 어때요?");
+ else{toast("기록을 고쳤어요");render();}
+ if(rec.type==="home"&&rec.inst&&rec.cost&&!delivCost())setTimeout(()=>{S.sheet="save";render();},2300);}   // 처음 비교할 때 평소 배달비를 한 번 물어봐요
+function delMeal(id){DB.meals=mealList().filter(m=>m.id!==id);S.sheet=null;S.mf=null;save();toast("기록을 지웠어요");render();}
+// 밥풀이 반응 — 저장 직후 크게 보여주고 2초 뒤 사라져요 (눌러도 닫혀요)
+let reactT=null;
+function showReact(img,title,sub){S.react={img,title,sub};render();clearTimeout(reactT);reactT=setTimeout(()=>{S.react=null;render();},2200);}
+const reactLayer=()=>S.react?`<div class="react" role="status" onclick="S.react=null;render()">${bapImg(S.react.img,"pop")}<b>${esc(S.react.title)}</b><small>${esc(S.react.sub)}</small></div>`:"";
+// 예상 절약액 근거 — 비교한 끼니와 계산식, 평소 배달비 설정
+function saveSheet(){const ym=S.bym||NOW_YM,sv=savingsOf(ym);
+ return `<div class="modal-bg" onclick="if(event.target===this){S.sheet=null;render()}"><div class="modal"><div class="grab"></div>
+<h1 style="margin-top:0">배달 대비<br>예상 절약액</h1>
+<p class="sub">'배달 대신 해 먹었어요'를 고르고 재료비를 적은 집밥만 비교해요. 한 끼마다 <b>평소 배달 한 끼 비용 − 그 집밥 재료비</b>를 더해요.</p>
+<label class="fl">평소 배달 한 끼 비용<span class="row" style="gap:6px;justify-content:flex-start"><span class="won" style="flex:1"><input id="dcIn" class="field" inputmode="numeric" value="${sv.dc?sv.dc.toLocaleString():""}" placeholder="예: 18,000"><em>원</em></span><span class="chip on" onclick="saveDeliv()">저장</span></span></label>
+${sv.dc&&sv.n?`<p class="sec">${ymLabel(ym)} 비교한 끼니 ${sv.n}개 · 합계 ${won(sv.total)}</p><div class="list">${sv.list.map(m=>`<div class="li" style="cursor:default"><div class="em">🍚</div><div class="tx"><b>${esc(m.menu||"집밥")}</b><span class="m">${+m.date.slice(5,7)}월 ${+m.date.slice(8)}일 ${slotName(m.slot)} · ${won(sv.dc)} − ${won(m.cost)}</span></div><div class="pr dn">${won(Math.max(0,sv.dc-m.cost))}</div></div>`).join("")}</div>`
+ :`<div class="note" style="margin-top:16px">${sv.dc?`${ymLabel(ym)}에 비교할 집밥이 아직 없어요. 기록 탭에서 집밥을 적을 때 재료비를 넣고 '배달 대신 해 먹었어요'를 골라 주세요.`:"평소 배달 한 끼 비용을 먼저 정해 주세요. 한 번 정하면 계속 써요."}</div>`}
+<p class="m" style="font-size:12.5px;margin:14px 2px 0">재료비를 적지 않은 끼니와 배달·외식 기록은 비교하지 않아요. 실제 아낀 돈이 아니라 예상치예요.</p>
+<button class="link" onclick="S.sheet=null;render()">닫기</button></div></div>`;}
+function saveDeliv(){const v=+String($("#dcIn").value).replace(/[^0-9]/g,"")||0;if(!DB.profile)return;DB.profile.delivCost=v||null;save();toast(v?"평소 배달비를 저장했어요":"평소 배달비를 지웠어요");render();}
 
 /* ============================================================
    ⑥-2 초기 정보 수정 — 항목별로 따로 고쳐요
    ============================================================ */
 function settingsPage(){const p=DB.profile,seas=Object.entries(DB.seas).filter(([,v])=>v!=="out").map(([k])=>k);
  const rows=[["area","pin","동네·가게",`${p.district} ${p.dong||""} · ${placeOf(p)}`],["people","users","함께 먹는 사람",`${p.people}명`],
-  ["meals","calendar","추천받을 끼니",`${p.meals}끼씩`],["budget","wallet","한 달 집밥 예산",won(p.monthly)],["avoid","ban","못 먹는 재료",[...(p.allergies||[]),p.avoid].filter(Boolean).join(", ")||"없어요"],
+  ["meals","calendar","추천받을 끼니",`${p.meals}끼씩`],["budget","wallet","한 달 장보기 예산",won(p.monthly)],["deliv","🛵","평소 배달 한 끼 비용",delivCost()?won(delivCost()):"정하지 않았어요"],["avoid","ban","못 먹는 재료",[...(p.allergies||[]),p.avoid].filter(Boolean).join(", ")||"없어요"],
   ["seas","🧂","조미료",DB.seasSet?(seas.join(", ")||"없어요"):"아직 안 골랐어요"]];
  page(`<h1 style="margin-top:18px">내 정보</h1>${accountCard()}<p class="sub">처음에 입력한 정보예요. 바꿀 항목을 눌러주세요.</p>
-<div class="list">${rows.map(([k,i,t,v])=>`<div class="setrow" onclick="${k==="seas"?"openSeas('settings')":`openEdit('${k}')`}"><div class="ibox">${ICONS[i]?ic(i):emo(i)}</div><div class="tx"><b>${t}</b><span>${esc(v)}</span></div>${ic("right")}</div>`).join("")}</div>
+<div class="list">${rows.map(([k,i,t,v])=>`<div class="setrow" onclick="${k==="seas"?"openSeas('settings')":k==="deliv"?"S.sheet='save';render()":`openEdit('${k}')`}"><div class="ibox">${ICONS[i]?ic(i):emo(i)}</div><div class="tx"><b>${t}</b><span>${esc(v)}</span></div>${ic("right")}</div>`).join("")}</div>
 <p class="sec" style="margin-top:26px">개인정보</p>
 <div class="list"><div class="setrow" onclick="setAllergyConsent(${!allergyOK()})"><div class="ibox">${ic("ban")}</div><div class="tx"><b>[선택] 알레르기 정보 수집·이용</b><span>${allergyOK()?"동의함 · 누르면 철회하고 알레르기 정보를 지워요":"동의 안 함 · 누르면 동의해요"}</span></div>${ic("right")}</div>
 <a class="setrow" href="${PRIVACY_URL}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none"><div class="ibox">${ic("bulb")}</div><div class="tx"><b>개인정보 처리방침</b><span>수집 항목, 보관·삭제 기준, 위탁 업체</span></div>${ic("right")}</a></div>
@@ -1988,7 +2281,7 @@ function updBar(){let b=$(".sbar");const H=document.documentElement.scrollHeight
  const bottom=$(".tabbar")?72:12,track=V-12-bottom,th=Math.max(36,track*V/H);
  b.style.height=track+"px";b.style.bottom="";b.firstChild.style.height=th+"px";b.firstChild.style.top=(scrollY/(H-V))*(track-th)+"px";}
 addEventListener("scroll",updBar,{passive:true});addEventListener("resize",updBar);
-function render(){draw();
+function render(){draw();fillPhotos();
  // 바텀시트는 처음 열릴 때만 아래에서 올라와요 (열린 채로 화면을 다시 그릴 땐 움직이지 않게)
  const sk=S.sheet||(S.openR?"r"+S.openR:null);
  if(sk&&S._shownSheet===sk)document.querySelectorAll(".modal").forEach(m=>m.style.animation="none");
@@ -1997,13 +2290,24 @@ function render(){draw();
    뒤로 가기 — 화면이 바뀔 때마다 브라우저 기록에 남겨서
    휴대폰 뒤로 가기·브라우저 뒤로 가기·화면 위 ← 버튼이 모두 바로 전 화면으로 돌아가요
    ============================================================ */
-const NAV_KEYS=["view","tab","step","sheet","pview","rview","openR","editKey"];
+const NAV_KEYS=["view","tab","htab","step","sheet","pview","rview","openR","editKey"];
 const NAV_ID=Math.random().toString(36).slice(2);   // 새로고침 전 기록과 섞이지 않게
 let NAV=[],NI=-1,navSkip=0,navBusy=false;
-const navSnap=()=>JSON.stringify(Object.fromEntries(NAV_KEYS.map(k=>[k,S[k]??null])));
-function navSync(){if(navBusy)return;const sig=navSnap();
+// 같은 화면이 다른 이름으로 두 번 쌓이지 않게, 그 화면에서 안 쓰는 값은 비워서 비교해요 (예: 메뉴 정하기의 pview는 실제로 보이는 단계로)
+const navSnap=()=>{const o=Object.fromEntries(NAV_KEYS.map(k=>[k,S[k]??null])),app=o.view==="app"&&!!DB.onboarded;
+ if(!(app&&o.tab==="home"))o.htab=null;
+ if(!(app&&o.tab==="recipe"))o.rview=null;
+ o.pview=app&&o.tab==="pick"?pickView():null;
+ return JSON.stringify(o);};
+let navReplace=false,navLater=false;   // navReplace: 지금 화면 자리를 바꿔요 (← 버튼으로 앞 단계에 갈 때 기록이 꼬이지 않게)
+function navSync(){if(navBusy)return;
+ if(navSkip){navLater=true;return;}   // 브라우저가 아직 뒤로 가는 중이면, 끝난 뒤에 맞춰요 (기록이 어긋나지 않게)
+ const sig=navSnap(),rp=navReplace;navReplace=false;
  if(NI>=0&&NAV[NI]===sig)return;
- if(NI>0&&NAV[NI-1]===sig){NI--;navSkip++;try{history.back();}catch(e){}return;}   // 창을 닫는 등 '바로 전 화면'으로 돌아온 경우
+ // 이미 지나온 화면으로 다시 가면 새로 쌓지 않고 그 자리로 돌아가요 → 뒤로 가기가 왔다 갔다 하지 않아요
+ const j=NI>0?NAV.lastIndexOf(sig,NI-1):-1;
+ if(j>=0){navSkip++;try{history.go(j-NI);}catch(e){navSkip--;}NI=j;return;}
+ if(rp&&NI>=0){NAV=NAV.slice(0,NI+1);NAV[NI]=sig;try{history.replaceState({salimNav:NI,id:NAV_ID},"");}catch(e){}return;}
  NAV=NAV.slice(0,NI+1);NAV.push(sig);NI++;
  try{const st={salimNav:NI,id:NAV_ID};NI===0?history.replaceState(st,""):history.pushState(st,"");}catch(e){}}
 // 돌아갈 화면이 지금 상태에서 그릴 수 없는 화면이면 고쳐서 그려요 (예: 로그인한 뒤의 로그인 화면)
@@ -2013,18 +2317,26 @@ function navFix(st){if(A.user&&st.view==="login")st.view="app";
  if(!DB.onboarded&&!S.p)S.p=DEFAULT_PROFILE();
  return st;}
 window.addEventListener("popstate",e=>{
- if(navSkip){navSkip--;return;}
+ if(navSkip){navSkip--;if(!navSkip&&navLater){navLater=false;navSync();}return;}
  const h=e.state;if(!h||h.id!==NAV_ID||!NAV[h.salimNav]){if(h&&h.id&&h.id!==NAV_ID)history.back();return;}
  const before=navSnap(),st=navFix(JSON.parse(NAV[h.salimNav]));NI=h.salimNav;
+ ["htab","rview"].forEach(k=>{if(st[k]==null)delete st[k];});
  navBusy=true;Object.assign(S,st);S.err="";S.left=null;render();navBusy=false;
  const now=navSnap();NAV[NI]=now;
  if(now===before&&NI>0){navSkip++;NI--;history.back();return;}   // 바뀐 게 없으면 한 번 더 뒤로
  scrollTo(0,0);});
 function navBack(){if(NI>0)history.back();else goTab("home");}
+// 장보기 단계 화면의 ← : 늘 한 단계 앞으로 가요  기록 → 장볼 목록 → 메뉴 조합 → 메뉴 정하기 → 홈 장보기 탭
+function flowBack(){const v=S.tab==="pick"?pickView():null;navReplace=true;S.sheet=null;
+ if(S.tab==="record"&&trip()&&plan())return goTab("pick","list");
+ if(v==="list"&&draft())return goTab("pick","combo");
+ if(v==="combo"||v==="list"){S.planNote="";return goTab("pick","wish");}
+ Object.assign(S,{tab:"home",view:"app",htab:"shop",recorded:0,inErr:null});render();scrollTo(0,0);}
 function draw(){
  if(S.busy)return loader();
  if(S.view==="login")return loginScreen();
  if(!DB.onboarded){if(!S.p)S.p=DEFAULT_PROFILE();return SCR[ONB[S.step]]();}
+ if(!DB.v2)migrateV2();
  if(S.view==="edit")return SCR[S.editKey]();
  return {home,pick:pickPage,record:recordPage,pantry:pantryPage,recipe:recipePage,history:historyPage,me:settingsPage}[S.tab]();}
 render();
