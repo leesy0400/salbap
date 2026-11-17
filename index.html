@@ -162,6 +162,11 @@ h1{font-size:25px;line-height:1.32;font-weight:800;margin:12px 0 8px;letter-spac
 /* 레시피 카드 */
 .rc{display:flex;gap:14px;align-items:center;background:var(--card);border-radius:20px;padding:12px;box-shadow:var(--sh);margin:8px 0;cursor:pointer;text-align:left;width:100%;border:0}
 .rc .th{width:70px;height:70px;border-radius:16px;background:var(--food);color:var(--pri);display:grid;place-items:center;font-size:36px;flex:none}
+.rth{width:84px;height:84px;border-radius:22px;background:var(--card);color:var(--pri);box-shadow:var(--sh);display:grid;place-items:center;font-size:46px;margin:0 auto}
+.th.ph,.rth.ph{position:relative;overflow:hidden;padding:0}.th.ph img,.rth.ph img{width:100%;height:100%;object-fit:cover;display:block}
+.rth.ph{width:100%;height:180px;border-radius:20px}
+.phtag{position:absolute;left:4px;bottom:4px;font-style:normal;font-size:9.5px;line-height:1;padding:3px 5px;border-radius:6px;background:rgba(0,0,0,.55);color:#fff}
+.photocredit{font-size:11.5px;line-height:1.5;margin:14px 2px 0}
 .rc b{font-size:16px;display:block;margin-bottom:6px}
 .meta{display:flex;gap:10px;align-items:center;color:var(--m);font-size:12.5px;margin-top:6px;flex-wrap:wrap}
 .meta>span{display:inline-flex;align-items:center;gap:3px}
@@ -966,7 +971,32 @@ const emojiOf=n=>{const it=itemByName(n);if(it)return it.emoji;if(SEASONINGS.inc
 const ingIc=n=>emo(emojiOf(n));
 // 레시피에 이 재료가 들어가는지 (이름 전체, 3글자 이상이면 앞 2글자로도 확인)
 function mentions(r,n){const t=(r.title||"")+" "+(r.uses||[]).join(" "),c=coreName(n);return !!c&&(t.includes(c)||(c.length>=3&&t.includes(c.slice(0,2))));}
-function recipeIc(r){const it=ITEMS.find(i=>i.name.length>=2&&mentions(r,i.name))||ITEMS.find(i=>mentions(r,i.name));return emo(it?it.emoji:"🍲");}
+// 메뉴 이모지 — 메뉴 이름에 나온 주재료(고기·생선 먼저, 그다음 이름에서 앞에 나온 것)를 먼저 봐요.
+//   이름에 재료가 없을 때만 들어가는 재료 목록에서 찾아요 (예전엔 목록 순서라 닭고기 요리에 마늘이 떴어요)
+const IC_PRI={meat:0,fish:0,processed:1,dairy:1,staple:2,veg:3,fruit:4};
+function titleIc(t){t=String(t||"");let best=null;
+ for(const i of ITEMS){if(!(i.group in IC_PRI))continue;
+  const ns=[coreName(i.name),...i.alias.map(coreName)].filter(n=>n.length>=2||(i.group==="meat"&&n.length===1));
+  const p=Math.min(...ns.map(n=>{const k=t.indexOf(n);return k<0?1e9:k;}));if(p>=1e9)continue;
+  const sc=IC_PRI[i.group]*1000+p;if(!best||sc<best.sc)best={i,sc};}
+ return best&&best.i;}
+// 메뉴 예시 사진 — /api/photo가 식품안전나라 레시피 DB에서 비슷한 요리 사진을 찾아줘요. 없으면 이모지 그대로.
+const PHOTO={};   // 메뉴명 → 사진 주소 | null(없음) | 0(찾는 중)
+const photoOn=()=>location.protocol.startsWith("http");
+const photoImg=u=>`<img src="${esc(u)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="photoFail(this)"><em class="phtag">예시 사진</em>`;
+// 사진을 못 불러오면 이모지로 돌아가고, 다시 그려도 그 사진은 안 써요
+function photoFail(img){const el=img.parentNode,t=el.dataset.photo;PHOTO[t]=null;el.classList.remove("ph");el.innerHTML=recipeIc({title:t});}
+function thumb(r,cls="th",style=""){const t=String(r.title||""),u=PHOTO[t];
+ return `<div class="${cls}${u?" ph":""}" data-photo="${esc(t)}"${style?` style="${style}"`:""}>${u?photoImg(u):recipeIc(r)}</div>`;}
+function setPhoto(el,u){if(el.classList.contains("ph"))return;el.classList.add("ph");el.innerHTML=photoImg(u);const c=document.getElementById("photocredit");if(c)c.hidden=false;}
+function fillPhotos(){if(!photoOn())return;
+ document.querySelectorAll("[data-photo]").forEach(el=>{const t=el.dataset.photo;if(!t)return;
+  if(PHOTO[t])return setPhoto(el,PHOTO[t]);if(t in PHOTO)return;PHOTO[t]=0;
+  fetch("/api/photo?q="+encodeURIComponent(t)).then(r=>r.ok?r.json():{url:null}).then(j=>{PHOTO[t]=j&&j.url||null;
+   if(PHOTO[t])document.querySelectorAll("[data-photo]").forEach(e=>{if(e.dataset.photo===t)setPhoto(e,PHOTO[t]);});})
+  .catch(()=>{PHOTO[t]=null;});});}
+const anyPhoto=()=>Object.values(PHOTO).some(Boolean);
+function recipeIc(r){const tt=titleIc(r.title);if(tt)return emo(tt.emoji);const it=ITEMS.find(i=>i.name.length>=2&&mentions(r,i.name))||ITEMS.find(i=>mentions(r,i.name));return emo(it?it.emoji:"🍲");}
 
 /* ============================================================
    ③-1 냉장고 — 재료는 넉넉/보통/조금/다 씀, 조미료는 있음/조금/다 떨어짐
@@ -1860,8 +1890,8 @@ ${o.length?`<p class="sec">다 쓴 재료 · 버린 재료</p><p class="m" style
 /* ============================================================
    ⑤-4 레시피 — [추천받기] [저장한 레시피]
    ============================================================ */
-const rcard=r=>`<button class="rc" onclick="openRecipe('${r.id}')"><div class="th">${recipeIc(r)}</div>
-<div style="flex:1"><b>${esc(r.title)}</b><span class="tag o">${esc(r.level||"")}</span><div class="meta"><span>${ic("clock")} ${esc(r.time_min||"-")}분</span><span>${ic("user")} ${DB.profile.people}명</span>${r.meals>1?`<span class="tag g">${r.meals}끼분</span>`:""}${DB.recipes.some(x=>x.cooked&&x.title===r.title)?`<span class="tag g">해먹음</span>`:""}</div></div>
+const rcard=r=>`<button class="rc" onclick="openRecipe('${r.id}')">${thumb(r)}
+<div style="flex:1"><b>${esc(r.title)}</b>${r.level?`<span class="tag o">${esc(r.level)}</span>`:""}<div class="meta">${r.time_min?`<span>${ic("clock")} ${esc(r.time_min)}분</span>`:""}<span>${ic("user")} ${DB.profile.people}명</span>${r.meals>1?`<span class="tag g">${r.meals}끼분</span>`:""}${DB.recipes.some(x=>x.cooked&&x.title===r.title)?`<span class="tag g">해먹음</span>`:""}</div></div>
 <span class="heart">${ic("heart",isScrap(r.id)?"fill":"")}</span></button>`;
 function recipePage(){const v=S.rview,s=stock();
  let body;
@@ -1873,8 +1903,8 @@ ${pr.length?`<p class="sec" style="margin-top:6px">${ic("basket")} 이번 장보
 ${!s.length?`<div class="card"><p class="m" style="margin:0 0 12px">냉장고가 비어 있어요. 장 본 걸 기록하면 그 재료로 만들 수 있는 메뉴를 보여드려요.</p><button class="btn" onclick="goTab('record')">${ic("basket")} 산 것 기록하기</button></div>`
  :`${ms.length&&S.menuSig!==fridgeSig()?`<div class="note warn">냉장고 재료가 바뀌었어요. <span style="text-decoration:underline;cursor:pointer;font-weight:700" onclick="suggestMenus()">바뀐 재료로 다시 보기</span></div>`:""}
 ${S.work==="menus"?`<div class="card workcard"><span class="spin dark"></span>${progSpan("menus")}</div>`
- :ms.length?ms.map((m,i)=>`<button class="rc ${S.work==="recipe:"+i?"making":""}" ${S.work?"disabled":""} onclick="makeRecipe(${i})"><div class="th">${recipeIc(m)}</div>
-<div style="flex:1"><b>${esc(m.title)}</b>${m.desc?`<p class="m" style="margin:0 0 6px;line-height:1.45">${esc(m.desc)}</p>`:""}<div class="meta" style="margin:0">${S.work==="recipe:"+i?`<span class="making-t"><span class="spin dark"></span>${progSpan("recipe")}</span>`:`<span>${ic("clock")} ${esc(m.time_min||"-")}분</span><span>${esc(m.uses.slice(0,3).join(", "))}</span>`}</div></div>
+ :ms.length?ms.map((m,i)=>`<button class="rc ${S.work==="recipe:"+i?"making":""}" ${S.work?"disabled":""} onclick="makeRecipe(${i})">${thumb(m)}
+<div style="flex:1"><b>${esc(m.title)}</b>${m.desc?`<p class="m" style="margin:0 0 6px;line-height:1.45">${esc(m.desc)}</p>`:""}<div class="meta" style="margin:0">${S.work==="recipe:"+i?`<span class="making-t"><span class="spin dark"></span>${progSpan("recipe")}</span>`:`${m.time_min?`<span>${ic("clock")} ${esc(m.time_min)}분</span>`:""}<span>${esc(m.uses.slice(0,3).join(", "))}</span>`}</div></div>
 <span style="color:var(--pri);flex:none">${ic("right")}</span></button>`).join("")
  :S.note?"":pr.length&&!S.menus?`<p class="m" style="margin:0">아래 '다른 메뉴 보기'로 지금 냉장고 재료로 만들 수 있는 메뉴를 더 찾아볼 수 있어요.</p>`:`<div class="note">지금 재료로 만들 수 있는 메뉴를 찾지 못했어요. 아래 버튼으로 다시 찾아보세요.</div>`}
 ${DB.seasSet?`<p class="m" style="margin-top:14px">조미료: ${esc(seasTxt||"없음")} · <span style="text-decoration:underline;cursor:pointer" onclick="openSeas('recipe')">고치기</span></p>`
@@ -1884,13 +1914,14 @@ ${DB.seasSet?`<p class="m" style="margin-top:14px">조미료: ${esc(seasTxt||"�
 ${res.length?`<p class="sec">최근에 본 레시피</p>${res.map(rcard).join("")}`:""}`;
  }else body=DB.scraps.length?DB.scraps.map(rcard).join(""):`<div class="card"><p class="m" style="margin:0">아직 저장한 레시피가 없어요. 레시피에서 하트를 눌러 보세요.</p></div>`;
  page(`<h2 class="lead">${v==="make"?"지금 냉장고 재료로<br>이런 걸 만들 수 있어요":"저장한 레시피"}</h2><div class="seg"><button class="${v==="make"?"on":""}" onclick="S.rview='make';needMenus()?suggestMenus():render()">만들 수 있는 메뉴</button><button class="${v==="scrap"?"on":""}" onclick="S.rview='scrap';render()">저장한 레시피 ${DB.scraps.length||""}</button></div>
-${body}`,v==="make"&&s.length?`<button class="btn" ${S.work?"disabled":""} onclick="suggestMenus()">${S.work==="menus"?`<span class="spin"></span>${progSpan("menus")}`:`${ic("refresh")} 다른 메뉴 보기`}</button>`:null);}
+${body}
+<p id="photocredit" class="m photocredit" ${anyPhoto()?"":"hidden"}>음식 사진은 식품의약품안전처 식품안전나라 레시피 DB의 비슷한 요리 예시 사진이에요. 실제로 만들 요리와 다를 수 있어요.</p>`,v==="make"&&s.length?`<button class="btn" ${S.work?"disabled":""} onclick="suggestMenus()">${S.work==="menus"?`<span class="spin"></span>${progSpan("menus")}`:`${ic("refresh")} 다른 메뉴 보기`}</button>`:null);}
 
 /* 레시피 상세 (바텀시트) */
 function recipeSheet(){const r=findR(S.openR);if(!r)return "";const sc=isScrap(r.id),done=DB.recipes.some(x=>x.cooked&&x.title===r.title);
  return `<div class="modal-bg" onclick="if(event.target===this){S.openR=null;render()}"><div class="modal"><div class="grab"></div>
-<div style="text-align:center"><div style="width:84px;height:84px;border-radius:22px;background:var(--card);color:var(--pri);box-shadow:var(--sh);display:grid;place-items:center;font-size:46px;margin:0 auto">${recipeIc(r)}</div>
-<h1 style="margin:14px 0 6px">${esc(r.title)}</h1><div class="meta" style="justify-content:center"><span>${ic("clock")} ${esc(r.time_min||"-")}분</span><span>${ic("user")} ${DB.profile.people}명</span>${r.meals>1?`<span>${r.meals}끼분</span>`:""}<span class="tag o">${esc(r.level||"")}</span></div>
+<div style="text-align:center">${thumb(r,"rth")}
+<h1 style="margin:14px 0 6px">${esc(r.title)}</h1><div class="meta" style="justify-content:center">${r.time_min?`<span>${ic("clock")} ${esc(r.time_min)}분</span>`:""}<span>${ic("user")} ${DB.profile.people}명</span>${r.meals>1?`<span>${r.meals}끼분</span>`:""}<span class="tag o">${esc(r.level||"")}</span></div>
 <span class="chip ${sc?"on":""}" style="margin-top:12px" onclick="toggleScrap('${r.id}')">${ic("heart",sc?"fill":"")} ${sc?"저장했어요":"저장하기"}</span></div>
 <div class="seg" style="margin-top:18px"><button class="${S.rtab==="uses"?"on":""}" onclick="S.rtab='uses';render()">재료</button><button class="${S.rtab==="steps"?"on":""}" onclick="S.rtab='steps';render()">조리법</button></div>
 <div class="list">${S.rtab==="uses"
@@ -2015,7 +2046,7 @@ function updBar(){let b=$(".sbar");const H=document.documentElement.scrollHeight
  const bottom=$(".tabbar")?72:12,track=V-12-bottom,th=Math.max(36,track*V/H);
  b.style.height=track+"px";b.style.bottom="";b.firstChild.style.height=th+"px";b.firstChild.style.top=(scrollY/(H-V))*(track-th)+"px";}
 addEventListener("scroll",updBar,{passive:true});addEventListener("resize",updBar);
-function render(){draw();
+function render(){draw();fillPhotos();
  // 바텀시트는 처음 열릴 때만 아래에서 올라와요 (열린 채로 화면을 다시 그릴 땐 움직이지 않게)
  const sk=S.sheet||(S.openR?"r"+S.openR:null);
  if(sk&&S._shownSheet===sk)document.querySelectorAll(".modal").forEach(m=>m.style.animation="none");

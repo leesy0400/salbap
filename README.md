@@ -15,6 +15,7 @@
 | 값 | 위치 | 공개돼도 되나 |
 |---|---|---|
 | Claude API 키 | Vercel 환경변수 `ANTHROPIC_API_KEY` | 안 됨 |
+| 식품안전나라 오픈API 키 (메뉴 예시 사진) | Vercel 환경변수 `FOODSAFETY_API_KEY` | 안 됨 (없으면 사진 대신 이모지) |
 | Firebase 웹 설정(apiKey AIza…, projectId 등) | `index.html`의 `FIREBASE_CONFIG` | 됨 (원래 공개용. 보호는 firestore.rules가 담당) |
 | 사용자 비밀번호 | Firebase Auth | 우리 코드·DB에 없음 |
 
