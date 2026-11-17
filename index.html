@@ -516,10 +516,12 @@ input[type=range]:focus-visible{outline:2px solid var(--pri);outline-offset:6px}
 .bap{display:block;user-select:none;-webkit-user-drag:none}
 .hero-img{width:min(64vw,250px);height:auto;animation:bob 3.2s ease-in-out infinite}
 @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-.growline{font-size:13.5px;color:var(--m);margin:10px 0 0}.growline b{color:var(--t)}
-.qmeal{display:flex;gap:8px;width:100%;margin-top:4px}.qmeal button{flex:1;height:50px;border-radius:999px;border:1.5px solid var(--l);background:var(--card);font:inherit;font-size:16px;font-weight:700;color:var(--t);cursor:pointer}.qmeal button:active{background:var(--prs);border-color:var(--pri)}
-.qdone{margin-top:4px;font-size:15px;font-weight:700;color:var(--prd);display:flex;align-items:center;gap:8px}.qdone .tlink{font-size:13px}
-.mcount{font-size:14px;color:var(--m)}.mcount b{color:var(--t)}
+.growline{font-size:13.5px;color:var(--m);margin:2px 0 0}.growline b{color:var(--t)}
+.mcount{font-size:14px;color:var(--m);margin:14px 2px 0}.mcount b{color:var(--t)}
+.ckrow.rc{cursor:pointer}.ckrow.rc.on .tx b{text-decoration:none;color:var(--t)}
+.rcout{display:flex;align-items:center;justify-content:space-between;margin-top:16px;font-weight:700}
+.stepper{display:flex;align-items:center;gap:12px}.stepper button{width:40px;height:40px;border-radius:50%;border:1.5px solid var(--l);background:var(--card);font:inherit;font-size:20px;color:var(--t);cursor:pointer}.stepper b{min-width:40px;text-align:center;font-size:17px}
+
 .tlink{border:0;background:none;padding:0;font:inherit;font-size:13.5px;font-weight:700;color:var(--pri);text-decoration:underline;cursor:pointer}
 .footrow{display:flex;gap:8px}.footrow .btn.ghost{flex:0 0 auto;width:auto;padding:0 18px}.footrow .btn:not(.ghost){flex:1}
 .gobtn{margin:18px 0 0;height:60px;font-size:17px;background:var(--t)}
@@ -1043,13 +1045,12 @@ function openPastTrip(id){Object.assign(S,{tab:"home",view:"app",htab:"rec",rsub
 const SLOTS=[["b","아침"],["l","점심"],["d","저녁"],["s","간식"]], MTYPES=[["home","집밥"],["deliv","배달"],["out","외식"]];
 const slotName=k=>(SLOTS.find(x=>x[0]===k)||[,""])[1], typeName=k=>(MTYPES.find(x=>x[0]===k)||[,""])[1];
 const mealList=()=>DB.meals||(DB.meals=[]);
-const homeCount=()=>mealList().filter(m=>m.type==="home").length;
+// 집밥 수 = 레시피에서 [해먹었어요]를 누른 횟수 (+ 예전에 직접 적은 집밥 기록). 끼니를 따로 입력받지 않아요
+const cookedList=()=>DB.recipes.filter(r=>r.cooked).sort((a,b)=>(b.cookedAt||0)-(a.cookedAt||0));
+const homeCount=()=>cookedList().length+mealList().filter(m=>m.type==="home").length;
 const todayKey=()=>ymd(new Date());
 const nowSlot=()=>{const h=new Date().getHours();return h<10?"b":h<15?"l":h<21?"d":"s";};
-// 홈에서 한 번에 적는 끼니 — 지금 시간 기준 아침·점심·저녁 (밤에도 '저녁')
-const qSlot=()=>{const h=new Date().getHours();return h<10?"b":h<15?"l":"d";};
-const qMealNow=()=>mealList().find(m=>m.date===todayKey()&&m.slot===qSlot());
-function quickMeal(type){S.mf={id:null,date:todayKey(),slot:qSlot(),type,menu:"",cost:"",inst:false};saveMeal();}
+
 // 밥풀이 성장 단계 — 집밥 누적 횟수 기준 (단계별 끼니 수는 기획에서 추후 확정, 지금은 임시 값)
 const STAGES=[5,15,30];
 const stageOf=n=>STAGES.filter(v=>n>=v).length, nextStage=n=>STAGES.find(v=>v>n)||null;
@@ -1621,13 +1622,11 @@ function startCook(id){const r=findR(id);
 function setLeft(i,lv){S.left.rows[i].lv=lv;render();}
 function finishCook(){const {rid,rows}=S.left;
  rows.forEach(r=>{if(r.k==="p"){const x=DB.pantry.find(p=>p.id===r.id);if(x){x.level=r.lv;if(r.lv==="out"){x.tossed=false;setFate(x.pid,"used");}}}else DB.seas[r.name]=r.lv;});
- let r=DB.recipes.find(x=>x.id===rid);
+ const before=homeCount();let r=DB.recipes.find(x=>x.id===rid);
  if(!r||r.cooked){r={...findR(rid),id:uid(),at:Date.now(),week:NOW_WK};DB.recipes.push(r);}   // 저장한 레시피를 또 해먹으면 새 기록으로
  Object.assign(r,{cooked:true,cookedAt:Date.now(),cookedWeek:NOW_WK});
- S.left=null;S.openR=null;
- // 해먹었어요 = 집밥 한 끼: 지금 끼니가 비어 있거나 집밥이면 메뉴 이름까지 적어요 (배달·외식으로 적은 끼니는 건드리지 않아요)
- const ex=qMealNow();if(!ex||(ex.type==="home"&&!ex.menu)){S.mf={...(ex||{id:null,date:todayKey(),slot:qSlot(),cost:"",inst:false}),type:"home",menu:r.title||""};saveMeal();toast("집밥으로 기록하고 냉장고에 반영했어요");return;}
- save();toast("해먹은 기록을 남기고 냉장고에 반영했어요");render();}
+ S.left=null;S.openR=null;save();
+ const n=homeCount(),up=stageOf(n)>stageOf(before);showReact(up?"grow":"home",up?`집밥 ${n}끼 달성!`:`집밥 ${n}번째!`,up?"밥풀이가 한 뼘 자랐어요":"냉장고에도 반영했어요");}
 
 /* ============================================================
    공통 뼈대
@@ -1635,7 +1634,7 @@ function finishCook(){const {rid,rows}=S.left;
 const chip=(t,on,fn)=>`<span class="chip ${on?"on":""}" onclick="${fn}">${t}</span>`;
 // 준비 중 화면 로고: 심볼 + 김 세 줄 + 손글씨 로고
 const brandLoad=()=>`<div class="brandload"><svg class="steam" width="40" height="22" viewBox="0 0 40 22" aria-hidden="true"><g stroke="var(--sage)" stroke-width="2.4" stroke-linecap="round" fill="none"><path d="M12 19c-3-4 3-6 0-10"/><path d="M20 17c-3-4 3-6 0-11"/><path d="M28 19c-3-4 3-6 0-10"/></g></svg>${symbol(78)}<span class="word">살림밥상</span></div>`;
-const overlays=()=>`${S.sheet==="meal"&&S.mf?mealSheet():""}${S.sheet==="pay"&&S.pay?paySheet():""}${S.sheet==="droptrip"?dropTripSheet():""}${reactLayer()}${S.sheet==="onblogout"&&A.user?onbLogoutSheet():""}${S.sheet==="delacct"?delAcctSheet():""}${S.sheet==="wipe"?wipeSheet():""}${S.sheet==="manual"?manualSheet():""}${S.sheet==="agree"?agreeModal():""}${S.sheet==="seas"?seasSheet():""}${S.left?leftSheet():S.openR?recipeSheet():""}`;
+const overlays=()=>`${S.sheet==="meal"&&S.mf?mealSheet():""}${S.sheet==="pay"&&S.pay?paySheet():""}${S.sheet==="droptrip"?dropTripSheet():""}${S.sheet==="recap"&&S.rc?recapSheet():""}${reactLayer()}${S.sheet==="onblogout"&&A.user?onbLogoutSheet():""}${S.sheet==="delacct"?delAcctSheet():""}${S.sheet==="wipe"?wipeSheet():""}${S.sheet==="manual"?manualSheet():""}${S.sheet==="agree"?agreeModal():""}${S.sheet==="seas"?seasSheet():""}${S.left?leftSheet():S.openR?recipeSheet():""}`;
 
 // 온보딩·초기정보 수정 화면 뼈대: 위에 [← + 진행 막대], 아래에 고정 버튼
 function shell(body,foot){const edit=S.view==="edit";
@@ -1959,13 +1958,11 @@ ${body}
 <p id="photocredit" class="m photocredit" ${anyPhoto()?"":"hidden"}>음식 사진은 식품의약품안전처 식품안전나라 레시피 DB의 비슷한 요리 예시 사진이에요. 실제로 만들 요리와 다를 수 있어요.</p>`;}
 
 // 밥풀이 탭(첫 화면) — 밥풀이 · 누적 집밥 · 이번 달 남은 장보기 예산 · [장보러 가기] 버튼 하나
-function todayTab(){const n=homeCount(),nx=nextStage(n),mb=monthBudget(),left=leftMonth(),qs=qSlot(),qm=qMealNow();
- const msg=qm?(n?`집밥 <b>${n}</b>번째,<br>오늘도 잘 먹어요!`:`${slotName(qs)}은 ${typeName(qm.type)}이었군요<br>다음은 집밥 어때요?`):`${slotName(qs)} 뭐 먹었어요?`;
+function todayTab(){const n=homeCount(),nx=nextStage(n),mb=monthBudget(),left=leftMonth();
+ const msg=n?`집밥 <b>${n}</b>번째,<br>오늘도 잘 먹어요!`:`레시피로 해 먹으면<br>밥풀이가 자라요`;
  return `<section class="today">
 <h2 class="tmsg">${msg}</h2>
 <div class="hero">${bapImg(n&&stageOf(n)>=STAGES.length?"grow":"hero","hero-img")}</div>
-${qm?`<div class="qdone">${qm.type==="home"?"🍚":qm.type==="deliv"?"🛵":"🍽️"} ${slotName(qs)} ${typeName(qm.type)}${qm.menu?` · ${esc(qm.menu)}`:""} <button class="tlink" onclick="openMeal('${todayKey()}','${qs}')">고치기</button></div>`
- :`<div class="qmeal">${MTYPES.map(([k,t])=>`<button onclick="quickMeal('${k}')">${k==="home"?"🍚":k==="deliv"?"🛵":"🍽️"} ${t}</button>`).join("")}</div>`}
 <div class="growline"><b>누적 집밥 ${n}끼</b>${nx?` · 다음 성장까지 ${nx-n}끼`:" · 최고 단계예요"}</div>
 <div class="tbud ${mb&&left<0?"over":""}">
  <small>${ymLabel(NOW_YM)} 남은 장보기 예산</small><b>${mb?(left<0?`${won(-left)} 초과`:won(left)):"월 예산을 정해 주세요"}</b>
@@ -1992,7 +1989,29 @@ ${c.length?`<div class="list">${c.map(ckRow).join("")}</div>`:`<p class="m" styl
 const shopFoot=()=>{const t=trip();if(!t||tripStep().k!==3)return null;const got=gotItems();
  return `<button class="btn" ${got.length?"":"disabled"} onclick="openPay('trip')">${got.length?`장보기 마치고 결제액 적기 <span class="btn-sub">${got.length}개 · ${won(gotTotal())}</span>`:"산 재료를 체크해 주세요"}</button>`;};
 function startTrip(){if(trip()&&(draft()||plan()||cart().length)){S.sheet="droptrip";return render();}
+ const rt=recapTrip();if(rt&&S.sheet!=="recap"){openRecap(rt);return;}   // 새 장보기 전에 지난 장보기를 한 번 돌아봐요
  if(trip())dropTrip();Object.assign(S,{tm:P().meals||5,picked:[],wish:"",noWish:false,planEdit:false});goTab("pick","wish");}
+// 지난 장보기 돌아보기 — 끼니를 따로 입력받지 않는 대신, 새 장보기를 시작할 때 한 번:
+// 지난번 메뉴 중 해 먹은 것 체크(이미 [해먹었어요]를 누른 건 체크된 채로) + 그 사이 배달·외식 횟수
+const recapTrip=()=>{const t=pastTrips()[0];return t&&!t.recap&&(t.recipes||[]).length?t:null;};
+const wasCooked=id=>{const r=DB.recipes.find(x=>x.id===id);return !!(r&&r.cooked)||DB.recipes.some(x=>x.cooked&&x.from===id);};
+function openRecap(t){S.rc={id:t.id,ck:Object.fromEntries(t.recipes.map(id=>[id,wasCooked(id)])),out:0};S.sheet="recap";render();}
+function rcToggle(id){if(wasCooked(id))return;S.rc.ck[id]=!S.rc.ck[id];render();}
+function rcOut(d){S.rc.out=Math.max(0,Math.min(30,S.rc.out+d));render();}
+function saveRecap(skip){const t=(DB.trips||[]).find(x=>x.id===S.rc.id);if(!t){S.sheet=null;S.rc=null;return startTrip();}
+ const before=homeCount();
+ if(!skip)t.recipes.forEach(id=>{if(!S.rc.ck[id]||wasCooked(id))return;const r=DB.recipes.find(x=>x.id===id);
+  if(r)Object.assign(r,{cooked:true,cookedAt:Date.now(),cookedWeek:NOW_WK});else{const f=findR(id);if(f)DB.recipes.push({...f,id:uid(),from:id,at:Date.now(),week:NOW_WK,cooked:true,cookedAt:Date.now(),cookedWeek:NOW_WK});}});
+ t.recap=skip?{at:Date.now(),skip:true}:{at:Date.now(),out:S.rc.out};S.rc=null;save();
+ const n=homeCount();if(n>before){const up=stageOf(n)>stageOf(before);showReact(up?"grow":"home",up?`집밥 ${n}끼 달성!`:`집밥 ${n}번째!`,up?"밥풀이가 한 뼘 자랐어요":"잘 해 먹었어요");}
+ S.sheet=null;startTrip();}
+function recapSheet(){const rc=S.rc,t=rc&&(DB.trips||[]).find(x=>x.id===rc.id);if(!t)return "";
+ return `<div class="modal-bg"><div class="modal"><div class="grab"></div>
+<h1 style="margin-top:0">지난 장보기 메뉴,<br>얼마나 해 먹었어요?</h1>
+<div class="list">${t.recipes.map(id=>{const r=findR(id),on=!!rc.ck[id],lock=wasCooked(id);return r?`<div class="li ckrow rc ${on?"on":""}" onclick="rcToggle('${id}')"><span class="ckb"><span class="cb">${on?ic("check"):""}</span></span><div class="tx"><b>${esc(r.title)}</b></div>${lock?`<span class="m">해먹음</span>`:""}</div>`:"";}).join("")}</div>
+<div class="rcout"><span>그 사이 배달·외식</span><div class="stepper"><button onclick="rcOut(-1)" aria-label="줄이기">−</button><b>${rc.out}번</b><button onclick="rcOut(1)" aria-label="늘리기">+</button></div></div>
+<button class="btn" style="margin-top:18px" onclick="saveRecap()">새 장보기 시작</button>
+<button class="link" onclick="saveRecap(true)">건너뛰기</button></div></div>`;}
 function continueTrip(){const t=trip();if(!t)return startTrip();Object.assign(S,{tm:t.meals,picked:[...(t.picked||[])]});const {k,R}=tripStep();
  if(k===3)return setHtab("shop");goTab("pick",R[k].k==="wish"?"wish":R[k].k);}
 function shopTab(){const t=trip(),done=pastTrips().slice(0,5);
@@ -2256,17 +2275,16 @@ function eatoutCard(mine,now){if(!mine)return "";
 function historyPage(){const now=new Date(),n=homeCount(),nx=nextStage(n),st=stageOf(n);
  const months=[5,4,3,2,1,0].map(i=>{const d=new Date(now.getFullYear(),now.getMonth()-i,1);return{d,v:spentMonth(d),cur:i===0};});
  const max=Math.max(1,...months.map(m=>m.v));
- const days=[...new Set(mealList().map(m=>m.date))].sort().reverse().slice(0,14);
  const weeks=[...new Set([...DB.purchases.map(x=>x.week),...DB.recipes.filter(r=>r.cooked).map(r=>r.cookedWeek)])].filter(Boolean).sort().reverse();
  const uk=lastBuyWeek(),us=uk&&useStats(uk);
- const dayTxt=d=>{const x=new Date(d+"T12:00:00");return `${x.getMonth()+1}월 ${x.getDate()}일 (${"일월화수목금토"[x.getDay()]})${d===todayKey()?" · 오늘":""}`;};
  page(`<h1 style="margin-top:18px">기록</h1>
 <section class="card mealtop">${bapImg(st>=STAGES.length?"grow":"hero","bmini")}<div><b>누적 집밥 ${n}끼</b><span class="m">${nx?`다음 성장까지 ${nx-n}끼`:"최고 단계예요"}</span>
 <div class="meter"><i style="width:${nx?Math.round((n-(STAGES[st-1]||0))/(nx-(STAGES[st-1]||0))*100):100}%"></i></div></div></section>
-<div class="row" style="margin:14px 2px 0"><span class="mcount">${(()=>{const ym=NOW_YM,ms=mealList().filter(m=>m.date.slice(0,7)===ym);return MTYPES.map(([k,t])=>`${t} <b>${ms.filter(m=>m.type===k).length}</b>`).join(" · ");})()}</span><button class="tlink" onclick="openMeal()">${ic("plus")} 지난 끼니 적기</button></div>
-${days.length?days.map(d=>`<p class="sec">${dayTxt(d)}</p><div class="list">${SLOTS.map(([k])=>mealList().find(m=>m.date===d&&m.slot===k)).filter(Boolean).map(m=>`<div class="li" onclick="openMeal('${m.date}','${m.slot}')"><div class="em">${m.type==="home"?"🍚":m.type==="deliv"?"🛵":"🍽️"}</div>
-<div class="tx"><b>${slotName(m.slot)} · ${esc(m.menu||typeName(m.type))}</b><span class="m">${typeName(m.type)}${+m.cost?` · ${won(m.cost)}`:""}</span></div>${ic("right")}</div>`).join("")}</div>`).join("")
- :`<p class="m" style="margin:14px 2px">밥풀이 홈에서 한 번 누르면 여기에 쌓여요</p>`}
+${(()=>{const ym=NOW_YM,hm=cookedList().filter(r=>ymOf(r.cookedAt)===ym).length+mealList().filter(m=>m.type==="home"&&m.date.slice(0,7)===ym).length,
+  om=(DB.trips||[]).filter(t=>t.recap&&ymOf(t.recap.at)===ym).reduce((a,t)=>a+(+t.recap.out||0),0)+mealList().filter(m=>m.type!=="home"&&m.date.slice(0,7)===ym).length;
+  return `<p class="mcount">${ymLabel(ym)} 집밥 <b>${hm}</b> · 배달·외식 <b>${om}</b></p>`;})()}
+${(()=>{const ck=cookedList().slice(0,10);return ck.length?`<p class="sec">해먹은 메뉴</p><div class="list">${ck.map(r=>`<div class="li" onclick="openRecipe('${r.id}')"><div class="em">${recipeIc(r)}</div><div class="tx"><b>${esc(r.title)}</b></div><span class="m">${new Date(r.cookedAt).getMonth()+1}/${new Date(r.cookedAt).getDate()}</span></div>`).join("")}</div>`
+ :`<p class="m" style="margin:14px 2px">레시피에서 [해먹었어요]를 누르면 여기에 쌓여요</p>`;})()}
 ${us?`<section class="card usecard" style="margin-top:22px">
  <div class="row"><h3>남김없이 다 쓰기</h3><span class="m">${wkLabel(uk)}에 산 재료 ${us.n}개</span></div>
  <div class="usebig"><b>${us.pct}%</b><span>다 썼어요</span></div>
