@@ -1153,21 +1153,30 @@ function titleIc(t){t=String(t||"");let best=null;
   const p=Math.min(...ns.map(n=>{const k=t.indexOf(n);return k<0?1e9:k;}));if(p>=1e9)continue;
   const sc=IC_PRI[i.group]*1000+p;if(!best||sc<best.sc)best={i,sc};}
  return best&&best.i;}
-// 메뉴 예시 사진 — /api/photo가 식품안전나라 레시피 DB에서 비슷한 요리 사진을 찾아줘요. 없으면 이모지 그대로.
-const PHOTO={};   // 메뉴명 → 사진 주소 | null(없음) | 0(찾는 중)
+// 메뉴 AI 이미지 — /api/image가 메뉴 이름으로 그린 음식 그림 주소를 줘요(한 번 그린 건 서버에 저장). 없으면 이모지 그대로.
+//   받은 주소는 이 기기에도 기억해 두고(다음엔 서버에 묻지 않음), 새로 그리는 요청은 한 번에 2개까지만 보내요.
+const IMG_KEY="salim_img_v1";
+const PHOTO=(()=>{try{return JSON.parse(localStorage.getItem(IMG_KEY)||"{}")||{}}catch(e){return {}}})();   // 메뉴명 → 주소 | null(이번엔 없음) | 0(받는 중)
+const savePhotos=()=>{try{localStorage.setItem(IMG_KEY,JSON.stringify(Object.fromEntries(Object.entries(PHOTO).filter(([,u])=>u))));}catch(e){}};
+let imgBusy=0;const imgQueue=[];
 const photoOn=()=>location.protocol.startsWith("http");
-const photoImg=u=>`<img src="${esc(u)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="photoFail(this)"><em class="phtag">예시 사진</em>`;
+const photoImg=u=>`<img src="${esc(u)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="photoFail(this)"><em class="phtag">AI 이미지</em>`;
 // 사진을 못 불러오면 이모지로 돌아가고, 다시 그려도 그 사진은 안 써요
-function photoFail(img){const el=img.parentNode,t=el.dataset.photo;PHOTO[t]=null;el.classList.remove("ph");el.innerHTML=recipeIc({title:t});}
+function photoFail(img){const el=img.parentNode,t=el.dataset.photo;PHOTO[t]=null;savePhotos();el.classList.remove("ph");el.innerHTML=recipeIc({title:t});}
 function thumb(r,cls="th",style=""){const t=String(r.title||""),u=PHOTO[t];
  return `<div class="${cls}${u?" ph":""}" data-photo="${esc(t)}"${style?` style="${style}"`:""}>${u?photoImg(u):recipeIc(r)}</div>`;}
 function setPhoto(el,u){if(el.classList.contains("ph"))return;el.classList.add("ph");el.innerHTML=photoImg(u);const c=document.getElementById("photocredit");if(c)c.hidden=false;}
 function fillPhotos(){if(!photoOn())return;
  document.querySelectorAll("[data-photo]").forEach(el=>{const t=el.dataset.photo;if(!t)return;
-  if(PHOTO[t])return setPhoto(el,PHOTO[t]);if(t in PHOTO)return;PHOTO[t]=0;
-  fetch("/api/photo?q="+encodeURIComponent(t)).then(r=>r.ok?r.json():{url:null}).then(j=>{PHOTO[t]=j&&j.url||null;
-   if(PHOTO[t])document.querySelectorAll("[data-photo]").forEach(e=>{if(e.dataset.photo===t)setPhoto(e,PHOTO[t]);});})
-  .catch(()=>{PHOTO[t]=null;});});}
+  if(PHOTO[t])return setPhoto(el,PHOTO[t]);if(t in PHOTO)return;PHOTO[t]=0;imgQueue.push(t);});
+ pumpImages();}
+function pumpImages(){while(imgBusy<2&&imgQueue.length){const t=imgQueue.shift();imgBusy++;
+ (async()=>{const headers={"content-type":"application/json"};
+  if(A.user){try{headers.authorization="Bearer "+await A.user.getIdToken();}catch(e){}}
+  const r=await fetch("/api/image",{method:"POST",headers,body:JSON.stringify({name:t})});return r.ok?r.json():{url:null};})()
+ .then(j=>{PHOTO[t]=j&&j.url||null;if(PHOTO[t]){savePhotos();document.querySelectorAll("[data-photo]").forEach(e=>{if(e.dataset.photo===t)setPhoto(e,PHOTO[t]);});}})
+ .catch(()=>{PHOTO[t]=null;})
+ .finally(()=>{imgBusy--;pumpImages();});}}
 const anyPhoto=()=>Object.values(PHOTO).some(Boolean);
 function recipeIc(r){const tt=titleIc(r.title);if(tt)return emo(tt.emoji);const it=ITEMS.find(i=>i.name.length>=2&&mentions(r,i.name))||ITEMS.find(i=>mentions(r,i.name));return emo(it?it.emoji:"🍲");}
 
@@ -1968,7 +1977,7 @@ ${rs.length?`<div class="rlist">${rs.map(rcard).join("")}</div>`:empty("이 장�
  else{const sc=DB.scraps||[];body=sc.length?`<div class="rlist">${sc.map(rcard).join("")}</div>`:empty("레시피에서 ♡를 누르면<br>여기에 모아 둘게요");}
  return `<nav class="rsubs">${RSUBS.map(([x,n])=>`<button class="${x===k?"on":""}" onclick="setRsub('${x}')">${n}${x==="fav"&&(DB.scraps||[]).length?` <em>${DB.scraps.length}</em>`:""}</button>`).join("")}</nav>
 ${body}
-<p id="photocredit" class="m photocredit" ${anyPhoto()?"":"hidden"}>음식 사진은 식품의약품안전처 식품안전나라 레시피 DB의 비슷한 요리 예시 사진이에요. 실제로 만들 요리와 다를 수 있어요.</p>`;}
+<p id="photocredit" class="m photocredit" ${anyPhoto()?"":"hidden"}>음식 그림은 AI(Google Gemini)가 메뉴 이름만 보고 그린 예시 이미지예요. 실제로 만들 요리와 다를 수 있어요.</p>`;}
 
 // 밥풀이 탭(첫 화면) — 밥풀이 · 누적 집밥 · 이번 달 남은 장보기 예산 · [장보러 가기] 버튼 하나
 function todayTab(){const n=homeCount(),nx=nextStage(n),mb=monthBudget(),left=leftMonth();
@@ -2214,7 +2223,7 @@ ${res.length?`<p class="sec">최근에 본 레시피</p>${res.map(rcard).join(""
  }else body=DB.scraps.length?DB.scraps.map(rcard).join(""):`<div class="card"><p class="m" style="margin:0">아직 저장한 레시피가 없어요. 레시피에서 하트를 눌러 보세요.</p></div>`;
  page(`<h2 class="lead">${v==="make"?"지금 냉장고 재료로<br>이런 걸 만들 수 있어요":"저장한 레시피"}</h2><div class="seg"><button class="${v==="make"?"on":""}" onclick="S.rview='make';needMenus()?suggestMenus():render()">만들 수 있는 메뉴</button><button class="${v==="scrap"?"on":""}" onclick="S.rview='scrap';render()">저장한 레시피 ${DB.scraps.length||""}</button></div>
 ${body}
-<p id="photocredit" class="m photocredit" ${anyPhoto()?"":"hidden"}>음식 사진은 식품의약품안전처 식품안전나라 레시피 DB의 비슷한 요리 예시 사진이에요. 실제로 만들 요리와 다를 수 있어요.</p>`,v==="make"&&s.length?`<button class="btn" ${S.work?"disabled":""} onclick="suggestMenus()">${S.work==="menus"?`<span class="spin"></span>${progSpan("menus")}`:`${ic("refresh")} 다른 메뉴 보기`}</button>`:null);}
+<p id="photocredit" class="m photocredit" ${anyPhoto()?"":"hidden"}>음식 그림은 AI(Google Gemini)가 메뉴 이름만 보고 그린 예시 이미지예요. 실제로 만들 요리와 다를 수 있어요.</p>`,v==="make"&&s.length?`<button class="btn" ${S.work?"disabled":""} onclick="suggestMenus()">${S.work==="menus"?`<span class="spin"></span>${progSpan("menus")}`:`${ic("refresh")} 다른 메뉴 보기`}</button>`:null);}
 
 /* 레시피 상세 (바텀시트) */
 function recipeSheet(){const r=findR(S.openR);if(!r)return "";const sc=isScrap(r.id),done=DB.recipes.some(x=>x.cooked&&x.title===r.title);

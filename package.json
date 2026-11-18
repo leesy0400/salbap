@@ -2,7 +2,14 @@
   "name": "salim-bapsang",
   "private": true,
   "type": "module",
-  "scripts": { "test": "node --test tests/*.test.js" },
-  "dependencies": { "jose": "5.9.6" },
-  "engines": { "node": ">=20" }
+  "scripts": {
+    "test": "node --test tests/*.test.js"
+  },
+  "dependencies": {
+    "@vercel/blob": "2.8.2",
+    "jose": "5.9.6"
+  },
+  "engines": {
+    "node": ">=20"
+  }
 }
