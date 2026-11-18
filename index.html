@@ -514,6 +514,7 @@ input[type=range]:focus-visible{outline:2px solid var(--pri);outline-offset:6px}
 .tmsg b{color:var(--pri)}
 .hero{width:100%;display:grid;place-items:center;margin:6px 0 0;min-height:230px}
 .bap{display:block;user-select:none;-webkit-user-drag:none}
+.bap.landbap{width:min(52vw,210px);height:auto;margin:0 auto 6px;animation:bob 3.2s ease-in-out infinite;position:relative;z-index:1}
 .hero-img{width:min(64vw,250px);height:auto;animation:bob 3.2s ease-in-out infinite}
 @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 .growline{font-size:13.5px;color:var(--m);margin:2px 0 0}.growline b{color:var(--t)}
@@ -594,13 +595,26 @@ main.tab .setrow .ibox{border-radius:50%}
 .own.on{border-color:var(--pri);color:var(--prd);background:var(--prs)}
 .pr.zero{color:#b8afa1}.li.have .tx b{color:var(--m)}
 .rlist{margin-top:2px}
+.rc.rcx{cursor:default;align-items:flex-start}.rctop{display:flex;align-items:flex-start;gap:6px}.rctop b{flex:1;margin-bottom:4px}.rctop .heart{border:0;background:none;cursor:pointer;font-size:20px;padding:0 2px}
+.rcbtns{display:flex;gap:8px;margin-top:10px}.rcb{flex:1;height:38px;border-radius:999px;border:0;background:var(--pri);color:#fff;font:inherit;font-size:14px;font-weight:700;cursor:pointer}.rcb.ghost{background:none;border:1.5px solid var(--l);color:var(--t)}
 .cklist{padding-top:8px}.cklist .list{margin-top:8px}
 .ckrow{cursor:default}.ckb{border:0;background:none;padding:4px 2px;cursor:pointer;flex:none}
 .ckrow .cb{width:26px;height:26px;border-radius:8px;border:2px solid #cfc6b6;display:grid;place-items:center;background:var(--card);color:#fff}.ckrow .cb .i{font-size:16px;stroke-width:2.6}
 .ckrow.on .cb{background:var(--pri);border-color:var(--pri)}.ckrow.on .tx b{color:var(--m);text-decoration:line-through}
+.ckall{display:flex;align-items:center;gap:10px;border:0;background:none;font:inherit;font-size:14px;font-weight:700;color:var(--m);padding:12px 2px 4px;cursor:pointer}
+.ckall .cb{width:26px;height:26px;border-radius:8px;border:2px solid #cfc6b6;display:grid;place-items:center;background:var(--card);color:#fff}.ckall .cb .i{font-size:16px;stroke-width:2.6}.ckall.on .cb{background:var(--pri);border-color:var(--pri)}
 .ckrow .tx{cursor:pointer}.ckp{display:inline-flex;align-items:center;flex:none;width:104px;border:1.5px solid var(--l);border-radius:10px;background:var(--bg);padding-right:10px}.ckp:focus-within{border-color:var(--pri)}.ckp .priceIn{flex:1;min-width:0;width:auto;border:0;background:none;padding:8px 4px 8px 8px}.ckp em{position:static;transform:none;font-style:normal;font-size:13px;font-weight:600;color:var(--m)}
 .cklinks{display:flex;gap:8px}.cklinks .link{flex:1}
 .rsubs{display:flex;gap:6px;margin:6px 0 8px}.rsubs button{border:0;background:none;font:inherit;font-size:15px;font-weight:700;color:#b9b0a3;padding:6px 10px;border-radius:999px;cursor:pointer}
+.calsum{font-size:15px;color:var(--m);text-align:center;margin:2px 0 12px}.calsum b{color:var(--prd)}
+.cal{background:#f3f6ec;border-radius:24px;padding:16px 12px 14px}
+.calh,.calg{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}.calh span{text-align:center;font-size:13px;font-weight:600;color:#a39b8d;padding-bottom:6px}
+.cd{aspect-ratio:1;border:0;border-radius:12px;font:inherit;font-size:14px;font-weight:700;color:#9a927f;background:#e9e5da;cursor:pointer;display:grid;place-items:center;padding:0}
+.cd.l1{background:#d7e8b5;color:#56703b}.cd.l2{background:#a9cc78;color:#fff}.cd.l3{background:#6f9a45;color:#fff}
+.cd.fut{background:#efece4;color:#c9c2b4;cursor:default}.cd.today{box-shadow:0 0 0 2px #f3f6ec,0 0 0 4px var(--pri)}.cd.sel{box-shadow:0 0 0 2px #f3f6ec,0 0 0 4px var(--t)}
+.callg{display:flex;justify-content:center;gap:12px;margin-top:14px;font-size:12.5px;color:var(--m)}.callg span{display:flex;align-items:center;gap:5px}.callg i{width:12px;height:12px;border-radius:4px;display:inline-block}
+.callg .l0{background:#e9e5da}.callg .l1{background:#d7e8b5}.callg .l2{background:#a9cc78}.callg .l3{background:#6f9a45}
+.calday{text-align:center;margin:14px 0 0;font-size:14.5px;line-height:1.5}.calday b{color:var(--prd);margin-right:4px}
 .rsubs button.on{background:var(--prs);color:var(--prd)}.rsubs em{font-style:normal;font-size:12px;color:var(--pri);margin-left:2px}
 .triprow .tx b{font-size:16.5px;font-weight:800;letter-spacing:-.02em}
 .recempty{display:flex;flex-direction:column;align-items:center;text-align:center;padding:24px 0 8px}.recempty p{font-size:16px;font-weight:700;line-height:1.5;margin:10px 0 0}.recempty .gobtn{margin-top:18px}
@@ -1257,6 +1271,8 @@ function toggleHave(key){const pl=plan(),x=pl&&pl.items.find(i=>i.key===key);if(
  else{x.have=false;if(x.haveId)DB.pantry=DB.pantry.filter(p=>p.id!==x.haveId);x.haveId=null;if(!inCart(key))toggleCart(key);}
  save();keep();}
 function toggleBought(key){const x=cart().find(i=>i.key===key);if(x){x.bought=!x.bought;save();keep();}}
+// 체크리스트 [전부 구매] — 다 체크돼 있으면 [전부 해제]
+function toggleAllBought(){const c=cart(),all=c.length&&c.every(x=>x.bought);c.forEach(x=>{x.bought=!all;});save();keep();}
 function removeCart(key){DB.cart.items=cart().filter(x=>x.key!==key);save();keep();}
 function setPrice(key,v){const x=cart().find(i=>i.key===key);if(x){x.price=Math.max(0,+String(v).replace(/[^0-9]/g,"")||0);save();keep();}}
 // 목록에 없는 것도 샀어요: 품목 종류(드롭다운) + 이름 + 가격
@@ -1706,9 +1722,9 @@ function runLoader(kind,n,ms,done){S.busy={kind,i:0};render();
 function landing(){
  const start="S.sheet='agree';render()";
 $("#app").innerHTML=`<div class="land">${LAND_DECO}
-<div class="appicon">${symbol(66)}<svg class="spark" width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><path d="M6 14 3 5 M13 12l4-7 M16 19l8-3" stroke="#607750" stroke-width="2.6" stroke-linecap="round" fill="none"/></svg></div>
+${bapImg("hero","landbap")}
 <h1 class="word">살림밥상${leaf(26)}</h1>
-<p class="sub">먹고 싶은 걸로 장 보고,<br>남는 재료 없이 다 해 먹는 식비 플래너예요.</p>
+<p class="sub">밥풀이랑 같이 잘 먹기</p>
 </div>
 <div class="foot"><button class="btn pill" onclick="${start}">회원가입 ${ic("right")}</button>${authOn()?`<button class="link" style="margin-top:6px" onclick="S.lmode='login';openLogin()">이미 계정이 있어요 · 로그인</button>`:""}</div>${overlays()}`;}
 // 첫 화면 배경 장식: 창가 식물 그림자(흐리게) · 린넨 행주 · 허브 잎
@@ -1989,6 +2005,7 @@ const ckRow=x=>`<div class="li ckrow ${x.bought?"on":""}"><button class="ckb" on
 ${x.key.startsWith("p:")?"":`<button class="x" onclick="removeCart('${q(x.key)}')" aria-label="${esc(x.name)} 빼기">${ic("x")}</button>`}</div>`;
 function checklist(){const c=cart(),got=gotItems();
  return `<section class="cklist"><div class="row"><b class="ttl2">장보기 체크리스트</b><span class="tag o">${got.length}/${c.length} 구매</span></div>
+${c.length?`<button class="ckall ${got.length===c.length?"on":""}" onclick="toggleAllBought()"><span class="cb">${got.length===c.length?ic("check"):""}</span>${got.length===c.length?"전부 해제":"전부 구매"}</button>`:""}
 ${c.length?`<div class="list">${c.map(ckRow).join("")}</div>`:`<p class="m" style="margin:10px 0 0">살 재료가 없어요.</p>`}
 <button class="btn ghost extra" style="margin-top:12px" onclick="S.sheet='manual';S.mqty='mid';render()">${ic("plus")} 목록에 없던 것도 샀어요</button>
 <div class="cklinks"><button class="link" onclick="goTab('pick','list')">장볼 목록 고치기</button><button class="link" onclick="startTrip()">새로 시작하기</button></div></section>`;}
@@ -2174,16 +2191,16 @@ ${own.length?`<div class="chips">${own.map(n=>`<button class="lv ${SV_CLS[DB.sea
 <p class="m">누르면 있음 → 조금 → 다 떨어짐으로 바뀌어요. 조금이거나 다 떨어진 건 장보기에 떠요.</p>`
  :`<div class="card"><p class="m" style="margin:0 0 10px">조미료를 아직 안 골랐어요. 레시피 받을 때 물어볼게요.</p><span class="chip on" onclick="openSeas('pantry')">지금 고르기</span></div>`}
 
-${o.length?`<p class="sec">다 쓴 재료 · 버린 재료</p><p class="m" style="margin-top:0">잘못 눌렀다면 '아직 있어요'로 되돌릴 수 있어요.</p>
-<div class="list">${o.map(x=>`<div class="li" style="cursor:default"><div class="em" style="opacity:.5">${ingIc(x.name)}</div><div class="tx"><b style="color:var(--m)">${esc(x.name)} ${x.tossed?`<span class="tag o">버림</span>`:""}</b></div>
-<button class="used" onclick="restore('${x.id}')">아직 있어요</button><button class="x" onclick="delPantry('${x.id}')" aria-label="목록에서 지우기">${ic("x")}</button></div>`).join("")}</div>`:""}`);}
+`);}
 
 /* ============================================================
    ⑤-4 레시피 — [추천받기] [저장한 레시피]
    ============================================================ */
-const rcard=r=>`<button class="rc" onclick="openRecipe('${r.id}')">${thumb(r)}
-<div style="flex:1"><b>${esc(r.title)}</b>${r.level?`<span class="tag o">${esc(r.level)}</span>`:""}<div class="meta">${r.time_min?`<span>${ic("clock")} ${esc(r.time_min)}분</span>`:""}<span>${ic("user")} ${DB.profile.people}명</span>${r.meals>1?`<span class="tag g">${r.meals}끼분</span>`:""}${DB.recipes.some(x=>x.cooked&&x.title===r.title)?`<span class="tag g">해먹음</span>`:""}</div></div>
-<span class="heart">${ic("heart",isScrap(r.id)?"fill":"")}</span></button>`;
+// 레시피 카드 — 카드 자체는 누르는 곳이 아니고, [레시피 보기] / [해먹었어요] 버튼 두 개로 나눠요
+const rcard=r=>`<div class="rc rcx">${thumb(r)}
+<div style="flex:1;min-width:0"><div class="rctop"><b>${esc(r.title)}</b><button class="heart" onclick="toggleScrap('${r.id}')" aria-label="${isScrap(r.id)?"즐겨찾기에서 빼기":"즐겨찾기"}">${ic("heart",isScrap(r.id)?"fill":"")}</button></div>
+<div class="meta">${r.time_min?`<span>${ic("clock")} ${esc(r.time_min)}분</span>`:""}${r.level?`<span>${esc(r.level)}</span>`:""}${r.meals>1?`<span class="tag g">${r.meals}끼분</span>`:""}${DB.recipes.some(x=>x.cooked&&x.title===r.title)?`<span class="tag g">해먹음</span>`:""}</div>
+<div class="rcbtns"><button class="rcb ghost" onclick="openRecipe('${r.id}')">레시피 보기</button><button class="rcb" onclick="startCook('${r.id}')">해먹었어요</button></div></div></div>`;
 function recipePage(){const v=S.rview,s=stock();
  let body;
  if(v==="make"){const res=S.results.map(findR).filter(Boolean),ms=S.menus||[];
@@ -2220,8 +2237,7 @@ function recipeSheet(){const r=findR(S.openR);if(!r)return "";const sc=isScrap(r
  :(r.steps||[]).length?r.steps.map((s,k)=>`<div class="step"><span>${k+1}</span>${esc(s)}</div>`).join("")
   :S.stepsWork===r.id?`<div class="workcard" style="padding:16px"><span class="spin dark"></span>${progSpan("steps")}</div>`
   :`<div style="padding:14px"><p class="m" style="margin:0 0 10px">${S.stepsErr||"조리법이 아직 없어요."}</p><span class="chip on" onclick="ensureSteps('${r.id}')">조리법 다시 받기</span></div>`}</div>
-<button class="btn" style="margin-top:14px" onclick="startCook('${r.id}')">${done?"또 해먹었어요":"해먹었어요"}</button>
-<button class="link" onclick="S.openR=null;render()">닫기</button></div></div>`;}
+<button class="link" style="margin-top:10px" onclick="S.openR=null;render()">닫기</button></div></div>`;}
 
 /* 해먹은 뒤: 얼마나 남았어요? */
 function leftSheet(){const {rows}=S.left;
@@ -2243,48 +2259,36 @@ ${seasPicker()}
 <button class="link" onclick="S.sheet=null;render()">${S.seasCtx==="record"?"다음에 할게요":"닫기"}</button></div></div>`;}
 
 /* ============================================================
-   ⑥-1 지난 기록 — 월별 막대 + 주차별 카드(누르면 산 것·해먹은 레시피)
+   ⑥-1 기록 — 캘린더 · 버린 재료
    ============================================================ */
-// 평균 외식·배달비와 비교 — 같은 인원 가구 평균을 이번 달 오늘까지 날짜만큼만 나눠서 내 장보기와 견줘요
-function eatoutCard(mine,now){if(!mine)return "";
- const ppl=Math.min(4,Math.max(1,DB.profile.people||1)),ref=EATOUT_REF[ppl];
- const dim=new Date(now.getFullYear(),now.getMonth()+1,0).getDate(),day=now.getDate(),soFar=Math.round(ref*day/dim/100)*100,diff=soFar-mine;
- const pct=Math.min(100,mine/Math.max(soFar,mine)*100);
- return `<div class="card eatcard">
-<p class="eatk">${ppl}인 가구 외식·배달 평균보다</p>
-<p class="eatbig ${diff>0?"":"over"}">${won(Math.abs(diff))} ${diff>0?"덜 썼어요":"더 썼어요"}</p>
-<div class="eattr"><i style="width:${pct}%"></i></div>
-<div class="eatlg"><span><em class="me"></em>나 ${won(mine)}</span><span><em></em>평균 ${won(soFar)}</span></div>
-<p class="eatsrc">${now.getMonth()+1}월 ${day}일까지 · ${EATOUT_SRC}</p></div>`;}
-function historyPage(){const now=new Date(),n=homeCount(),nx=nextStage(n),st=stageOf(n);
- const months=[5,4,3,2,1,0].map(i=>{const d=new Date(now.getFullYear(),now.getMonth()-i,1);return{d,v:spentMonth(d),cur:i===0};});
- const max=Math.max(1,...months.map(m=>m.v));
- const weeks=[...new Set([...DB.purchases.map(x=>x.week),...DB.recipes.filter(r=>r.cooked).map(r=>r.cookedWeek)])].filter(Boolean).sort().reverse();
- const uk=lastBuyWeek(),us=uk&&useStats(uk);
- page(`<h1 style="margin-top:18px">기록</h1>
-<section class="card mealtop">${bapImg(st>=STAGES.length?"grow":"hero","bmini")}<div><b>누적 집밥 ${n}끼</b><span class="m">${nx?`다음 성장까지 ${nx-n}끼`:"최고 단계예요"}</span>
-<div class="meter"><i style="width:${nx?Math.round((n-(STAGES[st-1]||0))/(nx-(STAGES[st-1]||0))*100):100}%"></i></div></div></section>
-${(()=>{const ck=cookedList().slice(0,10);return ck.length?`<p class="sec">해먹은 메뉴</p><div class="list">${ck.map(r=>`<div class="li" onclick="openRecipe('${r.id}')"><div class="em">${recipeIc(r)}</div><div class="tx"><b>${esc(r.title)}</b></div><span class="m">${new Date(r.cookedAt).getMonth()+1}/${new Date(r.cookedAt).getDate()}</span></div>`).join("")}</div>`
- :`<p class="m" style="margin:14px 2px">레시피에서 [해먹었어요]를 누르면 여기에 쌓여요</p>`;})()}
-${us?`<section class="card usecard" style="margin-top:22px">
+// 기록 — [캘린더] 한 달 동안 해 먹은 날(하루 여러 끼일수록 진하게) / [버린 재료] 남김없이 다 쓴 비율과 다 쓴·버린 재료 목록
+const HSUBS=[["cal","캘린더"],["toss","버린 재료"]];
+function cookedOn(d){return cookedList().filter(r=>r.cookedAt&&ymd(new Date(r.cookedAt))===d).map(r=>r.title).concat(mealList().filter(m=>m.type==="home"&&m.date===d).map(m=>m.menu||"집밥"));}
+function calView(){const ym=S.cym||NOW_YM,y=+ym.slice(0,4),mo=+ym.slice(5)-1,first=new Date(y,mo,1).getDay(),dim=new Date(y,mo+1,0).getDate(),today=todayKey(),cur=ym===NOW_YM;
+ const n=homeCount(),nx=nextStage(n),days=[...Array(dim)].map((_,i)=>{const d=`${ym}-${String(i+1).padStart(2,"0")}`;return{d,i:i+1,c:cookedOn(d)};});
+ const total=days.reduce((a,x)=>a+x.c.length,0),lv=c=>c>=3?3:c,sel=S.cday&&S.cday.startsWith(ym)?days.find(x=>x.d===S.cday):null;
+ return `<div class="mnav"><button onclick="S.cym=ymAdd('${ym}',-1);S.cday=null;keep()" aria-label="이전 달">${ic("back")}</button><b>${ymLabel(ym)}</b><button onclick="S.cym=ymAdd('${ym}',1);S.cday=null;keep()" ${cur?"disabled":""} aria-label="다음 달">${ic("right")}</button></div>
+<p class="calsum">${total?`${ymLabel(ym)}에 집밥 <b>${total}끼</b> 해 먹었어요`:`${ymLabel(ym)}엔 아직 해 먹은 집밥이 없어요`}</p>
+<div class="cal"><div class="calh">${"일월화수목금토".split("").map(w=>`<span>${w}</span>`).join("")}</div>
+<div class="calg">${"<i></i>".repeat(first)}${days.map(x=>`<button class="cd l${lv(x.c.length)} ${x.d===today?"today":""} ${x.d>today?"fut":""} ${sel&&sel.d===x.d?"sel":""}" ${x.d>today?"disabled":""} onclick="S.cday='${x.d}';keep()" aria-label="${x.i}일 집밥 ${x.c.length}끼">${x.d===today&&!x.c.length?"✦":x.i}</button>`).join("")}</div>
+<div class="callg"><span><i class="l0"></i>안 먹음</span><span><i class="l1"></i>1끼</span><span><i class="l2"></i>2끼</span><span><i class="l3"></i>3끼 이상</span></div></div>
+${sel?`<p class="calday"><b>${+sel.d.slice(5,7)}월 ${sel.i}일</b> ${sel.c.length?esc(sel.c.join(", ")):"해 먹은 집밥이 없어요"}</p>`
+ :`<p class="calday m">누적 집밥 <b>${n}끼</b>${nx?` · 다음 성장까지 ${nx-n}끼`:" · 최고 단계예요"}</p>`}`;}
+function tossView(){const uk=lastBuyWeek(),us=uk&&useStats(uk),o=outs(),tz=o.filter(x=>x.tossed),us2=o.filter(x=>!x.tossed);
+ const row=x=>`<div class="li" style="cursor:default"><div class="em" style="opacity:.5">${ingIc(x.name)}</div><div class="tx"><b style="color:var(--m)">${esc(x.name)}</b></div>
+<button class="used" onclick="restore('${x.id}')">아직 있어요</button><button class="x" onclick="delPantry('${x.id}')" aria-label="목록에서 지우기">${ic("x")}</button></div>`;
+ return `${us?`<section class="usecard" style="margin-top:6px">
  <div class="row"><h3>남김없이 다 쓰기</h3><span class="m">${wkLabel(uk)}에 산 재료 ${us.n}개</span></div>
  <div class="usebig"><b>${us.pct}%</b><span>다 썼어요</span></div>
  <div class="meter3"><i class="u" style="width:${us.used/us.n*100}%"></i><i class="t" style="width:${us.tossed/us.n*100}%"></i></div>
- <div class="uselegend"><span><i class="u"></i>다 씀 ${us.used}</span><span><i class="l"></i>남음 ${us.left}</span><span><i class="t"></i>버림 ${us.tossed}</span></div></section>`:""}
-<div class="card" style="margin-top:22px"><div class="row"><h3>${now.getMonth()+1}월 장보기 결제</h3><span class="m">최근 6개월</span></div>
-<div class="big">${won(months[5].v)}</div>${months[4].v?`<span class="cmp">지난달에는 ${won(months[4].v)} 썼어요</span>`:""}
-<div class="bars">${months.map(m=>`<div class="${m.cur?"cur":""}">${m.v?Math.round(m.v/1000)+"천":""}<i style="height:${m.v/max*85}%"></i>${m.d.getMonth()+1}월</div>`).join("")}</div></div>
-${eatoutCard(months[5].v,now)}
-${weeks.length?`<p class="sec">주차별 장본 재료</p>
-${weeks.map(k=>{const ck=DB.recipes.filter(r=>r.cooked&&r.cookedWeek===k),buys=DB.purchases.filter(x=>x.week===k),open=S.openWk===k;
- return `<div class="card wk" onclick="S.openWk=${open?"null":`'${k}'`};keep()">
-<div class="row"><b>${wkLabel(k)}${k===NOW_WK?` <span class="tag o">이번 주</span>`:""}</b><span class="m">${ic(open?"up":"down")}</span></div>
-<div class="row" style="margin-top:8px"><span class="m">산 재료 ${buys.filter(x=>x.kind!=="seas").length}개</span><span class="m">${ck.length}끼 해먹음</span></div>
-${useStats(k)?`<p class="m" style="font-size:13px;margin:8px 0 0">산 재료 ${useStats(k).pct}% 다 씀 · 버림 ${useStats(k).tossed}개</p>`:""}
-${open?`<div class="open" onclick="event.stopPropagation()">
-<p class="m" style="margin:0 0 6px">산 것 ${buys.length}개</p>${buys.length?`<div class="buys">${buys.map(x=>`<div class="row"><span>${ingIc(x.name)} ${esc(x.name)}</span><span class="row" style="gap:4px">${x.trip?"":won(x.price)}<button class="x" onclick="delPurchase('${x.id}')" aria-label="${esc(x.name)} 기록 지우기">${ic("x")}</button></span></div>`).join("")}</div>`:`<p class="m">없어요</p>`}
-<p class="m" style="margin:14px 0 6px">해먹은 레시피</p>${ck.length?ck.map(r=>`<div class="row" style="padding:6px 0;cursor:pointer" onclick="openRecipe('${r.id}')"><span>${recipeIc(r)} ${esc(r.title)}</span><span class="m">${new Date(r.cookedAt).getMonth()+1}/${new Date(r.cookedAt).getDate()}</span></div>`).join(""):`<p class="m">없어요</p>`}
-</div>`:""}</div>`;}).join("")}`:""}`);}
+ <div class="uselegend"><span><i class="u"></i>다 씀 ${us.used}</span><span><i class="l"></i>남음 ${us.left}</span><span><i class="t"></i>버림 ${us.tossed}</span></div></section>`
+ :`<p class="m" style="margin:14px 2px">장을 보고 재료를 다 쓰거나 버리면 여기서 비율을 보여드려요</p>`}
+${tz.length?`<p class="sec">버린 재료</p><div class="list">${tz.map(row).join("")}</div>`:""}
+${us2.length?`<p class="sec">다 쓴 재료</p><div class="list">${us2.map(row).join("")}</div>`:""}`;}
+function historyPage(){const k=HSUBS.some(x=>x[0]===S.hsub)?S.hsub:"cal";
+ page(`<h1 style="margin-top:18px">기록</h1>
+<nav class="rsubs">${HSUBS.map(([x,t])=>`<button class="${x===k?"on":""}" onclick="S.hsub='${x}';keep()">${t}</button>`).join("")}</nav>
+${k==="cal"?calView():tossView()}`);}
 
 // 끼니 기록 시트 — 날짜(기본 오늘)·끼니·식사 유형은 꼭, 메뉴명·비용은 선택. 같은 날짜·끼니가 있으면 그 기록을 고쳐요
 function openMeal(date,slot){const d=date||todayKey(),k=slot||nowSlot(),ex=mealList().find(m=>m.date===d&&m.slot===k);
