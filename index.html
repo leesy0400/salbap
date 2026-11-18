@@ -517,6 +517,29 @@ input[type=range]:focus-visible{outline:2px solid var(--pri);outline-offset:6px}
 .bap.landbap{width:min(52vw,210px);height:auto;margin:0 auto 6px;animation:bob 3.2s ease-in-out infinite;position:relative;z-index:1}
 .hero-img{width:min(64vw,250px);height:auto;animation:bob 3.2s ease-in-out infinite}
 @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.hero{position:relative}.hero .hero-img{width:auto;height:210px;max-width:96%;object-fit:contain}
+.mood-happy .hero-img{animation:hap 1.6s ease-in-out infinite}
+.mood-calm .hero-img{animation:sway 3.4s ease-in-out infinite;transform-origin:50% 100%}
+.mood-hungry .hero-img{animation:shiver 2.6s ease-in-out infinite}
+.mood-sad .hero-img{animation:droop 4s ease-in-out infinite}
+.mood-faint .hero-img{animation:breathe 3.6s ease-in-out infinite;transform-origin:50% 100%}
+@keyframes hap{0%,100%{transform:translateY(0) scale(1)}30%{transform:translateY(-12px) scale(1.02,.98)}55%{transform:translateY(0) scale(1.03,.96)}70%{transform:translateY(-4px)}}
+@keyframes sway{0%,100%{transform:rotate(-1.5deg)}50%{transform:rotate(1.5deg)}}
+@keyframes shiver{0%,60%,100%{transform:translateX(0)}64%,72%,80%{transform:translateX(-2px)}68%,76%,84%{transform:translateX(2px)}}
+@keyframes droop{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
+@keyframes breathe{0%,100%{transform:scaleY(1)}50%{transform:scaleY(.97)}}
+.fx{position:absolute;font-style:normal;pointer-events:none;opacity:0;line-height:1;font-weight:800}
+.fx-heart,.fx-spark{bottom:55%;left:calc(18% + var(--i)*15%);animation:rise 2.8s ease-out infinite;animation-delay:calc(var(--i)*.55s)}
+.fx-heart{color:#e2574c;font-size:22px}.fx-spark{color:#f2c94c;font-size:18px}
+.fx-note{top:12%;left:calc(46% + var(--i)*10%);color:#6b5a48;font-size:22px;animation:rise 3.2s ease-out infinite;animation-delay:calc(var(--i)*1.6s)}
+.fx-drop{top:18%;left:calc(58% + var(--i)*7%);width:9px;height:9px;background:#8cc3e8;border-radius:0 50% 50% 50%;transform:rotate(45deg);animation:drip 1.8s ease-in infinite;animation-delay:calc(var(--i)*.6s)}
+.fx-rain{top:8%;left:calc(22% + var(--i)*11%);width:2px;height:12px;border-radius:2px;background:#8fa8bf;animation:rain 1.1s linear infinite;animation-delay:calc(var(--i)*.18s)}
+.fx-sigh{top:22%;left:calc(64% + var(--i)*8%);color:#9a9183;font-size:24px;animation:rise 3s ease-out infinite;animation-delay:calc(var(--i)*1.5s)}
+@keyframes rise{0%{opacity:0;transform:translateY(10px) scale(.7)}25%{opacity:1}100%{opacity:0;transform:translateY(-46px) scale(1.1)}}
+@keyframes drip{0%{opacity:0;transform:translateY(0) rotate(45deg)}20%{opacity:1}100%{opacity:0;transform:translateY(34px) rotate(45deg)}}
+@keyframes rain{0%{opacity:0;transform:translateY(0)}20%{opacity:.9}100%{opacity:0;transform:translateY(70px)}}
+.streak{display:flex;flex-direction:column;align-items:center;gap:2px;margin:4px 0 0}.streak b{font-size:16px;font-weight:800;color:var(--r)}
+.streak span{font-size:13.5px;font-weight:700;color:var(--prd);background:var(--prs);border-radius:99px;padding:3px 10px}.streak span.ok{background:#f7ecd2;color:var(--mud)}
 .growline{font-size:13.5px;color:var(--m);margin:2px 0 0}.growline b{color:var(--t)}
 
 
@@ -556,7 +579,7 @@ input[type=range]:focus-visible{outline:2px solid var(--pri);outline-offset:6px}
 .bap.pop{width:min(70vw,280px);height:auto;animation:hop .9s ease-out}
 @keyframes hop{0%{transform:scale(.6) translateY(30px);opacity:0}45%{transform:scale(1.06) translateY(-18px);opacity:1}70%{transform:scale(.98) translateY(0)}85%{transform:translateY(-6px)}100%{transform:none}}
 @keyframes fadein{from{opacity:0}to{opacity:1}}
-@media (prefers-reduced-motion:reduce){.hero-img,.bap.pop,.react{animation:none}}
+@media (prefers-reduced-motion:reduce){.hero-img,.bap.pop,.react,.hero .hero-img{animation:none}.fx{display:none}}
 /* ===== 앱 화면(온보딩 뒤): 네모 상자 대신 배경 위에 바로 — 구분은 얇은 선과 여백으로 ===== */
 .hstick{position:sticky;top:0;z-index:8;background:var(--bg)}
 .hstick .fhead{position:static;padding-top:2px}
@@ -1062,8 +1085,9 @@ const homeCount=()=>cookedList().length+mealList().filter(m=>m.type==="home").le
 const todayKey=()=>ymd(new Date());
 const nowSlot=()=>{const h=new Date().getHours();return h<10?"b":h<15?"l":h<21?"d":"s";};
 
-// 밥풀이 성장 단계 — 집밥 누적 횟수 기준 (단계별 끼니 수는 기획에서 추후 확정, 지금은 임시 값)
-const STAGES=[5,15,30];
+// 밥풀이 레벨 — 집밥 누적 횟수 기준. 레벨이 오를 때마다 연속 기록 방어권 1개 (끼니 수는 임시 값)
+const STAGES=[5,15,30,50,80,120];
+const levelOf=n=>stageOf(n)+1;
 const stageOf=n=>STAGES.filter(v=>n>=v).length, nextStage=n=>STAGES.find(v=>v>n)||null;
 // 배달 대비 아낀 돈 — 마친 장보기마다 (끼니 수 × 배달 한 끼 고정값) − 실제 결제액
 // 고정값 근거: 소비자공익네트워크, 2024년 하반기 배달앱 입점 업주 502명 조사 — 평균 최소주문금액 약 1만 4천 원
@@ -1071,6 +1095,30 @@ const stageOf=n=>STAGES.filter(v=>n>=v).length, nextStage=n=>STAGES.find(v=>v>n)
 const DELIV_MEAL=14000;
 function saveCalc(list){const meals=list.reduce((a,t)=>a+(+t.meals||0),0),paid=list.reduce((a,t)=>a+(+t.paid||0),0),deliv=meals*DELIV_MEAL;return{n:list.length,meals,paid,deliv,total:deliv-paid};}
 const savingsOf=(ym=NOW_YM)=>saveCalc((DB.trips||[]).filter(t=>!t.manual&&t.paid!=null&&+t.meals>0&&ymOf(t.paidAt||t.at)===ym));
+// 밥풀이 기분 — 마지막으로 해 먹은 날부터 며칠 지났는지(날짜 기준)로 5단계
+const homeTimes=()=>[...cookedList().map(r=>r.cookedAt||r.at||0),...mealList().filter(m=>m.type==="home").map(m=>m.at||0)].filter(Boolean).sort((a,b)=>a-b);
+const dayStart=t=>{const d=new Date(t);d.setHours(0,0,0,0);return d.getTime();};
+function moodOf(){const ts=homeTimes();if(!ts.length)return "calm";
+ const d=Math.round((dayStart(Date.now())-dayStart(ts[ts.length-1]))/DAY);
+ return d<1?"happy":d<=2?"calm":d<=4?"hungry":d<7?"sad":"faint";}
+// 기분마다 밥풀이 옆에서 움직이는 것들 (하트·반짝이 / 음표 / 땀방울 / 빗방울 / 한숨)
+const MOOD_FX={happy:["heart","spark","heart","spark","heart"],calm:["note","note"],hungry:["drop","drop","drop"],sad:["rain","rain","rain","rain","rain","rain"],faint:["sigh","sigh"]};
+const FX_TXT={heart:"♥",spark:"✦",note:"♪",sigh:"~"};
+function moodHero(m=moodOf()){const fx=MOOD_FX[m]||[];
+ return `<div class="hero mood-${m}"><img class="bap hero-img" src="img/bapuri-mood-${m}.webp" alt="밥풀이" draggable="false">${fx.map((k,i)=>`<i class="fx fx-${k}" style="--i:${i};--n:${fx.length}" aria-hidden="true">${FX_TXT[k]||""}</i>`).join("")}</div>`;}
+
+// 장보기 목표 — 장보기마다 그 끼니 수만큼, 다음 장보기를 시작하기 전까지 해 먹으면 달성.
+//   못 채우고 다음 장보기를 시작하면 연속 기록이 깨져요. 그때 방어권이 있으면 하나 써서 기록을 지켜요.
+function streakInfo(){const ts=pastTrips().slice().reverse().filter(t=>+t.meals>0),times=homeTimes(),cur=trip();
+ let streak=0,used=0,open=null;
+ ts.forEach((t,i)=>{const from=t.at||t.paidAt||0,to=i+1<ts.length?(ts[i+1].at||ts[i+1].paidAt):cur?cur.at:Infinity;
+  const done=times.filter(x=>x>=from&&x<to).length,goal=+t.meals;
+  if(to===Infinity){open={done,goal};if(done>=goal)streak++;return;}
+  if(done>=goal)streak++;
+  else if(stageOf(times.filter(x=>x<to).length)-used>0)used++;   // 방어권으로 지킴
+  else streak=0;});
+ return {streak,open,used,shields:Math.max(0,stageOf(times.length)-used)};}
+
 const bapImg=(k,cls="")=>`<img class="bap ${cls}" src="img/bapuri-${k}.webp" alt="밥풀이" draggable="false">`;
 
 /* 식재료·가격 */
@@ -1659,7 +1707,8 @@ function finishCook(){const {rid,rows}=S.left;
  if(!r||r.cooked){r={...findR(rid),id:uid(),at:Date.now(),week:NOW_WK};DB.recipes.push(r);}   // 저장한 레시피를 또 해먹으면 새 기록으로
  Object.assign(r,{cooked:true,cookedAt:Date.now(),cookedWeek:NOW_WK});
  S.left=null;S.openR=null;save();
- const n=homeCount(),up=stageOf(n)>stageOf(before);showReact(up?"grow":"home",up?`집밥 ${n}끼 달성!`:`집밥 ${n}번째!`,up?"밥풀이가 한 뼘 자랐어요":"냉장고에도 반영했어요");}
+ const n=homeCount(),up=stageOf(n)>stageOf(before),st=streakInfo(),goal=st.open&&st.open.done===st.open.goal;
+ showReact("mood-happy",up?`Lv.${levelOf(n)} 달성!`:goal?"이번 장보기 목표 달성!":`집밥 ${n}번째!`,up?"연속 기록 방어권 1개를 받았어요":goal?`장보기 ${st.streak}번 연속이에요`:"냉장고에도 반영했어요");}
 
 /* ============================================================
    공통 뼈대
@@ -1990,12 +2039,17 @@ ${rs.length?`<div class="rlist">${rs.map(rcard).join("")}</div>`:empty("이 장�
 ${body}`;}
 
 // 밥풀이 탭(첫 화면) — 밥풀이 · 누적 집밥 · 이번 달 남은 장보기 예산 · [장보러 가기] 버튼 하나
+function streakLine(){const {streak,open}=streakInfo();
+ const prog=open?(open.done>=open.goal?"이번 장보기 목표 달성!":`이번 장보기 ${open.done}/${open.goal}끼`):"";
+ if(!streak&&!prog)return "";
+ return `<div class="streak">${streak?`<b>${emo("🔥")} 장보기 ${streak}번 연속 목표 달성!</b>`:""}${prog?`<span class="${open.done>=open.goal?"ok":""}">${prog}</span>`:""}</div>`;}
 function todayTab(){const n=homeCount(),nx=nextStage(n),mb=monthBudget(),left=leftMonth();
  const msg=n?`집밥 <b>${n}</b>번째,<br>오늘도 잘 먹어요!`:`레시피로 해 먹으면<br>밥풀이가 자라요`;
  return `<section class="today">
 <h2 class="tmsg">${msg}</h2>
-<div class="hero">${bapImg(n&&stageOf(n)>=STAGES.length?"grow":"hero","hero-img")}</div>
-<div class="growline"><b>누적 집밥 ${n}끼</b>${nx?` · 다음 성장까지 ${nx-n}끼`:" · 최고 단계예요"}</div>
+${moodHero()}
+${streakLine()}
+<div class="growline"><b>Lv.${levelOf(n)}</b>${nx?` · 다음 레벨까지 ${nx-n}끼`:" · 최고 레벨"} · ${emo("🛡️")} 방어권 ${streakInfo().shields}개</div>
 <div class="tbud ${mb&&left<0?"over":""}">
  <small>${ymLabel(NOW_YM)} 남은 장보기 예산</small><b>${mb?(left<0?`${won(-left)} 초과`:won(left)):"월 예산을 정해 주세요"}</b>
  ${mb?`<span class="tbud-bar"><i style="width:${Math.max(0,Math.min(100,left/mb*100))}%"></i></span>`:""}</div>
