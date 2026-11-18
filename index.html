@@ -373,8 +373,8 @@ main.tab>section.card{margin:0 0 22px;padding:26px 22px}
 .uselegend{display:flex;gap:14px;margin-top:10px;font-size:12.5px;color:var(--m)}.uselegend span{display:flex;align-items:center;gap:5px}.uselegend i{width:8px;height:8px;border-radius:50%;display:inline-block}.uselegend .u{background:var(--pri)}.uselegend .l{background:#d9d1c2}.uselegend .t{background:var(--r)}
 .used.toss{color:var(--r)}
 .wantrow{display:flex;gap:8px;align-items:center}.wantrow .field{flex:1}.wantrow .chip{flex:none;white-space:nowrap}
-.seasturn{position:relative;margin:4px -22px 0;padding:6px 0 16px}
-.seasturn:before{content:"";position:absolute;left:8%;right:8%;bottom:6px;height:74px;border-radius:50%;background:radial-gradient(ellipse at 50% 40%,#efe3cc,#e2d2b4 70%,#d6c3a0);box-shadow:inset 0 -6px 10px rgba(120,90,50,.18),0 6px 12px rgba(120,90,50,.12)}
+.seasturn{position:relative;margin:4px -22px 0;padding:6px 0 8px}
+.seasnav{position:absolute;top:24px;z-index:12;width:34px;height:34px;border-radius:50%;border:1px solid var(--l);background:var(--card);color:var(--t);display:grid;place-items:center;cursor:pointer;box-shadow:0 2px 6px rgba(90,70,40,.12)}.seasnav.l{left:20px}.seasnav.r{right:20px}.seasnav .i{font-size:18px}
 .seasl{position:relative;display:flex;gap:4px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px calc(50% - 44px) 10px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .seasl::-webkit-scrollbar{display:none}
 .sj{flex:0 0 88px;scroll-snap-align:center;display:flex;flex-direction:column;align-items:center;gap:3px;transform-origin:50% 100%;transition:transform .08s linear,opacity .08s linear}
@@ -609,7 +609,7 @@ input[type=range]:focus-visible{outline:2px solid var(--pri);outline-offset:6px}
 
 .tlink{border:0;background:none;padding:0;font:inherit;font-size:13.5px;font-weight:700;color:var(--pri);text-decoration:underline;cursor:pointer}
 .footrow{display:flex;gap:8px}.footrow .btn.ghost{flex:0 0 auto;width:auto;padding:0 18px}.footrow .btn:not(.ghost){flex:1}
-.gobtn{margin:18px 0 0;height:60px;font-size:17px;background:var(--t)}
+.gobtn{margin:34px 0 0;height:60px;font-size:17px;background:var(--t)}
 /* 장보기 탭 */
 .tripcard{margin:14px 0 0!important}.tripcard.empty{text-align:center;display:flex;flex-direction:column;align-items:center}
 .tripcard.empty .m{margin:6px 0 0;line-height:1.55}
@@ -1193,7 +1193,7 @@ function moodHero(m=moodOf(),cls=""){const sc=SCENE[m]||SCENE.calm,[pn,px,py,pw]
  return `<div class="stage mood-${m} ${cls}" data-m="${m}" onclick="pokeBap(this)" role="img" aria-label="밥풀이 — 누르면 반응해요">
 <i class="shadow" style="left:${px+pw*.18}px;width:${pw*.64}px"></i>
 ${sc.fx.filter(f=>!/floatup|twinkle|fall|soul|drip/.test(f[4])).map(f=>bapL(...f)).join("")}
-<div class="chr" style="left:${px}px;top:${py}px;width:${pw}px"><img class="body" src="img/bap/${pn}.webp" alt="" draggable="false"></div>
+<div class="chr" style="left:${px}px;top:${py}px;width:${pw}px;scale:.88"><img class="body" src="img/bap/${pn}.webp" alt="" draggable="false"></div>
 ${sc.fx.filter(f=>/floatup|twinkle|fall|soul|drip/.test(f[4])).map(f=>bapL(...f)).join("")}
 ${sc.think?`<div class="think">${THINK.map((n,i)=>`<img src="img/bap/${n}.webp" style="--k:${i}" alt="" draggable="false">`).join("")}</div>`:""}
 <b class="say" style="left:${px+pw/2}px;top:${Math.max(0,py-30)}px">${sc.say}</b></div>`;}
@@ -1362,6 +1362,8 @@ function addPantry(name){const v=(name||$("#pIn").value).trim();if(!v)return;
 function turnSeas(el){if(!el)return;const r=el.getBoundingClientRect(),c=r.left+r.width/2;
  el.querySelectorAll('.sj').forEach(x=>{const b=x.getBoundingClientRect(),d=Math.max(-1,Math.min(1,(b.left+b.width/2-c)/(r.width/2)));
   x.style.transform=`translateY(${(d*d*18).toFixed(1)}px) scale(${(1-Math.abs(d)*.28).toFixed(3)})`;x.style.opacity=(1-Math.abs(d)*.45).toFixed(2);x.style.zIndex=10-Math.round(Math.abs(d)*9);});}
+// ◀ ▶ 버튼 — 한 칸씩 돌려요
+function moveSeas(d){const el=$(".seasl"),x=el&&el.querySelector(".sj");if(x)el.scrollBy({left:d*(x.offsetWidth+4),behavior:"smooth"});}
 function seasOut(n){DB.seas[n]="out";save();toast(`${n}: 다 썼어요`);keep();}
 
 /* ============================================================
@@ -2193,12 +2195,10 @@ ${rs.length?`<div class="rlist">${rs.map(rcard).join("")}</div>`:empty("이 장�
 ${body}`;}
 
 // 밥풀이 탭(첫 화면) — 밥풀이 · 누적 집밥 · 이번 달 남은 장보기 예산 · [장보러 가기] 버튼 하나
-function streakLine(){const {streak,open}=streakInfo();
- const prog=open?(open.done>=open.goal?"이번 장보기 목표 달성!":`이번 장보기 ${open.done}/${open.goal}끼`):"";
- if(!streak&&!prog)return "";
- return `<div class="streak">${streak?`<b>${emo("🔥")} 장보기 ${streak}번 연속 목표 달성!</b>`:""}${prog?`<span class="${open.done>=open.goal?"ok":""}">${prog}</span>`:""}</div>`;}
+function streakLine(){const {streak}=streakInfo();   // 이번 장보기 n/m끼 표시는 없앴어요(연속 기록만)
+ return streak?`<div class="streak"><b>${emo("🔥")} 장보기 ${streak}번 연속 목표 달성!</b></div>`:"";}
 function todayTab(){const n=homeCount(),mb=monthBudget(),left=leftMonth();
- const msg=n?`집밥 <b>${n}</b>번째,<br>오늘도 잘 먹어요!`:`레시피로 해 먹으면<br>밥풀이가 기뻐해요`;
+ const msg=n?`집밥 <b>${n}</b>번째,<br>오늘도 맛있는 집밥 먹어요!`:`레시피로 해 먹으면<br>밥풀이가 기뻐해요`;
  return `<section class="today">
 <h2 class="tmsg">${msg}</h2>
 ${moodHero()}
@@ -2206,8 +2206,7 @@ ${streakLine()}
 <div class="tbud ${mb&&left<0?"over":""}">
  <small>${ymLabel(NOW_YM)} 남은 장보기 예산</small><b>${mb?(left<0?`${won(-left)} 초과`:won(left)):"월 예산을 정해 주세요"}</b>
  ${mb?`<span class="tbud-bar"><i style="width:${Math.max(0,Math.min(100,left/mb*100))}%"></i></span>`:""}</div>
-${trip()&&tripStep().k===3?`<button class="btn gobtn" onclick="setHtab('shop')">${ic("basket")} 장보기 체크리스트 열기</button>`   // 장볼 목록을 확정했으면 홈 버튼이 체크리스트로 바뀌어요
- :`<button class="btn gobtn" onclick="setHtab('shop')">${ic("cart")} 장보러 가기</button>`}
+<button class="btn gobtn" onclick="goTab('recipe','make')">${ic("pot")} 집밥 하러 가기</button>
 </section>`;}
 
 // 장보기 — 진행 중인 장보기 이어서 하기 또는 새 장보기 시작 · 지난 장보기
@@ -2406,7 +2405,7 @@ ${s.length?`<div class="shelves">${s.map(x=>{const d=daysAgo(x.addedAt);return `
 <div class="card addrow"><input id="pIn" class="field" placeholder="원래 있던 재료 추가 (예: 김치)" onkeydown="if(event.key==='Enter')addPantry()"><span class="chip on" onclick="addPantry()">추가</span></div>${inErr("pantry")}
 
 <div class="row" style="margin:26px 0 6px"><h3>양념·조미료</h3>${own.length?`<span class="m" style="cursor:pointer;text-decoration:underline" onclick="openSeas('pantry')">고치기</span>`:""}</div>
-${own.length?(sl.length?`<div class="seasturn"><div class="seasl" onscroll="turnSeas(this)">${sl.map(n=>`<div class="sj"><span class="sjar">${ingIc(n)}</span><b>${esc(n)}</b>
+${own.length?(sl.length?`<div class="seasturn"><button class="seasnav l" onclick="moveSeas(-1)" aria-label="왼쪽 조미료">${ic("back")}</button><button class="seasnav r" onclick="moveSeas(1)" aria-label="오른쪽 조미료">${ic("right")}</button><div class="seasl" onscroll="turnSeas(this)">${sl.map(n=>`<div class="sj"><span class="sjar">${ingIc(n)}</span><b>${esc(n)}</b>
 <button class="used" onclick="seasOut('${q(n)}')">다 씀</button></div>`).join("")}</div></div>`
  :`<p class="m" style="margin:4px 2px">남은 조미료가 없어요. 다 쓴 조미료는 장보기에 떠요.</p>`)
  :`<div class="card"><p class="m" style="margin:0 0 10px">조미료를 아직 안 골랐어요. 레시피 받을 때 물어볼게요.</p><span class="chip on" onclick="openSeas('pantry')">지금 고르기</span></div>`}
