@@ -942,6 +942,10 @@ function save(){try{localStorage.setItem(KEY,JSON.stringify(DB))}catch(e){}pushR
 const stats=()=>{const t=DB.stats||(DB.stats={});t.days=t.days||[];t.combo=t.combo||{};return t;};
 function markVisit(){if(!DB.onboarded)return;const t=stats(),d=ymd(new Date());if(t.days.includes(d))return;t.days=[...t.days,d].slice(-180);save();}
 // 조합이 규칙에 걸린 이유를 종류별로 세요 (가장 자주 틀리는 유형을 보려고)
+// 조합을 끝내 못 만들었을 때 — 내부 검사 문구 대신 사용자가 할 수 있는 일을 알려줘요 (자세한 이유는 통계에만 남겨요)
+function failNote(why,wishM){const w=why.map(x=>comboWhy(x.replace(/^[^:]+: /,"")));
+ if(wishM.length&&w.every(x=>x==="먹고 싶은 메뉴 빠짐"||x==="못 먹는 재료"))return `'${esc(wishM.join(", "))}'을(를) 넣은 조합을 만들지 못했어요. 메뉴를 바꾸거나 다시 받아 주세요.`;
+ return "이번엔 조건에 맞는 조합이 안 나왔어요. 버튼을 한 번 더 눌러 주세요.";}
 function comboWhy(p){return /끼니 합/.test(p)?"끼니 수":/먹고 싶은 메뉴/.test(p)?"먹고 싶은 메뉴 빠짐":/고른 냉장고 재료/.test(p)?"고른 재료 빠짐":/못 먹는 재료/.test(p)?"못 먹는 재료":/구할 수 없는|가격 데이터/.test(p)?"목록 밖 재료":/한 끼에만|조금밖에/.test(p)?"적은 재료 여러 번":/두 번/.test(p)?"같은 메뉴 중복":/비어/.test(p)?"재료 없음":"기타";}
 function countCombo(round,kind,why){const c=stats().combo;c[round]=(c[round]||0)+1;if(kind==="pass")c[round==="first"?"pass1":"pass2"]=(c[round==="first"?"pass1":"pass2"]||0)+1;
  if(kind==="err")c.err=(c.err||0)+1;if(why){c.why=c.why||{};c.why[why]=(c.why[why]||0)+1;}}
@@ -1262,8 +1266,7 @@ function delPantry(id){DB.pantry=DB.pantry.filter(x=>x.id!==id);save();keep();}
 function addPantry(name){const v=(name||$("#pIn").value).trim();if(!v)return;
  if(!name&&!isFoodWord(v)){setInErr("pantry",`'${esc(v)}'은(는) 식재료로 판단되지 않아요. 재료 이름으로 적어주세요.`);keep();setTimeout(()=>{const el=$("#pIn");if(el){el.value=v;el.focus();el.select();}},0);return;}
  setInErr();putPantry(v,"mid","manual");save();keep();}
-// 조미료 남은 양 — 있음 ↔ 조금만 오가요. 다 쓰면 [다 씀]으로 목록에서 빠지고(값은 out으로 남아 장보기에 떠요)
-function cycleSeas(n){DB.seas[n]=DB.seas[n]==="have"?"low":"have";save();keep();}
+// 조미료는 있으면 넉넉한 것으로 봐요. 다 쓰면 [다 씀]으로 냉장고 탭 목록에서 빠져요(값은 out으로 남아 장보기에 떠요)
 function seasOut(n){DB.seas[n]="out";save();toast(`${n}: 다 썼어요`);keep();}
 
 /* ============================================================
@@ -1348,7 +1351,7 @@ function setQty(k){S.mqty=k;document.querySelectorAll(".qseg button").forEach(b=
 function commitCart(paid){const c=cart(),b=c.filter(x=>x.bought!==false),tid=trip()?.id||null;   // 체크리스트에서 [구매]로 체크한 것만 산 것
  b.forEach(x=>{const pid=uid();
   DB.purchases.push({id:pid,week:NOW_WK,at:Date.now(),name:x.name,price:+x.price||0,kind:x.kind,src:x.kind==="manual"?"manual":"rec",trip:tid});
-  if(x.kind==="seas")DB.seas[coreName(x.name)]=x.qty==="low"?"low":"have";else putPantry(x.name,x.qty||"full","buy",pid);});   // 얼마나 샀는지 → 냉장고 남은 양
+  if(x.kind==="seas")DB.seas[coreName(x.name)]="have";else putPantry(x.name,x.qty||"full","buy",pid);});   // 얼마나 샀는지 → 냉장고 남은 양
  S.paidJust=Math.max(0,Math.round(+paid||0));finishTrip(paid);DB.cart={wk:NOW_WK,trip:null,items:[]};S.recorded=b.length||-1;S.sheet=null;save();
  toast(b.length?`${b.length}개를 냉장고에 넣고 결제액을 기록했어요`:"결제액을 기록했어요");   // 조미료는 온보딩·냉장고·내 정보·'오늘 뭐 해먹지?'에서 따로 확인해요
  render();scrollTo(0,0);}
@@ -1418,7 +1421,7 @@ function buyQty(pr,needs){const U=unitAmt(pr.unit),per100=pr.unit==="100g";let t
 
 // ── 재료 분류: 물 / 조미료 / 냉장고 / 살 것(이 가게 데이터) / 없음 ──
 const WATER=/^(물|찬물|뜨거운물|끓는물|얼음|얼음물|생수)$/;
-const seasMapNow=()=>DB.seasSet?DB.seas:Object.fromEntries(DEFAULT_SEASONINGS.map(n=>[n,"have"]));
+const seasMapNow=()=>DB.seasSet?Object.fromEntries(Object.entries(DB.seas).map(([k,v])=>[k,v==="low"?"have":v])):Object.fromEntries(DEFAULT_SEASONINGS.map(n=>[n,"have"]));
 const squash=n=>coreName(n).replace(/\s/g,"");
 function seasKeyOf(n){const c=squash(n);if(isSeasName(c))return c;const it=matchItem(c);return it&&it.group==="seas"?coreName(it.name):null;}
 function fridgeOf(n){const b=squash(n);return stock().find(x=>{const a=squash(x.name);return a===b||(a.length>=2&&b.length>=2&&(a.includes(b)||b.includes(a)));});}
@@ -1445,8 +1448,9 @@ function allocate(recs){const used={},buys={},fr={},ok=[],bad=[];
    if(c.kind==="water")continue;
    if(c.kind==="none"){fail=`'${g.name}': ${c.why}`;break;}
    const once=(c.kind==="fridge"&&c.item.level==="low")?"f"+c.item.id:(c.kind==="seas"&&c.lv==="low")?"s"+c.key:null;
-   if(once&&used[once]){c=buyOf(g.name);if(!c){fail=`'${g.name}'이(가) 조금밖에 없어 한 끼에만 쓸 수 있어요`;break;}}
-   plan.push({...c,g,once:c.kind==="buy"?null:once});}
+   // 조금 남은 것을 또 쓰면 → 사는 것으로 돌려요. 조미료는 가게 가격이 없어도 한 숟갈 정도라 그냥 써요(조합을 버리지 않아요)
+   if(once&&used[once]){const b=buyOf(g.name);if(b)c=b;else if(c.kind==="seas")c={...c,lv:"have"};else{fail=`'${g.name}'이(가) 조금밖에 없어 한 끼에만 쓸 수 있어요`;break;}}
+   plan.push({...c,g,once:c.kind==="buy"||(once&&used[once])?null:once});}
   if(fail){bad.push({r,reason:fail});continue;}
   plan.forEach(c=>{if(c.once)used[c.once]=1;
    if(c.kind==="fridge")(fr[c.item.id]||(fr[c.item.id]={item:c.item,recipes:[]})).recipes.push(r.title);
@@ -1542,20 +1546,22 @@ async function makeCombos(){const el=$("#wish");S.wish=(el?el.value:S.wish||"").
  const sysBase=`당신은 "냉장고 털기" 집밥 식단 도우미입니다. ${N}끼 메뉴 조합 1개를 만듭니다. 반드시 JSON만, 아래 형식 그대로 짧게 출력하세요(설명·코드블록 금지): ${COMBO_ONE}. t=메뉴명, w=먹고 싶은 메뉴면 1 아니면 0, m=이 메뉴로 먹는 끼니 수, i=[재료명, 분량, 단위] 목록(그 메뉴 m끼 전체 분량). 규칙: 사용자가 먹고 싶다고 한 메뉴는 wishes에 그대로 적고 w:1로 꼭 넣기. 나머지 메뉴는 w:0, 서로 겹치지 않게. m은 기본 1. 김치찌개·카레·곰탕처럼 한 끼 분량만 만들기 어려운 메뉴는 m:2로 해도 되지만 꼭 그럴 필요는 없음(먹고 싶은 메뉴라고 무조건 2끼로 하지 말기). m 합은 정확히 ${N}. 먹고 싶은 메뉴가 없으면 wishes는 빈 배열. 사고 남는 재료와 냉장고 재료는 다른 메뉴에서 이어 써서 남김없이 쓰기. 모든 메뉴에는 조미료·물·쌀·면 말고 주재료(채소·고기·생선·달걀·두부·김치 등)가 꼭 1가지 이상 들어가야 함 — 냉장고에 없으면 [살 수 있는 재료]에서 사는 것으로 넣기. 조미료만으로 만드는 메뉴, 재료를 하나도 안 사려고 억지로 짠 메뉴는 금지. 예산이 모자라도 메뉴는 정상적으로 짜고, 예산 판단은 앱이 함.${pk.length?` 사용자가 이번에 꼭 쓰겠다고 고른 냉장고 재료(${pk.join(", ")})는 모두 어떤 메뉴에든 넣고, 여러 개면 그 재료들을 함께 쓰는 메뉴를 menus 맨 앞에 두기.`:""} ${ingRules()}`;
  const usr=`먹고 싶은 메뉴: ${wishM.join(", ")||"없음"}\n끼니 수: ${N}끼\n이번 달 남은 장보기 예산: ${room>0?room+"원(참고만, 넘어도 메뉴는 정상적으로)":"이미 다 씀(그래도 필요한 재료는 사야 함)"}\n[냉장고 재료] ${fridgeLines()}${pk.length?`\n[이번에 꼭 쓸 냉장고 재료] ${pk.join(", ")}`:""}\n[가진 조미료] ${seasLines()}\n[살 수 있는 재료(${placeOf(P())} 실제 가격)] ${catLinesShort()}\n인원: ${P().people}명\n기피/알레르기: ${avoidText()}`;
  const keyOf=c=>c.recipes.map(r=>r.title).sort().join("+");
- const ask=(k,prev)=>askJSON(sysBase+` 이번 조합의 방향: '${COMBO_DIRS[k][0]}' — ${COMBO_DIRS[k][1]}.`,usr+(prev.length?`\n이미 나온 조합(이것과 다르게): ${prev.join(" / ")}`:""),LLM.planModel,LLM_PLAN)
+ const lastWhy={};   // 안마다 직전에 버린 이유 — 다시 요청할 때 AI에게 알려줘서 같은 실수를 안 하게 해요
+ const ask=(k,prev)=>askJSON(sysBase+` 이번 조합의 방향: '${COMBO_DIRS[k][0]}' — ${COMBO_DIRS[k][1]}.`,usr+(prev.length?`\n이미 나온 조합(이것과 다르게): ${prev.join(" / ")}`:"")+(lastWhy[k]?`\n직전에 짠 조합은 이 문제로 쓸 수 없었어요: ${lastWhy[k]}. 이 문제가 안 생기게 재료나 메뉴를 바꿔서 새로 짜기.`:""),LLM.planModel,LLM_PLAN)
   .then(t=>({k,label:COMBO_DIRS[k][0],...parseCombo(t),wishes:wishM}));   // 먹고 싶은 메뉴는 코드가 읽은 이름으로 검사해요
  // 받은 안 검사 — 규칙에 안 맞으면 그 자리만 다시 요청해요 (시간 초과·연결 오류는 다시 요청하지 않아요)
  const take=(settled,ks,round)=>{const retry=[];settled.forEach((r,j)=>{const k=ks[j];
   if(r.status!=="fulfilled"){const m=r.reason?.message||"오류";errs.push(m);countCombo(round,"err",/형식|JSON|Unexpected/.test(m)?"형식 오류":"연결·시간 초과");return;}
   const c=r.value,p=comboProblem(c.recipes,c.wishes,N);
   if(!p&&valid.some(v=>keyOf(v)===keyOf(c))){countCombo(round,"rule","다른 안과 같음");retry.push(k);return;}
-  if(p){const w=`${c.label}: ${p}`;if(!why.includes(w))why.push(w);countCombo(round,"rule",comboWhy(p));retry.push(k);}else{countCombo(round,"pass");valid.push(c);}});return retry;};
+  if(p){const w=`${c.label}: ${p}`;if(!why.includes(w))why.push(w);lastWhy[k]=p;countCombo(round,"rule",comboWhy(p));retry.push(k);}else{countCombo(round,"pass");valid.push(c);}});return retry;};
  let retry=take(await Promise.allSettled([0,1,2].map(k=>ask(k,[]))),[0,1,2],"first");
- if(retry.length){const prev=valid.map(keyOf);take(await Promise.allSettled(retry.map(k=>ask(k,prev))),retry,"retry");}
+ if(retry.length){const prev=valid.map(keyOf);retry=take(await Promise.allSettled(retry.map(k=>ask(k,prev))),retry,"retry");}
+ if(!valid.length&&retry.length&&why.length)take(await Promise.allSettled(retry.map(k=>ask(k,[]))),retry,"retry");   // 하나도 못 건졌으면 이유를 알려주고 한 번 더
  save();S.work=null;S.tab="pick";S.view="app";
  if(!valid.length){
   S.planNote=errs.length&&!why.length?(LLM.proxy?`메뉴 조합을 만들지 못했어요. 잠시 후 다시 시도해 주세요.${errTail(errs[0])}`:"AI가 연결되지 않아 메뉴 조합을 만들 수 없어요. LLM 설정에 API 키를 넣거나 Claude 미리보기에서 열어주세요.")
-   :`조건에 맞는 메뉴 조합을 만들지 못했어요. ${esc(why.slice(0,2).join(" / "))}`;
+   :failNote(why,wishM);
   return render();}
  valid.sort((a,b)=>a.k-b.k);
  DB.draft={wk:NOW_WK,trip:trip().id,at:Date.now(),wish,meals:N,wishes:valid[0].wishes,combos:valid.map(({k,wishes,...c})=>c),dropped:3-valid.length};
@@ -2279,7 +2285,7 @@ ${s.length?`<div class="shelves">${s.map(x=>{const d=daysAgo(x.addedAt);return `
 
 <div class="row" style="margin:26px 0 6px"><h3>양념·조미료</h3>${own.length?`<span class="m" style="cursor:pointer;text-decoration:underline" onclick="openSeas('pantry')">고치기</span>`:""}</div>
 ${own.length?(sl.length?`<div class="list seasl">${sl.map(n=>`<div class="li" style="cursor:default"><div class="tx"><b>${esc(n)}</b></div>
-<button class="lv ${SV_CLS[DB.seas[n]]}" onclick="cycleSeas('${q(n)}')">${SV[DB.seas[n]]}</button><button class="used" onclick="seasOut('${q(n)}')">다 씀</button></div>`).join("")}</div>`
+<button class="used" onclick="seasOut('${q(n)}')">다 씀</button></div>`).join("")}</div>`
  :`<p class="m" style="margin:4px 2px">남은 조미료가 없어요. 다 쓴 조미료는 장보기에 떠요.</p>`)
  :`<div class="card"><p class="m" style="margin:0 0 10px">조미료를 아직 안 골랐어요. 레시피 받을 때 물어볼게요.</p><span class="chip on" onclick="openSeas('pantry')">지금 고르기</span></div>`}
 
@@ -2332,7 +2338,7 @@ function recipeSheet(){const r=findR(S.openR);if(!r)return "";const sc=isScrap(r
 
 /* 해먹은 뒤: 얼마나 남았어요? */
 function leftSheet(){const {rows}=S.left;
- const opts=r=>r.k==="p"?[["full","넉넉"],["mid","보통"],["low","조금"],["out","다 씀"]]:[["have","있음"],["low","조금"],["out","다 떨어짐"]];
+ const opts=r=>r.k==="p"?[["full","넉넉"],["mid","보통"],["low","조금"],["out","다 씀"]]:[["have","있음"],["out","다 씀"]];
  const cls=(r,v)=>r.k==="p"?v:SV_CLS[v];
  return `<div class="modal-bg" onclick="if(event.target===this){S.left=null;render()}"><div class="modal"><div class="grab"></div>
 <h1 style="margin-top:0">얼마나 남았어요?</h1><p class="sub">이 레시피에 쓴 재료만 모았어요. 남은 양을 골라주세요.</p>
@@ -2534,6 +2540,7 @@ function draw(){
  if(S.view==="login")return loginScreen();
  if(!DB.onboarded){if(!S.p)S.p=DEFAULT_PROFILE();return SCR[ONB[S.step]]();}
  if(!DB.v2)migrateV2();
+ if(DB.seas&&Object.values(DB.seas).includes("low"))for(const k in DB.seas)if(DB.seas[k]==="low")DB.seas[k]="have";   // 조미료는 있음/다 씀 두 가지만 (예전 '조금'은 있음으로)
  if(S.view==="edit")return SCR[S.editKey]();
  return {home,pick:pickPage,record:recordPage,pantry:pantryPage,recipe:recipePage,history:historyPage,me:settingsPage}[S.tab]();}
 render();
