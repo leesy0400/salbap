@@ -202,7 +202,13 @@ h1{font-size:25px;line-height:1.32;font-weight:800;margin:12px 0 8px;letter-spac
 /* ---------- 첫 화면 — 햇살 + 식물 그림자 + 린넨 · 허브 장식 ---------- */
 /* 실제 사진으로 바꾸려면 .land 의 background 맨 앞에 url("사진.jpg") center/cover 를 넣고 .deco 를 지우면 돼요 */
 .land{flex:1;position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;text-align:center;min-height:100vh;min-height:100dvh;padding:clamp(48px,11vh,110px) 22px 118px;justify-content:center;
-  background:radial-gradient(90% 55% at 15% 5%,rgba(255,248,228,.95),rgba(255,248,228,0) 70%),radial-gradient(70% 40% at 90% 60%,rgba(255,250,238,.7),rgba(255,250,238,0) 70%),var(--bg)}
+  background:radial-gradient(70% 45% at 50% 42%,#fffaf0,rgba(255,250,240,0) 75%),#f7f1e6}
+.bowlbap{width:min(72vw,280px);height:auto;display:block;overflow:visible}
+.bowlbap .bwbap{animation:peek 3.4s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 100%}
+.bowlbap .steam path{animation:steam 2.8s ease-in-out infinite;opacity:.9}.bowlbap .steam path+path{animation-delay:.9s}
+@keyframes peek{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes steam{0%,100%{opacity:.25;transform:translateY(4px)}50%{opacity:.95;transform:translateY(-4px)}}
+@media (prefers-reduced-motion:reduce){.bowlbap .bwbap,.bowlbap .steam path{animation:none}}
 .land>*:not(.deco){position:relative;z-index:1}
 .deco{position:absolute;inset:0;pointer-events:none;z-index:0}
 .deco .shade{position:absolute;filter:blur(7px);opacity:.09}
@@ -213,12 +219,12 @@ h1{font-size:25px;line-height:1.32;font-weight:800;margin:12px 0 8px;letter-spac
 .deco .herb{position:absolute}
 .appicon{position:relative;width:104px;height:104px;border-radius:28px;background:#fbf6ec;box-shadow:0 6px 18px rgba(70,60,30,.08);display:grid;place-items:center}
 .appicon .spark{position:absolute;right:-22px;top:-22px}
-.land h1.word{font-size:50px;color:#30271f;margin:26px 0 14px;display:inline-flex;align-items:flex-end;gap:2px}
+.land h1.word{font-size:56px;color:#30271f;margin:14px 0 12px;display:inline-flex;align-items:flex-end;gap:2px}
 .land h1.word svg{margin-bottom:6px}
 .land .sub{font-size:15px;color:#5f574d;margin:0 0 26px}
 .btn.pill{height:58px;font-size:17px}
 .foot .btn.pill{background:#607750 !important;color:#fffefa !important;border:0 !important;-webkit-text-fill-color:#fffefa}
-.land~.foot{background:linear-gradient(rgba(247,243,235,0),#f7f3eb 35%)}
+.land~.foot{background:linear-gradient(rgba(247,241,230,0),#f7f1e6 35%)}
 
 /* ---------- 바텀시트 (동의·레시피 상세) ---------- */
 .modal-bg{position:fixed;inset:0;background:rgba(48,39,31,.42);display:flex;align-items:flex-end;justify-content:center;z-index:50}
@@ -1732,13 +1738,31 @@ function runLoader(kind,n,ms,done){S.busy={kind,i:0};render();
    ============================================================ */
 function landing(){
  const start="S.sheet='agree';render()";
-$("#app").innerHTML=`<div class="land">${LAND_DECO}
-${bapImg("hero","landbap")}
+$("#app").innerHTML=`<div class="land">
+${BOWL_BAP}
 <h1 class="word">살림밥상${leaf(26)}</h1>
 <p class="sub">밥풀이랑 같이 잘 먹기</p>
 </div>
 <div class="foot"><button class="btn pill" onclick="${start}">회원가입 ${ic("right")}</button>${authOn()?`<button class="link" style="margin-top:6px" onclick="S.lmode='login';openLogin()">이미 계정이 있어요 · 로그인</button>`:""}</div>${overlays()}`;}
-// 첫 화면 배경 장식: 창가 식물 그림자(흐리게) · 린넨 행주 · 허브 잎
+// 첫 화면 — 초록 밥그릇 안에서 고개를 내민 밥풀이 (뒤쪽 그릇 안 → 밥풀이 그림 → 앞쪽 그릇 순서로 겹쳐요) + 김
+const BOWL_BAP=`<svg class="bowlbap" viewBox="0 0 300 320" role="img" aria-label="밥그릇 안의 밥풀이">
+<defs><radialGradient id="bwF" cx=".38" cy=".18" r=".95"><stop offset="0" stop-color="#a9bf88"/><stop offset=".5" stop-color="#8ea86d"/><stop offset="1" stop-color="#647f49"/></radialGradient>
+<linearGradient id="bwS" x1="0" y1="0" x2="1" y2="0"><stop offset=".1" stop-color="#fff" stop-opacity="0"/><stop offset=".24" stop-color="#fff" stop-opacity=".28"/><stop offset=".34" stop-color="#fff" stop-opacity="0"/></linearGradient>
+<radialGradient id="bwIn" cx=".5" cy=".75" r=".7"><stop offset="0" stop-color="#4f6739"/><stop offset="1" stop-color="#6a8550"/></radialGradient>
+<linearGradient id="bwDim" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3d5129" stop-opacity="0"/><stop offset="1" stop-color="#3d5129" stop-opacity=".35"/></linearGradient>
+<radialGradient id="bwSh" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#6b5a3a" stop-opacity=".25"/><stop offset="1" stop-color="#6b5a3a" stop-opacity="0"/></radialGradient></defs>
+<g class="steam" fill="none" stroke="#e3d8c2" stroke-width="5" stroke-linecap="round"><path d="M222 64c-10-12 10-18 0-32"/><path d="M241 78c-9-11 9-17 0-30"/></g>
+<ellipse cx="150" cy="306" rx="96" ry="10" fill="url(#bwSh)"/>
+<ellipse cx="150" cy="182" rx="114" ry="22" fill="url(#bwIn)"/>
+<path d="M36 182c18-15 64-22 114-22s96 7 114 22" fill="none" stroke="#e9e2c9" stroke-width="5"/>
+<image class="bwbap" href="img/bapuri-hero.webp" x="22" y="34" width="256" height="256"/>
+<rect x="60" y="176" width="180" height="30" fill="url(#bwDim)"/>
+<path d="M106 270h88l5 32c-12 4-29 6-49 6s-37-2-49-6z" fill="#6c8750"/>
+<path d="M36 182c0 66 46 110 114 110s114-44 114-110c-18 15-64 22-114 22s-96-7-114-22z" fill="url(#bwF)"/>
+<path d="M36 182c0 66 46 110 114 110s114-44 114-110c-18 15-64 22-114 22s-96-7-114-22z" fill="url(#bwS)"/>
+<path d="M36 182c18 15 64 22 114 22s96-7 114-22" fill="none" stroke="#eee8d2" stroke-width="7" stroke-linecap="round"/>
+</svg>`;
+// (예전) 첫 화면 배경 장식: 창가 식물 그림자(흐리게) · 린넨 행주 · 허브 잎 — 지금은 쓰지 않아요
 const SHADE_BRANCH=`<svg viewBox="0 0 200 260"><g fill="#2f3a24"><path d="M100 260C96 180 80 110 40 20" stroke="#2f3a24" stroke-width="5" fill="none"/>${[[60,60,-40],[78,95,30],[50,120,-55],[88,150,40],[62,175,-35],[95,205,25],[40,80,-70],[70,30,-20]].map(([x,y,r])=>`<ellipse cx="${x}" cy="${y}" rx="30" ry="11" transform="rotate(${r} ${x} ${y})"/>`).join("")}</g></svg>`;
 const HERB=`<svg viewBox="0 0 120 120"><path d="M10 110C40 80 60 60 100 40" stroke="#58743f" stroke-width="2.4" fill="none" stroke-linecap="round"/>${[[45,78,-30],[62,62,10],[78,52,-50],[95,42,20],[55,92,40],[30,95,-10]].map(([x,y,r])=>`<path d="M${x} ${y}c-8-10-4-22 6-24 2 6 10 6 9 14 6 1 8 9 2 13-5 4-12 2-17-3z" fill="#6f9258" transform="rotate(${r} ${x} ${y})"/>`).join("")}</svg>`;
 // 로그인 화면 — Google / 이메일, 그리고 '로그인 없이 시작'
