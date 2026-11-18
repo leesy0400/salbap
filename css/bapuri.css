@@ -1,0 +1,628 @@
+/* ============================================================
+   밥풀이 — 300×220 무대 위 몸·소품·효과 움직임, 누르면 반응, 그림 로딩
+   ============================================================ */
+
+/* 밥풀이 장면 — 300×220 무대. 몸(.chr>.body)·소품·효과(.L)가 따로 움직여요 */
+.stage {
+  position: relative;
+  width: 300px;
+  height: 220px;
+  margin: 4px auto 0;
+  cursor: pointer;
+  isolation: isolate;
+  transform: translateZ(0);
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.stage .L {
+  position: absolute;
+  height: auto;
+  pointer-events: none;
+  user-select: none;
+}
+.stage .chr {
+  position: absolute;
+  transform-origin: 50% 100%;
+}
+.stage .body {
+  display: block;
+  width: 100%;
+  height: auto;
+  transform-origin: 50% 100%;
+  pointer-events: none;
+  user-select: none;
+}
+.stage .shadow {
+  position: absolute;
+  bottom: 6px;
+  height: 12px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(90, 70, 40, 0.22), rgba(90, 70, 40, 0));
+  transform-origin: 50% 50%;
+}
+.stage .d1 {
+  animation-delay: 0.7s !important;
+}
+.stage .d2 {
+  animation-delay: 1.4s !important;
+}
+.stage .d3 {
+  animation-delay: 2.1s !important;
+}
+/* 기분별 몸짓 */
+.mood-happy .body {
+  animation: wiggle 1.6s ease-in-out 3;
+}
+@keyframes wiggle {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  25% {
+    transform: rotate(-3deg);
+  }
+  75% {
+    transform: rotate(3deg);
+  }
+}
+.mood-calm .body {
+  animation: lookfr 4.2s ease-in-out 3;
+}
+.mood-hungry .body {
+  animation: shiver 2.4s ease-in-out 3;
+}
+.mood-sad .body {
+  animation: sob 2.2s ease-in-out 3;
+}
+.mood-faint .body {
+  animation: limp 4.6s ease-in-out 3;
+}
+@keyframes lookfr {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  30%,
+  55% {
+    transform: rotate(-5deg) translateX(-4px);
+  }
+  65% {
+    transform: rotate(-3deg) translateY(-3px);
+  }
+}
+@keyframes shiver {
+  0%,
+  55%,
+  100% {
+    transform: translateX(0);
+  }
+  60%,
+  70%,
+  80%,
+  90% {
+    transform: translateX(-2.5px) rotate(-0.6deg);
+  }
+  65%,
+  75%,
+  85% {
+    transform: translateX(2.5px) rotate(0.6deg);
+  }
+}
+@keyframes sob {
+  0%,
+  100% {
+    transform: scale(1, 1);
+  }
+  20% {
+    transform: scale(1.02, 0.97);
+  }
+  30% {
+    transform: scale(0.99, 1.01);
+  }
+  40% {
+    transform: scale(1.02, 0.97);
+  }
+  55% {
+    transform: scale(1, 1);
+  }
+}
+@keyframes limp {
+  0%,
+  100% {
+    transform: scaleY(1) rotate(0);
+  }
+  50% {
+    transform: scaleY(0.965) rotate(1.5deg);
+  }
+}
+/* 효과 */
+.stage .floatup {
+  opacity: 0;
+  animation: floatup 2.8s ease-out 3;
+}
+@keyframes floatup {
+  0% {
+    opacity: 0;
+    transform: translateY(12px) scale(0.6);
+  }
+  20% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-38px) scale(1.05) rotate(8deg);
+  }
+}
+.stage .twinkle {
+  animation: twinkle 2.8s ease-in-out 3;
+}
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0.3) rotate(0);
+  }
+  35%,
+  55% {
+    opacity: 1;
+    transform: scale(1) rotate(25deg);
+  }
+}
+.stage .blink {
+  animation: blink 1.7s ease-in-out 3;
+}
+@keyframes blink {
+  0%,
+  30%,
+  100% {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+  42%,
+  58% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.stage .flick {
+  animation: flick 2.4s steps(1) 3;
+}
+@keyframes flick {
+  0%,
+  55% {
+    opacity: 0;
+  }
+  60%,
+  70%,
+  80% {
+    opacity: 1;
+  }
+  65%,
+  75%,
+  85% {
+    opacity: 0.3;
+  }
+  90%,
+  100% {
+    opacity: 0;
+  }
+}
+.stage .growl {
+  animation: growl 2.4s ease-in-out 3;
+  transform-origin: 0 50%;
+}
+@keyframes growl {
+  0%,
+  40%,
+  100% {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+  50%,
+  75% {
+    opacity: 1;
+    transform: scale(1) rotate(-4deg);
+  }
+  62% {
+    transform: scale(1.08) rotate(4deg);
+  }
+}
+.stage .drip {
+  animation: drip 2.4s ease-in 3;
+}
+@keyframes drip {
+  0% {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+}
+.stage .drift {
+  animation: drift 5s ease-in-out 3;
+}
+@keyframes drift {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(10px);
+  }
+}
+.stage .fall {
+  opacity: 0;
+  animation: fall 1.3s linear 3;
+}
+.stage .fall.d1 {
+  animation-delay: 0.45s !important;
+}
+.stage .fall.d2 {
+  animation-delay: 0.9s !important;
+}
+@keyframes fall {
+  0% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(64px);
+  }
+}
+.stage .sag {
+  animation: sag 3s ease-in-out 3;
+}
+@keyframes sag {
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(5px);
+  }
+}
+.stage .soul {
+  animation: soul 4.6s ease-in-out 3;
+}
+@keyframes soul {
+  0% {
+    opacity: 0;
+    transform: translateY(40px) scale(0.5);
+  }
+  25% {
+    opacity: 0.9;
+    transform: translateY(8px) scale(0.9) rotate(-6deg);
+  }
+  55% {
+    opacity: 0.9;
+    transform: translateY(-4px) scale(1) rotate(6deg);
+  }
+  85% {
+    opacity: 0.6;
+    transform: translateY(-10px) rotate(-4deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-16px);
+  }
+}
+/* 냉장고 앞 — 뭐 해먹을지 떠올려요 (반찬이 하나씩 바뀌어요) */
+.stage .think {
+  position: absolute;
+  left: 108px;
+  top: 2px;
+  width: 76px;
+  height: 64px;
+  border-radius: 50%;
+  background: #fffdf7;
+  box-shadow: 0 3px 10px rgba(90, 70, 40, 0.12);
+}
+.stage .think:before,
+.stage .think:after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  background: #fffdf7;
+  box-shadow: 0 2px 6px rgba(90, 70, 40, 0.1);
+}
+.stage .think:before {
+  width: 13px;
+  height: 13px;
+  right: 2px;
+  bottom: -12px;
+}
+.stage .think:after {
+  width: 8px;
+  height: 8px;
+  right: -6px;
+  bottom: -24px;
+}
+.stage .think {
+  animation: thinkout 9.8s ease-in 1 both;
+}
+@keyframes thinkout {
+  0%,
+  96% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+.stage .think img {
+  position: absolute;
+  left: 10px;
+  top: 9px;
+  width: 56px;
+  height: 46px;
+  object-fit: contain;
+  opacity: 0;
+  animation: thinkcycle 9.6s ease-in-out 1 both;
+  animation-delay: calc(var(--k) * 2.4s);
+}
+@keyframes thinkcycle {
+  0% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  4%,
+  21% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  25%,
+  100% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+}
+/* 누르면 — 말풍선 + 기분별 반응 */
+.stage .say {
+  position: absolute;
+  transform: translate(-50%, 6px) scale(0.6);
+  opacity: 0;
+  white-space: nowrap;
+  background: #fffdf7;
+  color: var(--t);
+  font-size: 14px;
+  font-weight: 800;
+  padding: 6px 12px;
+  border-radius: 14px;
+  box-shadow: 0 3px 10px rgba(90, 70, 40, 0.14);
+  pointer-events: none;
+  z-index: 3;
+}
+.stage .say:after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  margin-left: -6px;
+  border: 6px solid transparent;
+  border-bottom: 0;
+  border-top-color: #fffdf7;
+}
+.stage.poke .say {
+  animation: say 1.4s ease-out forwards;
+}
+.stage .think {
+  transition: opacity 0.2s;
+}
+.stage.poke .think {
+  opacity: 0;
+}
+@keyframes say {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 6px) scale(0.6);
+  }
+  15%,
+  80% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -4px) scale(1);
+  }
+}
+.stage.poke .chr {
+  animation: poke 0.6s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+@keyframes poke {
+  0% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.08, 0.9);
+  }
+  55% {
+    transform: scale(0.96, 1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.stage.mood-hungry.poke .chr {
+  animation: pokeshake 0.6s linear;
+}
+.stage.mood-sad.poke .chr,
+.stage.mood-faint.poke .chr {
+  animation: pokeweak 0.8s ease-out;
+}
+@keyframes pokeshake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-5px) rotate(-2deg);
+  }
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(5px) rotate(2deg);
+  }
+}
+@keyframes pokeweak {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  30% {
+    transform: scale(1.04, 0.95);
+  }
+  60% {
+    transform: scale(0.99, 1.02) translateY(-3px);
+  }
+}
+.stage.mood-hungry.poke .growl {
+  animation: growl 0.6s ease-in-out 2;
+}
+.stage.mood-faint.poke .soul {
+  animation: soulback 0.9s ease-in forwards;
+}
+@keyframes soulback {
+  0% {
+    opacity: 0.9;
+    transform: translateY(-6px);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(70px) scale(0.4);
+  }
+}
+.stage .pop {
+  animation: burst 1.2s ease-out forwards;
+  opacity: 0;
+}
+@keyframes burst {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.4);
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--dx), var(--dy)) scale(1.1);
+  }
+}
+/* '해먹었어요' 축하 화면에서는 조금 크게 */
+.react .stage {
+  transform: scale(1.15);
+  margin-bottom: 24px;
+  pointer-events: none;
+}
+/* 레시피 그림 그리는 중 */
+.th.ld,
+.rth.ld {
+  position: relative;
+  overflow: hidden;
+  background: #efe9dd;
+}
+.th.ld::after,
+.rth.ld::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, transparent 20%, rgba(255, 255, 255, 0.65) 50%, transparent 80%);
+  animation: shimmer 1.3s linear infinite;
+}
+.th.ld .spin,
+.rth.ld .spin {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  width: 22px;
+  height: 22px;
+  border-width: 3px;
+  border-color: #dcd4c4;
+  border-top-color: var(--pri);
+}
+.rth.ld {
+  width: min(100%, 340px);
+  height: auto;
+  aspect-ratio: 1/1;
+  border-radius: 20px;
+}
+@keyframes shimmer {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+.streak {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  margin: 4px 0 0;
+}
+.streak b {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--r);
+}
+.streak span {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--prd);
+  background: var(--prs);
+  border-radius: 99px;
+  padding: 3px 10px;
+}
+.streak span.ok {
+  background: #f7ecd2;
+  color: var(--mud);
+}
+
+.tlink {
+  border: 0;
+  background: none;
+  padding: 0;
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--pri);
+  text-decoration: underline;
+  cursor: pointer;
+}
+.footrow {
+  display: flex;
+  gap: 8px;
+}
+.footrow .btn.ghost {
+  flex: 0 0 auto;
+  width: auto;
+  padding: 0 18px;
+}
+.footrow .btn:not(.ghost) {
+  flex: 1;
+}
+.gobtn {
+  margin: 34px 0 0;
+  height: 60px;
+  font-size: 17px;
+  background: var(--t);
+}
