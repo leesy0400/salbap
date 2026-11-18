@@ -372,6 +372,15 @@ main.tab>section.card{margin:0 0 22px;padding:26px 22px}
 .meter3{display:flex;height:8px;border-radius:8px;background:#ece6da;margin-top:12px;overflow:hidden}.meter3 i{display:block;height:100%}.meter3 .u{background:var(--pri)}.meter3 .t{background:var(--r)}
 .uselegend{display:flex;gap:14px;margin-top:10px;font-size:12.5px;color:var(--m)}.uselegend span{display:flex;align-items:center;gap:5px}.uselegend i{width:8px;height:8px;border-radius:50%;display:inline-block}.uselegend .u{background:var(--pri)}.uselegend .l{background:#d9d1c2}.uselegend .t{background:var(--r)}
 .used.toss{color:var(--r)}
+.wantrow{display:flex;gap:8px;align-items:center}.wantrow .field{flex:1}.wantrow .chip{flex:none;white-space:nowrap}
+.seasturn{position:relative;margin:4px -22px 0;padding:6px 0 8px}
+.seasnav{position:absolute;top:24px;z-index:12;width:34px;height:34px;border-radius:50%;border:1px solid var(--l);background:var(--card);color:var(--t);display:grid;place-items:center;cursor:pointer;box-shadow:0 2px 6px rgba(90,70,40,.12)}.seasnav.l{left:20px}.seasnav.r{right:20px}.seasnav .i{font-size:18px}
+.seasl{position:relative;display:flex;gap:4px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px calc(50% - 44px) 10px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.seasl::-webkit-scrollbar{display:none}
+.sj{flex:0 0 88px;scroll-snap-align:center;display:flex;flex-direction:column;align-items:center;gap:3px;transform-origin:50% 100%;transition:transform .08s linear,opacity .08s linear}
+.sjar{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;font-size:28px;background:#fffaf0;box-shadow:0 3px 8px rgba(90,70,40,.16)}
+.sj b{font-size:13.5px;font-weight:700;white-space:nowrap;max-width:86px;overflow:hidden;text-overflow:ellipsis}
+.sj .used{padding:0 2px;font-size:12px}
 .seasg+.tiles.three .tile,.seashd+.tiles.three .tile{min-height:44px;padding:9px 6px}
 .seasacc{background:var(--card);border:1px solid var(--l);border-radius:16px;overflow:hidden}
 .accrow+.accrow{border-top:1px solid var(--l)}
@@ -517,7 +526,7 @@ input[type=range]:focus-visible{outline:2px solid var(--pri);outline-offset:6px}
 /* 오늘 — 밥풀이를 크게, 버튼은 하나 */
 .today{display:flex;flex-direction:column;align-items:center;text-align:center;padding-top:6px}
 .tmsg{font-size:22px;line-height:1.4;font-weight:800;margin:14px 0 0;letter-spacing:-.02em}
-.tmsg b{color:var(--pri)}
+.tmsg b{color:var(--pri);font-size:1.3em;line-height:1}
 .bap{display:block;user-select:none;-webkit-user-drag:none}
 .bap.landbap{width:min(52vw,210px);height:auto;margin:0 auto 6px;animation:bob 3.2s ease-in-out infinite;position:relative;z-index:1}
 @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
@@ -529,14 +538,12 @@ input[type=range]:focus-visible{outline:2px solid var(--pri);outline-offset:6px}
 .stage .shadow{position:absolute;bottom:6px;height:12px;border-radius:50%;background:radial-gradient(closest-side,rgba(90,70,40,.22),rgba(90,70,40,0));transform-origin:50% 50%}
 .stage .d1{animation-delay:.7s!important}.stage .d2{animation-delay:1.4s!important}.stage .d3{animation-delay:2.1s!important}
 /* 기분별 몸짓 */
-.mood-happy .body{animation:bhop 1.7s cubic-bezier(.3,.7,.4,1)  3}
-.mood-happy .shadow{animation:shadowhop 1.7s cubic-bezier(.3,.7,.4,1)  3}
+.mood-happy .body{animation:wiggle 1.6s ease-in-out  3}
+@keyframes wiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-3deg)}75%{transform:rotate(3deg)}}
 .mood-calm .body{animation:lookfr 4.2s ease-in-out  3}
 .mood-hungry .body{animation:shiver 2.4s ease-in-out  3}
 .mood-sad .body{animation:sob 2.2s ease-in-out  3}
 .mood-faint .body{animation:limp 4.6s ease-in-out  3}
-@keyframes bhop{0%,100%{transform:translateY(0) scale(1.06,.94)}18%{transform:translateY(0) scale(.96,1.05)}42%{transform:translateY(-26px) scale(.98,1.03) rotate(-2deg)}64%{transform:translateY(0) scale(1.08,.92)}78%{transform:translateY(0) scale(.98,1.02)}}
-@keyframes shadowhop{0%,18%,64%,100%{transform:scale(1);opacity:1}42%{transform:scale(.7);opacity:.55}}
 @keyframes lookfr{0%,100%{transform:rotate(0)}30%,55%{transform:rotate(-5deg) translateX(-4px)}65%{transform:rotate(-3deg) translateY(-3px)}}
 @keyframes shiver{0%,55%,100%{transform:translateX(0)}60%,70%,80%,90%{transform:translateX(-2.5px) rotate(-.6deg)}65%,75%,85%{transform:translateX(2.5px) rotate(.6deg)}}
 @keyframes sob{0%,100%{transform:scale(1,1)}20%{transform:scale(1.02,.97)}30%{transform:scale(.99,1.01)}40%{transform:scale(1.02,.97)}55%{transform:scale(1,1)}}
@@ -548,8 +555,6 @@ input[type=range]:focus-visible{outline:2px solid var(--pri);outline-offset:6px}
 @keyframes twinkle{0%,100%{opacity:0;transform:scale(.3) rotate(0)}35%,55%{opacity:1;transform:scale(1) rotate(25deg)}}
 .stage .blink{animation:blink 1.7s ease-in-out  3}
 @keyframes blink{0%,30%,100%{opacity:0;transform:scale(.7)}42%,58%{opacity:1;transform:scale(1)}}
-.stage .land{opacity:0;animation:land 1.7s ease-out  3}
-@keyframes land{0%,60%,100%{opacity:0;transform:scale(.6)}66%{opacity:1;transform:scale(1)}82%{opacity:0;transform:scale(1.2)}}
 .stage .flick{animation:flick 2.4s steps(1)  3}
 @keyframes flick{0%,55%{opacity:0}60%,70%,80%{opacity:1}65%,75%,85%{opacity:.3}90%,100%{opacity:0}}
 .stage .growl{animation:growl 2.4s ease-in-out  3;transform-origin:0 50%}
@@ -580,7 +585,7 @@ input[type=range]:focus-visible{outline:2px solid var(--pri);outline-offset:6px}
 .stage .think{transition:opacity .2s}.stage.poke .think{opacity:0}
 @keyframes say{0%{opacity:0;transform:translate(-50%,6px) scale(.6)}15%,80%{opacity:1;transform:translate(-50%,0) scale(1)}100%{opacity:0;transform:translate(-50%,-4px) scale(1)}}
 .stage.poke .chr{animation:poke .6s cubic-bezier(.3,1.6,.5,1)}
-@keyframes poke{0%{transform:scale(1)}25%{transform:scale(1.1,.86)}55%{transform:scale(.94,1.08) translateY(-10px)}100%{transform:scale(1)}}
+@keyframes poke{0%{transform:scale(1)}25%{transform:scale(1.08,.9)}55%{transform:scale(.96,1.05)}100%{transform:scale(1)}}
 .stage.mood-hungry.poke .chr{animation:pokeshake .6s linear}
 .stage.mood-sad.poke .chr,.stage.mood-faint.poke .chr{animation:pokeweak .8s ease-out}
 @keyframes pokeshake{0%,100%{transform:translateX(0)}10%,30%,50%,70%,90%{transform:translateX(-5px) rotate(-2deg)}20%,40%,60%,80%{transform:translateX(5px) rotate(2deg)}}
@@ -600,12 +605,11 @@ input[type=range]:focus-visible{outline:2px solid var(--pri);outline-offset:6px}
 @keyframes shimmer{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
 .streak{display:flex;flex-direction:column;align-items:center;gap:2px;margin:4px 0 0}.streak b{font-size:16px;font-weight:800;color:var(--r)}
 .streak span{font-size:13.5px;font-weight:700;color:var(--prd);background:var(--prs);border-radius:99px;padding:3px 10px}.streak span.ok{background:#f7ecd2;color:var(--mud)}
-.growline{font-size:13.5px;color:var(--m);margin:2px 0 0}.growline b{color:var(--t)}
 
 
 .tlink{border:0;background:none;padding:0;font:inherit;font-size:13.5px;font-weight:700;color:var(--pri);text-decoration:underline;cursor:pointer}
 .footrow{display:flex;gap:8px}.footrow .btn.ghost{flex:0 0 auto;width:auto;padding:0 18px}.footrow .btn:not(.ghost){flex:1}
-.gobtn{margin:18px 0 0;height:60px;font-size:17px;background:var(--t)}
+.gobtn{margin:34px 0 0;height:60px;font-size:17px;background:var(--t)}
 /* 장보기 탭 */
 .tripcard{margin:14px 0 0!important}.tripcard.empty{text-align:center;display:flex;flex-direction:column;align-items:center}
 .tripcard.empty .m{margin:6px 0 0;line-height:1.55}
@@ -639,7 +643,7 @@ input[type=range]:focus-visible{outline:2px solid var(--pri);outline-offset:6px}
 .bap.pop{width:min(70vw,280px);height:auto;animation:hop .9s ease-out}
 @keyframes hop{0%{transform:scale(.6) translateY(30px);opacity:0}45%{transform:scale(1.06) translateY(-18px);opacity:1}70%{transform:scale(.98) translateY(0)}85%{transform:translateY(-6px)}100%{transform:none}}
 @keyframes fadein{from{opacity:0}to{opacity:1}}
-@media (prefers-reduced-motion:reduce){.bap.pop,.react,.stage *{animation:none!important}.th.ld::after,.rth.ld::after{animation:none}.stage .floatup,.stage .fall,.stage .land{display:none}.stage .think img:first-child,.stage .twinkle,.stage .soul{opacity:1}}
+@media (prefers-reduced-motion:reduce){.bap.pop,.react,.stage *{animation:none!important}.th.ld::after,.rth.ld::after{animation:none}.stage .floatup,.stage .fall{display:none}.stage .think img:first-child,.stage .twinkle,.stage .soul{opacity:1}}
 /* ===== 앱 화면(온보딩 뒤): 네모 상자 대신 배경 위에 바로 — 구분은 얇은 선과 여백으로 ===== */
 .hstick{position:sticky;top:0;z-index:8;background:var(--bg)}
 .hstick .fhead{position:static;padding-top:2px}
@@ -910,6 +914,13 @@ const DELIVERY = {perMeal:14000, label:"배달앱 평균 최소 주문금액 1�
 
 // 8) 안전선: 이 단어가 재생성 요청에 있으면 LLM을 호출하지 않고 안내 문구 표시
 const SAFETY_WORDS = ["단식","굶","극단적","약 대신","치료","진단","살 빼는 약","독약","독극물","독버섯","구토","당뇨","고혈압","신장병","투석","항암","암 환자"];
+// 메모 등 자유 입력에서 거르는 말 — 욕설·비하, 정치, 성적인 말, 연락처·링크 (띄어쓰기·기호를 빼고 찾아요)
+const BAN_WORDS=["시발","씨발","씨바","시바","ㅅㅂ","ㅆㅂ","ㅂㅅ","병신","븅신","빙신","개새","개색","개세","새끼","색기","좆","존나","졸라","지랄","ㅈㄹ","미친놈","미친년","미친새","또라이","꺼져","닥쳐","엿먹","염병","애미","애비","니미","느금","쌍년","썅","창녀","fuck","shit","bitch","asshole","damn",
+ "대통령","윤석열","이재명","문재인","박근혜","이명박","노무현","김정은","한동훈","조국","국민의힘","민주당","정의당","개혁신당","조국혁신당","국힘","더불어","좌파","우파","좌빨","빨갱이","수꼴","토착왜구","일베","탄핵","계엄","선거","투표","국회","정당","정치","진보","페미","한남","한녀","김치녀","틀딱","급식충","맘충","짱깨","쪽바리","흑형",
+ "섹스","야동","자위","성관계","보지","자지","sex","porn","마약","필로폰","대마","도박","토토","카지노","자살","죽어","죽여","살인"];
+function banHit(t){const s=String(t||"").toLowerCase(),n=s.replace(/[\s.·,_\-~!@#$%^&*()+=?/|"'`:;<>[\]{}0-9]/g,"");
+ if(/(https?:|www\.|\.com|\.kr|\.net)/.test(s)||/01[016789][-\s.]?\d{3,4}[-\s.]?\d{4}/.test(s))return "연락처나 링크";
+ return BAN_WORDS.find(w=>n.includes(w))||null;}
 const SAFETY_MESSAGE = "건강 상태나 치료와 관련된 요청에는 답하기 어려워요. 살림밥상의 식단은 참고용이에요. 건강 관련 식단은 의사·영양사와 상담해 주세요.";
 // 안전선 종류별 안내 — 앞에서부터 먼저 걸리는 것 하나만 보여줘요 (띄어쓰기는 무시)
 const SAFETY_RULES = [
@@ -1150,10 +1161,6 @@ const homeCount=()=>cookedList().length+mealList().filter(m=>m.type==="home").le
 const todayKey=()=>ymd(new Date());
 const nowSlot=()=>{const h=new Date().getHours();return h<10?"b":h<15?"l":h<21?"d":"s";};
 
-// 밥풀이 레벨 — 집밥 누적 횟수 기준. 레벨이 오를 때마다 연속 기록 방어권 1개 (끼니 수는 임시 값)
-const STAGES=[5,15,30,50,80,120];
-const levelOf=n=>stageOf(n)+1;
-const stageOf=n=>STAGES.filter(v=>n>=v).length, nextStage=n=>STAGES.find(v=>v>n)||null;
 // 배달 대비 아낀 돈 — 마친 장보기마다 (끼니 수 × 배달 한 끼 고정값) − 실제 결제액
 // 고정값 근거: 소비자공익네트워크, 2024년 하반기 배달앱 입점 업주 502명 조사 — 평균 최소주문금액 약 1만 4천 원
 // (배민 14,079 · 쿠팡이츠 14,404 · 요기요 14,724 · 공공배달앱 13,589원). 배달비는 빼고 잡은 값이라 실제보다 적게 나와요.
@@ -1171,8 +1178,7 @@ function moodOf(){const ts=homeTimes();if(!ts.length)return "calm";
 const SCENE={
  happy:{pose:["pose-happy",65,46,170],say:"맛있었어!",burst:["heart-l","heart-m","heart-s"],
   fx:[["spoon-lines",48,52,26,"blink"],["heart-l",214,36,34,"floatup d0"],["heart-m",10,74,26,"floatup d1"],["heart-s",232,96,20,"floatup d2"],
-   ["spark-t",148,4,18,"twinkle d0"],["spark-r",256,56,16,"twinkle d1"],["spark-l",30,30,15,"twinkle d2"],["spark-b",40,128,13,"twinkle d3"],
-   ["jump-l",72,192,20,"land"],["jump-r",210,192,20,"land"]]},
+   ["spark-t",148,4,18,"twinkle d0"],["spark-r",256,56,16,"twinkle d1"],["spark-l",30,30,15,"twinkle d2"],["spark-b",40,128,13,"twinkle d3"]]},
  calm:{pose:["pose-calm",162,64,118],say:"오늘 뭐 해먹지?",burst:["note"],
   fx:[["fridge",6,104,142,""],["note",268,30,24,"floatup d1"]],think:true},
  hungry:{pose:["pose-hungry",90,56,124],say:"배고파…",burst:[],
@@ -1183,12 +1189,11 @@ const SCENE={
   fx:[["stone",8,182,66,""],["droop",210,40,30,"sag"],["ghost",128,0,54,"soul"]]}};
 const THINK=["food-rice","food-veg","food-jorim","food-egg"];
 const bapL=(n,x,y,w,c="")=>`<img class="L ${c}" src="img/bap/${n}.webp" style="left:${x}px;top:${y}px;width:${w}px" alt="" draggable="false">`;
-// 레벨이 오를수록 밥풀이가 조금씩 커져요
-function moodHero(m=moodOf(),cls=""){const sc=SCENE[m]||SCENE.calm,[pn,px,py,pw]=sc.pose,lv=Math.min(1,.88+.03*(levelOf(homeCount())-1));
+function moodHero(m=moodOf(),cls=""){const sc=SCENE[m]||SCENE.calm,[pn,px,py,pw]=sc.pose;
  return `<div class="stage mood-${m} ${cls}" data-m="${m}" onclick="pokeBap(this)" role="img" aria-label="밥풀이 — 누르면 반응해요">
 <i class="shadow" style="left:${px+pw*.18}px;width:${pw*.64}px"></i>
 ${sc.fx.filter(f=>!/floatup|twinkle|fall|soul|drip/.test(f[4])).map(f=>bapL(...f)).join("")}
-<div class="chr" style="left:${px}px;top:${py}px;width:${pw}px;scale:${lv}"><img class="body" src="img/bap/${pn}.webp" alt="" draggable="false"></div>
+<div class="chr" style="left:${px}px;top:${py}px;width:${pw}px;scale:.88"><img class="body" src="img/bap/${pn}.webp" alt="" draggable="false"></div>
 ${sc.fx.filter(f=>/floatup|twinkle|fall|soul|drip/.test(f[4])).map(f=>bapL(...f)).join("")}
 ${sc.think?`<div class="think">${THINK.map((n,i)=>`<img src="img/bap/${n}.webp" style="--k:${i}" alt="" draggable="false">`).join("")}</div>`:""}
 <b class="say" style="left:${px+pw/2}px;top:${Math.max(0,py-30)}px">${sc.say}</b></div>`;}
@@ -1202,16 +1207,14 @@ function pokeBap(el){if(!el)return;const n=el.cloneNode(true);n.classList.remove
   el.appendChild(im);setTimeout(()=>im.remove(),1300);}}
 
 // 장보기 목표 — 장보기마다 그 끼니 수만큼, 다음 장보기를 시작하기 전까지 해 먹으면 달성.
-//   못 채우고 다음 장보기를 시작하면 연속 기록이 깨져요. 그때 방어권이 있으면 하나 써서 기록을 지켜요.
+//   못 채우고 다음 장보기를 시작하면 연속 기록이 깨져요.
 function streakInfo(){const ts=pastTrips().slice().reverse().filter(t=>+t.meals>0),times=homeTimes(),cur=trip();
- let streak=0,used=0,open=null;
+ let streak=0,open=null;
  ts.forEach((t,i)=>{const from=t.at||t.paidAt||0,to=i+1<ts.length?(ts[i+1].at||ts[i+1].paidAt):cur?cur.at:Infinity;
   const done=times.filter(x=>x>=from&&x<to).length,goal=+t.meals;
   if(to===Infinity){open={done,goal};if(done>=goal)streak++;return;}
-  if(done>=goal)streak++;
-  else if(stageOf(times.filter(x=>x<to).length)-used>0)used++;   // 방어권으로 지킴
-  else streak=0;});
- return {streak,open,used,shields:Math.max(0,stageOf(times.length)-used)};}
+  if(done>=goal)streak++;else streak=0;});
+ return {streak,open};}
 
 const bapImg=(k,cls="")=>`<img class="bap ${cls}" src="img/bapuri-${k}.webp" alt="밥풀이" draggable="false">`;
 
@@ -1339,19 +1342,28 @@ const stock=()=>DB.pantry.filter(x=>x.level!=="out").sort((a,b)=>a.addedAt-b.add
 const outs=()=>DB.pantry.filter(x=>x.level==="out");
 // 산 재료가 어떻게 됐는지 — purchases[].fate: used(다 씀) / tossed(버림) / rebought(다 쓰기 전에 같은 재료를 또 삼 → 새 기록으로 넘어가요)
 function setFate(pid,fate){const p=pid&&DB.purchases.find(x=>x.id===pid);if(!p)return;if(fate)Object.assign(p,{fate,fateAt:Date.now()});else{delete p.fate;delete p.fateAt;}}
-function putPantry(name,level,src,pid){const ex=DB.pantry.find(x=>coreName(x.name)===coreName(name));
+// 다 쓰거나 버린 재료는 기록으로 남겨요 — 같은 재료를 또 넣거나 사 오면 새 항목으로 들어가요(예전 기록은 그대로)
+function putPantry(name,level,src,pid){const ex=DB.pantry.find(x=>x.level!=="out"&&coreName(x.name)===coreName(name));
  if(ex&&ex.level!=="out"&&ex.pid&&pid)setFate(ex.pid,"rebought");
  if(ex)Object.assign(ex,{level,addedAt:Date.now(),src,pid,tossed:false});
  else DB.pantry.push({id:uid(),name,level,addedAt:Date.now(),src,pid});}
 function cycleLv(id){const x=DB.pantry.find(p=>p.id===id);if(x){x.level=LV_NEXT[x.level];save();keep();}}
-function useUp(id){const x=DB.pantry.find(p=>p.id===id);if(!x)return;x.level="out";x.tossed=false;setFate(x.pid,"used");save();toast(`${x.name}: 다 썼어요`);keep();}
-function tossOut(id){const x=DB.pantry.find(p=>p.id===id);if(!x)return;x.level="out";x.tossed=true;setFate(x.pid,"tossed");save();toast(`${x.name}: 버린 재료로 기록했어요`);keep();}
-function restore(id){const x=DB.pantry.find(p=>p.id===id);if(x){x.level="mid";x.tossed=false;setFate(x.pid,null);save();keep();}}
+function useUp(id){const x=DB.pantry.find(p=>p.id===id);if(!x)return;x.level="out";x.tossed=false;x.outAt=Date.now();setFate(x.pid,"used");save();toast(`${x.name}: 다 썼어요`);keep();}
+function tossOut(id){const x=DB.pantry.find(p=>p.id===id);if(!x)return;x.level="out";x.tossed=true;x.outAt=Date.now();setFate(x.pid,"tossed");save();toast(`${x.name}: 버린 재료로 기록했어요`);keep();}
+function restore(id){const x=DB.pantry.find(p=>p.id===id);if(!x)return;setFate(x.pid,null);
+ const dup=DB.pantry.find(p=>p.id!==id&&p.level!=="out"&&coreName(p.name)===coreName(x.name));   // 같은 재료가 이미 냉장고에 있으면 그쪽 하나만 남겨요
+ if(dup)DB.pantry=DB.pantry.filter(p=>p.id!==id);else{x.level="mid";x.tossed=false;delete x.outAt;}save();keep();}
 function delPantry(id){DB.pantry=DB.pantry.filter(x=>x.id!==id);save();keep();}
 function addPantry(name){const v=(name||$("#pIn").value).trim();if(!v)return;
  if(!name&&!isFoodWord(v)){setInErr("pantry",`'${esc(v)}'은(는) 식재료로 판단되지 않아요. 재료 이름으로 적어주세요.`);keep();setTimeout(()=>{const el=$("#pIn");if(el){el.value=v;el.focus();el.select();}},0);return;}
  setInErr();putPantry(v,"mid","manual");save();keep();}
 // 조미료는 있으면 넉넉한 것으로 봐요. 다 쓰면 [다 씀]으로 냉장고 탭 목록에서 빠져요(값은 out으로 남아 장보기에 떠요)
+// 조미료 회전판 — 가운데 온 조미료가 크고 앞으로, 양옆은 작고 뒤로 (돌림판을 옆에서 보는 느낌)
+function turnSeas(el){if(!el)return;const r=el.getBoundingClientRect(),c=r.left+r.width/2;
+ el.querySelectorAll('.sj').forEach(x=>{const b=x.getBoundingClientRect(),d=Math.max(-1,Math.min(1,(b.left+b.width/2-c)/(r.width/2)));
+  x.style.transform=`translateY(${(d*d*18).toFixed(1)}px) scale(${(1-Math.abs(d)*.28).toFixed(3)})`;x.style.opacity=(1-Math.abs(d)*.45).toFixed(2);x.style.zIndex=10-Math.round(Math.abs(d)*9);});}
+// ◀ ▶ 버튼 — 한 칸씩 돌려요
+function moveSeas(d){const el=$(".seasl"),x=el&&el.querySelector(".sj");if(x)el.scrollBy({left:d*(x.offsetWidth+4),behavior:"smooth"});}
 function seasOut(n){DB.seas[n]="out";save();toast(`${n}: 다 썼어요`);keep();}
 
 /* ============================================================
@@ -1425,8 +1437,11 @@ function setPrice(key,v){const x=cart().find(i=>i.key===key);if(x){x.price=Math.
 const catOf=n=>CATS.find(c=>c[0]===n)||CATS[CATS.length-1];
 function setCat(v){S.mcat=v;const c=catOf(v);$("#mName").placeholder=c[2].length?`예: ${c[2].slice(0,2).join(", ")}`:"산 것을 적어주세요";
 }
+// 추가로 산 것 시트 안내 — 시트를 다시 그리지 않고 입력칸 밑에만 띄워요(적은 값이 지워지지 않게)
+function manErr(m){const el=$("#mName");if(!el)return;let e=$("#mErr");if(!e){e=document.createElement("p");e.id="mErr";e.className="inerr";e.setAttribute("role","alert");el.closest("label").after(e);}e.innerHTML=m;el.focus();el.select();}
 function addManual(){const n=$("#mName").value.trim(),pr=+String($("#mPrice").value).replace(/[^0-9]/g,"")||0,cat=S.mcat;
  if(!n){$("#mName").focus();return toast("산 재료 이름을 적어주세요");}
+ if(!isFoodWord(n)&&!isSeasWord(n)){manErr(`'${esc(n)}'은(는) 식재료로 판단되지 않아요. 재료 이름으로 적어주세요.`);return;}   // 냉장고 직접 입력과 같은 검사
  DB.cats=DB.cats||{};DB.cats[coreName(n)]=cat;
  cart().push({key:"m:"+n+":"+uid(),name:n,unit:"",price:pr,kind:isSeasName(coreName(n))?"seas":"manual",cat,qty:S.mqty,bought:true});S.sheet=null;S.mqty="mid";save();keep();toast(`${n}을(를) 산 것에 넣었어요`);}
 // 얼마나 샀나요? — 많이/보통/적게 → 냉장고 남은 양(넉넉/보통/조금)으로 들어가요
@@ -1762,8 +1777,7 @@ const ingLine=()=>stock().map(x=>`${x.name}(${LV[x.level]}, ${daysAgo(x.addedAt)
 function seasLine(){const m=DB.seasSet?DB.seas:Object.fromEntries(DEFAULT_SEASONINGS.map(n=>[n,"have"]));
  return Object.entries(m).filter(([,v])=>v!=="out").map(([k,v])=>`${k}(${SV[v]})`).join(", ")||"없음";}
 
-async function suggestMenus(){if(S.work)return;S.req=($("#req")?.value??S.req).trim().slice(0,WISH_MAX);
- {const m=safetyHit(S.req);if(m){S.note=m;S.req="";return render();}}
+async function suggestMenus(){if(S.work)return;S.req="";
  if(!stock().length){S.menus=[];return render();}
  S.work="menus";startProg("menus");S.tab="recipe";S.rview="make";S.view="app";render();   // 메뉴 자리에 '찾는 중' 표시
  const sys='당신은 "냉장고 털기" 집밥 도우미입니다. 반드시 JSON만 출력하세요(설명·코드블록 금지). 형식: {"menus":[{"title":"메뉴명","desc":"지금 이 메뉴가 좋은 이유 한 줄(예: 오래된 양파를 다 써요)","uses":["쓰는 냉장고 재료명"],"time_min":20}]}. 규칙: 메뉴 5개, 서로 겹치지 않게. 냉장고 재료·보유 조미료·물만으로 만들 수 있는 것만(전부 쓸 필요는 없음). 메뉴마다 냉장고 재료 중 주재료(채소·고기·생선·달걀·두부·김치 등)를 1가지 이상 꼭 쓰고 uses에 적기 — 조미료나 밥·면만으로 만드는 메뉴는 금지. 만들 수 있는 게 없으면 menus를 빈 배열로. 오래됐거나 넉넉한 재료를 많이 쓰는 메뉴를 앞에. 이번 주 먹고 싶다고 한 메뉴를 만들 수 있으면 맨 앞에. 기피 재료는 절대 사용 금지. 가격 숫자 금지. 의료·치료 조언 금지.';
@@ -1778,6 +1792,30 @@ async function suggestMenus(){if(S.work)return;S.req=($("#req")?.value??S.req).t
  S.menus=list;S.menuSig=fridgeSig();
  if(list.length){setProg("img");await waitPhotos(list.map(m=>m.title));}
  S.work=null;S.tab="recipe";S.rview="make";S.view="app";render();scrollTo(0,0);}
+
+// 먹고 싶은 메뉴 — 메뉴 이름만 받아요. 지금 냉장고 재료·조미료·물로 만들 수 있으면 레시피를 바로 열고,
+//   안 되면 무엇이 더 있어야 하는지 알려줘요. (AI 답은 코드가 재료를 하나씩 다시 확인해요)
+async function askWant(){if(S.work)return;const v=String($("#want")?.value??S.want??"").trim().slice(0,20);S.want=v;S.wantRes=null;setInErr();
+ if(!v){setInErr("want","김치찌개처럼 먹고 싶은 메뉴 이름을 적어주세요.");return keep();}
+ {const m=safetyHit(v);if(m){setInErr("want",m);return keep();}}
+ const pw=parseWish(v);if(pw.bad.length||pw.menus.length!==1){setInErr("want",pw.menus.length>1?"메뉴는 하나만 적어주세요.":`'${esc(v)}'은(는) 메뉴 이름이 아니에요. 김치찌개처럼 메뉴 이름만 적어주세요.`);return keep();}
+ const menu=pw.menus[0];if(avoidHit(menu)){setInErr("want",`'${esc(menu)}'에는 못 먹는 재료(${esc(avoidHit(menu))})가 들어가요.`);return keep();}
+ S.work="want";startProg("recipe");keep();
+ const sys='당신은 집밥 레시피 도우미입니다. 반드시 JSON만 출력하세요(설명·코드블록 금지). 형식: {"can":true,"recipe":{"title":"메뉴명","time_min":20,"level":"쉬움|보통","ingredients":[{"name":"재료명","qty":"분량"}],"steps":["단계"]},"need":["더 필요한 재료명"]}. 규칙: 요청한 메뉴를 [냉장고 재료]·[보유 조미료]·물만으로 제대로 만들 수 있으면 can:true와 그 재료만 쓴 레시피, need는 빈 배열. 그 메뉴의 핵심 재료가 없으면 억지로 바꾸지 말고 can:false, recipe는 null, need에 꼭 필요한데 없는 재료 이름만. 재료 name은 목록에 있는 이름 그대로. 기피 재료 금지. 가격 숫자 금지. 의료·치료 조언 금지.';
+ const usr=`먹고 싶은 메뉴: ${menu}\n[냉장고 재료] ${ingLine()}\n[보유 조미료] ${seasLine()}\n기피/알레르기: ${avoidText()}\n인원: ${P().people}명`;
+ let x;try{x=await askJSON(sys,usr,LLM.model,LLM_FAST);}catch(e){S.work=null;S.wantRes={ok:false,msg:LLM.proxy?`'${esc(menu)}'을(를) 확인하지 못했어요. 잠시 후 다시 시도해 주세요.`:"AI가 연결되지 않아 확인할 수 없어요."};return keep();}
+ const r=x&&x.recipe,ings=(r&&Array.isArray(r.ingredients)?r.ingredients:[]).map(g=>({name:String(g.name||"").trim(),qty:String(g.qty||"").trim()})).filter(g=>g.name);
+ // 코드 확인: 레시피 재료가 전부 냉장고·보유 조미료·물이어야 '만들 수 있음'
+ const miss=ings.filter(g=>!["fridge","seas","water"].includes(classify(g.name).kind)).map(g=>g.name);
+ let need=[...new Set([...miss,...(Array.isArray(x?.need)?x.need.map(String).map(t=>t.trim()).filter(Boolean):[])])].filter(n=>!avoidHit(n)).slice(0,6);
+ const steps=(r&&Array.isArray(r.steps)?r.steps:[]).map(String).filter(Boolean);
+ const okMain=ings.some(g=>{const c=classify(g.name);if(c.kind!=="fridge")return false;const it=matchItem(c.item.name);return !(it&&NOT_MAIN.has(it.group));});
+ if(x&&x.can&&!need.length&&steps.length&&okMain){const chk={title:menu,steps,ingredients:ings};const h=recipeAvoid(chk);
+  if(h){S.work=null;S.wantRes={ok:false,msg:`'${esc(menu)}' 레시피에 못 먹는 재료(${esc(h)})가 들어가서 보여드리지 않았어요.`};return keep();}
+  const rec={title:menu,time_min:r.time_min,level:r.level,uses:ings.map(g=>`${g.name}${g.qty?" "+g.qty:""}`),steps,id:uid(),at:Date.now(),week:NOW_WK,cooked:false};
+  DB.recipes.push(rec);save();S.results=[rec.id,...(S.results||[]).filter(i=>i!==rec.id)].slice(0,5);S.wantRes={ok:true,msg:`지금 냉장고 재료로 '${esc(menu)}'을(를) 만들 수 있어요!`};
+  setProg("img");await waitPhotos([rec.title]);S.work=null;S.openR=rec.id;S.rtab="uses";S.left=null;return render();}
+ S.work=null;S.wantRes={ok:false,msg:need.length?`'${esc(menu)}'을(를) 만들려면 <b>${esc(need.join(", "))}</b>이(가) 더 있어야 해요.`:`지금 냉장고 재료로는 '${esc(menu)}'을(를) 만들기 어려워요.`};keep();}
 
 // 메뉴를 고르면 그 메뉴의 레시피를 만들어 바로 열어요 (한 번 만든 건 다시 열기만)
 async function makeRecipe(i){const m=(S.menus||[])[i];if(!m)return;
@@ -1803,13 +1841,13 @@ function startCook(id){const r=findR(id);
  S.left={rid:id,rows};render();}
 function setLeft(i,lv){S.left.rows[i].lv=lv;render();}
 function finishCook(){const {rid,rows}=S.left;
- rows.forEach(r=>{if(r.k==="p"){const x=DB.pantry.find(p=>p.id===r.id);if(x){x.level=r.lv;if(r.lv==="out"){x.tossed=false;setFate(x.pid,"used");}}}else DB.seas[r.name]=r.lv;});
+ rows.forEach(r=>{if(r.k==="p"){const x=DB.pantry.find(p=>p.id===r.id);if(x){x.level=r.lv;if(r.lv==="out"){x.tossed=false;x.outAt=Date.now();setFate(x.pid,"used");}}}else DB.seas[r.name]=r.lv;});
  const before=homeCount();let r=DB.recipes.find(x=>x.id===rid);
  if(!r||r.cooked){r={...findR(rid),id:uid(),at:Date.now(),week:NOW_WK};DB.recipes.push(r);}   // 저장한 레시피를 또 해먹으면 새 기록으로
  Object.assign(r,{cooked:true,cookedAt:Date.now(),cookedWeek:NOW_WK});
  S.left=null;S.openR=null;save();
- const n=homeCount(),up=stageOf(n)>stageOf(before),st=streakInfo(),goal=st.open&&st.open.done===st.open.goal;
- showReact("mood-happy",up?`Lv.${levelOf(n)} 달성!`:goal?"이번 장보기 목표 달성!":`집밥 ${n}번째!`,up?"연속 기록 방어권 1개를 받았어요":goal?`장보기 ${st.streak}번 연속이에요`:"냉장고에도 반영했어요");}
+ const n=homeCount(),st=streakInfo(),goal=st.open&&st.open.done===st.open.goal;
+ showReact("mood-happy",goal?"이번 장보기 목표 달성!":`집밥 ${n}번째!`,goal?`장보기 ${st.streak}번 연속이에요`:"냉장고에도 반영했어요");}
 
 /* ============================================================
    공통 뼈대
@@ -2157,22 +2195,18 @@ ${rs.length?`<div class="rlist">${rs.map(rcard).join("")}</div>`:empty("이 장�
 ${body}`;}
 
 // 밥풀이 탭(첫 화면) — 밥풀이 · 누적 집밥 · 이번 달 남은 장보기 예산 · [장보러 가기] 버튼 하나
-function streakLine(){const {streak,open}=streakInfo();
- const prog=open?(open.done>=open.goal?"이번 장보기 목표 달성!":`이번 장보기 ${open.done}/${open.goal}끼`):"";
- if(!streak&&!prog)return "";
- return `<div class="streak">${streak?`<b>${emo("🔥")} 장보기 ${streak}번 연속 목표 달성!</b>`:""}${prog?`<span class="${open.done>=open.goal?"ok":""}">${prog}</span>`:""}</div>`;}
-function todayTab(){const n=homeCount(),nx=nextStage(n),mb=monthBudget(),left=leftMonth();
- const msg=n?`집밥 <b>${n}</b>번째,<br>오늘도 잘 먹어요!`:`레시피로 해 먹으면<br>밥풀이가 자라요`;
+function streakLine(){const {streak}=streakInfo();   // 이번 장보기 n/m끼 표시는 없앴어요(연속 기록만)
+ return streak?`<div class="streak"><b>${emo("🔥")} 장보기 ${streak}번 연속 목표 달성!</b></div>`:"";}
+function todayTab(){const n=homeCount(),mb=monthBudget(),left=leftMonth();
+ const msg=n?`집밥 <b>${n}</b>번째,<br>오늘도 맛있는 집밥 먹어요!`:`레시피로 해 먹으면<br>밥풀이가 기뻐해요`;
  return `<section class="today">
 <h2 class="tmsg">${msg}</h2>
 ${moodHero()}
 ${streakLine()}
-<div class="growline"><b>Lv.${levelOf(n)}</b>${nx?` · 다음 레벨까지 ${nx-n}끼`:" · 최고 레벨"} · ${emo("🛡️")} 방어권 ${streakInfo().shields}개</div>
 <div class="tbud ${mb&&left<0?"over":""}">
  <small>${ymLabel(NOW_YM)} 남은 장보기 예산</small><b>${mb?(left<0?`${won(-left)} 초과`:won(left)):"월 예산을 정해 주세요"}</b>
  ${mb?`<span class="tbud-bar"><i style="width:${Math.max(0,Math.min(100,left/mb*100))}%"></i></span>`:""}</div>
-${trip()&&tripStep().k===3?`<button class="btn gobtn" onclick="setHtab('shop')">${ic("basket")} 장보기 체크리스트 열기</button>`   // 장볼 목록을 확정했으면 홈 버튼이 체크리스트로 바뀌어요
- :`<button class="btn gobtn" onclick="setHtab('shop')">${ic("cart")} 장보러 가기</button>`}
+<button class="btn gobtn" onclick="goTab('recipe','make')">${ic("pot")} 집밥 하러 가기</button>
 </section>`;}
 
 // 장보기 — 진행 중인 장보기 이어서 하기 또는 새 장보기 시작 · 지난 장보기
@@ -2306,7 +2340,7 @@ function manualSheet(){const cat=catOf(S.mcat);return `<div class="modal-bg" onc
 <h1 style="margin-top:0">추가로 산 게<br>있나요?</h1><p class="sub">종류, 이름, 얼마나 샀는지, 가격을 적어주세요.</p>
 <div class="addform">
  <label class="fl">품목 종류<select id="mCat" class="field" onchange="setCat(this.value)">${CATS.map(([n,e])=>`<option value="${n}" ${n===S.mcat?"selected":""}>${e} ${n}</option>`).join("")}</select></label>
- <label class="fl">무엇을 샀나요?<input id="mName" class="field" placeholder="${cat[2].length?`예: ${cat[2].slice(0,2).join(", ")}`:"산 것을 적어주세요"}" onkeydown="if(event.key==='Enter')$('#mPrice').focus()"></label>
+ <label class="fl">무엇을 샀나요?<input id="mName" class="field" placeholder="${cat[2].length?`예: ${cat[2].slice(0,2).join(", ")}`:"산 것을 적어주세요"}" oninput="$('#mErr')?.remove()" onkeydown="if(event.key==='Enter')$('#mPrice').focus()"></label>
  <div class="fl">얼마나 샀나요?<div class="seg qseg" style="margin:8px 0 0">${QTY.map(([k,t])=>`<button type="button" data-k="${k}" class="${S.mqty===k?"on":""}" onclick="setQty('${k}')">${t}</button>`).join("")}</div></div>
  <label class="fl">얼마였나요?<span class="won"><input id="mPrice" class="field" inputmode="numeric" placeholder="0" onkeydown="if(event.key==='Enter')addManual()"><em>원</em></span></label>
 </div>
@@ -2336,13 +2370,15 @@ function paySheet(){const y=S.pay,trip1=y.mode==="trip",x=y.id&&(DB.trips||[]).f
 <p class="sub">${trip1?`영수증 금액을 적어 주세요. 체크한 재료 가격을 더해서 미리 넣어 뒀어요.`:"월 장보기 예산에서 이 금액만큼 빠져요."}</p>
 <label class="fl">결제액<span class="won"><input id="payIn" class="field" inputmode="numeric" value="${y.amount!==""?(+y.amount).toLocaleString():""}" placeholder="0"><em>원</em></span></label>
 ${trip1?"":`<label class="fl" style="margin-top:14px">날짜<input id="payDate" type="date" class="field" value="${y.date}" max="${todayKey()}"></label>
-${!x||x.manual?`<label class="fl" style="margin-top:14px">메모 (선택)<input id="payMemo" class="field" maxlength="30" value="${esc(y.memo)}" placeholder="예: 동네 시장"></label>`:""}`}
+${!x||x.manual?`<label class="fl" style="margin-top:14px">메모 (선택)<input id="payMemo" class="field" maxlength="30" value="${esc(y.memo)}" placeholder="예: 동네 시장" oninput="$('#payErr')?.remove()"></label>`:""}`}
 <button class="btn" style="margin-top:20px" onclick="savePay()">${trip1?"결제액 기록하고 장보기 마치기":"저장하기"}</button>
 ${y.mode==="edit"?`<button class="link" style="color:var(--r)" onclick="delPay('${y.id}')">이 결제 기록 지우기</button>`:""}
 <button class="link" onclick="S.sheet=null;render()">닫기</button></div></div>`;}
 function savePay(){const y=S.pay,v=Math.max(0,+String($("#payIn").value).replace(/[^0-9]/g,"")||0);
  if(y.mode==="trip"){commitCart(v);scrollTo(0,0);return;}
  const d=$("#payDate")?.value||todayKey(),at=new Date(d+"T12:00:00").getTime(),memo=($("#payMemo")?.value||"").trim().slice(0,30);
+ if(memo&&banHit(memo)){const el=$("#payMemo");let e=$("#payErr");if(!e){e=document.createElement("p");e.id="payErr";e.className="inerr";e.setAttribute("role","alert");el.closest("label").after(e);}
+  e.textContent="메모에 쓸 수 없는 말이 있어요. 장 본 곳처럼 짧게 적어 주세요.";el.focus();el.select();return;}   // 욕설·정치·성적인 말·연락처는 저장하지 않아요
  if(y.mode==="edit"){const x=(DB.trips||[]).find(t=>t.id===y.id);if(x){x.paid=v;x.paidAt=at;if(x.manual)x.memo=memo;}}
  else{if(!v){toast("금액을 적어주세요");return;}DB.trips=[...(DB.trips||[]),{id:uid(),manual:true,at,paidAt:at,paid:v,memo}];}
  S.sheet=null;save();toast("결제 기록을 저장했어요");keep();}
@@ -2369,8 +2405,8 @@ ${s.length?`<div class="shelves">${s.map(x=>{const d=daysAgo(x.addedAt);return `
 <div class="card addrow"><input id="pIn" class="field" placeholder="원래 있던 재료 추가 (예: 김치)" onkeydown="if(event.key==='Enter')addPantry()"><span class="chip on" onclick="addPantry()">추가</span></div>${inErr("pantry")}
 
 <div class="row" style="margin:26px 0 6px"><h3>양념·조미료</h3>${own.length?`<span class="m" style="cursor:pointer;text-decoration:underline" onclick="openSeas('pantry')">고치기</span>`:""}</div>
-${own.length?(sl.length?`<div class="list seasl">${sl.map(n=>`<div class="li" style="cursor:default"><div class="tx"><b>${esc(n)}</b></div>
-<button class="used" onclick="seasOut('${q(n)}')">다 씀</button></div>`).join("")}</div>`
+${own.length?(sl.length?`<div class="seasturn"><button class="seasnav l" onclick="moveSeas(-1)" aria-label="왼쪽 조미료">${ic("back")}</button><button class="seasnav r" onclick="moveSeas(1)" aria-label="오른쪽 조미료">${ic("right")}</button><div class="seasl" onscroll="turnSeas(this)">${sl.map(n=>`<div class="sj"><span class="sjar">${ingIc(n)}</span><b>${esc(n)}</b>
+<button class="used" onclick="seasOut('${q(n)}')">다 씀</button></div>`).join("")}</div></div>`
  :`<p class="m" style="margin:4px 2px">남은 조미료가 없어요. 다 쓴 조미료는 장보기에 떠요.</p>`)
  :`<div class="card"><p class="m" style="margin:0 0 10px">조미료를 아직 안 골랐어요. 레시피 받을 때 물어볼게요.</p><span class="chip on" onclick="openSeas('pantry')">지금 고르기</span></div>`}
 
@@ -2400,8 +2436,9 @@ ${S.work==="menus"?`<div class="card workcard"><span class="spin dark"></span>${
  :S.note?"":pr.length&&!S.menus?`<p class="m" style="margin:0">아래 '다른 메뉴 보기'로 지금 냉장고 재료로 만들 수 있는 메뉴를 더 찾아볼 수 있어요.</p>`:`<div class="note">지금 재료로 만들 수 있는 메뉴를 찾지 못했어요. 아래 버튼으로 다시 찾아보세요.</div>`}
 ${DB.seasSet?`<p class="m" style="margin-top:14px">조미료: ${esc(seasTxt||"없음")} · <span style="text-decoration:underline;cursor:pointer" onclick="openSeas('recipe')">고치기</span></p>`
  :`<div class="note warn" style="margin-top:12px">${emo("🧂")} 지금은 기본 조미료(${DEFAULT_SEASONINGS.join("·")})가 있다고 생각하고 골랐어요. 있는 조미료를 알려주시면 더 딱 맞게 골라드릴게요. <span style="text-decoration:underline;cursor:pointer;font-weight:700" onclick="openSeas('recipe')">알려주기</span></div>`}
-<p class="sec">원하는 스타일이 있다면 (선택)</p>
-<textarea id="req" class="field" rows="2" maxlength="200" oninput="S.req=this.value" placeholder="예) 15분 안에, 국물 요리로">${esc(S.req)}</textarea>`}
+<p class="sec">먹고 싶은 메뉴가 있나요?</p>
+<div class="addrow wantrow"><input id="want" class="field" maxlength="20" value="${esc(S.want||"")}" oninput="S.want=this.value" placeholder="예: 김치찌개" onkeydown="if(event.key==='Enter')askWant()"><button class="chip on" ${S.work?"disabled":""} onclick="askWant()">${S.work==="want"?`<span class="spin dark"></span>`:"만들 수 있나 보기"}</button></div>${inErr("want")}
+${S.wantRes?`<div class="note ${S.wantRes.ok?"":"warn"}">${S.wantRes.msg}</div>`:""}`}
 ${res.length?`<p class="sec">최근에 본 레시피</p>${res.map(rcard).join("")}`:""}`;
  }else body=DB.scraps.length?DB.scraps.map(rcard).join(""):`<div class="card"><p class="m" style="margin:0">아직 저장한 레시피가 없어요. 레시피에서 하트를 눌러 보세요.</p></div>`;
  page(`<h2 class="lead">${v==="make"?"지금 냉장고 재료로<br>이런 걸 만들 수 있어요":"저장한 레시피"}</h2><div class="seg"><button class="${v==="make"?"on":""}" onclick="S.rview='make';needMenus()?suggestMenus():render()">만들 수 있는 메뉴</button><button class="${v==="scrap"?"on":""}" onclick="S.rview='scrap';render()">저장한 레시피 ${DB.scraps.length||""}</button></div>
@@ -2444,30 +2481,30 @@ ${seasPicker()}
    ⑥-1 기록 — 캘린더 · 버린 재료
    ============================================================ */
 // 기록 — [캘린더] 한 달 동안 해 먹은 날(하루 여러 끼일수록 진하게) / [버린 재료] 남김없이 다 쓴 비율과 다 쓴·버린 재료 목록
-const HSUBS=[["cal","캘린더"],["toss","버린 재료"]];
+const HSUBS=[["cal","캘린더"],["toss","식재료 기록"]];
 function cookedOn(d){return cookedList().filter(r=>r.cookedAt&&ymd(new Date(r.cookedAt))===d).map(r=>r.title).concat(mealList().filter(m=>m.type==="home"&&m.date===d).map(m=>m.menu||"집밥"));}
 function calView(){const ym=S.cym||NOW_YM,y=+ym.slice(0,4),mo=+ym.slice(5)-1,first=new Date(y,mo,1).getDay(),dim=new Date(y,mo+1,0).getDate(),today=todayKey(),cur=ym===NOW_YM;
- const n=homeCount(),nx=nextStage(n),days=[...Array(dim)].map((_,i)=>{const d=`${ym}-${String(i+1).padStart(2,"0")}`;return{d,i:i+1,c:cookedOn(d)};});
+ const days=[...Array(dim)].map((_,i)=>{const d=`${ym}-${String(i+1).padStart(2,"0")}`;return{d,i:i+1,c:cookedOn(d)};});
  const total=days.reduce((a,x)=>a+x.c.length,0),lv=c=>c>=3?3:c,sel=S.cday&&S.cday.startsWith(ym)?days.find(x=>x.d===S.cday):null;
  return `<div class="mnav"><button onclick="S.cym=ymAdd('${ym}',-1);S.cday=null;keep()" aria-label="이전 달">${ic("back")}</button><b>${ymLabel(ym)}</b><button onclick="S.cym=ymAdd('${ym}',1);S.cday=null;keep()" ${cur?"disabled":""} aria-label="다음 달">${ic("right")}</button></div>
 <p class="calsum">${total?`${ymLabel(ym)}에 집밥 <b>${total}끼</b> 해 먹었어요`:`${ymLabel(ym)}엔 아직 해 먹은 집밥이 없어요`}</p>
 <div class="cal"><div class="calh">${"일월화수목금토".split("").map(w=>`<span>${w}</span>`).join("")}</div>
 <div class="calg">${"<i></i>".repeat(first)}${days.map(x=>`<button class="cd l${lv(x.c.length)} ${x.d===today?"today":""} ${x.d>today?"fut":""} ${sel&&sel.d===x.d?"sel":""}" ${x.d>today?"disabled":""} onclick="S.cday='${x.d}';keep()" aria-label="${x.i}일 집밥 ${x.c.length}끼">${x.d===today&&!x.c.length?"✦":x.i}</button>`).join("")}</div>
 <div class="callg"><span><i class="l0"></i>안 먹음</span><span><i class="l1"></i>1끼</span><span><i class="l2"></i>2끼</span><span><i class="l3"></i>3끼 이상</span></div></div>
-${sel?`<p class="calday"><b>${+sel.d.slice(5,7)}월 ${sel.i}일</b> ${sel.c.length?esc(sel.c.join(", ")):"해 먹은 집밥이 없어요"}</p>`
- :`<p class="calday m">누적 집밥 <b>${n}끼</b>${nx?` · 다음 성장까지 ${nx-n}끼`:" · 최고 단계예요"}</p>`}`;}
-// 남김없이 다 쓰기 — 냉장고에 들어온 재료(장 본 것 + 직접 넣은 것)를 그대로 셉니다. 아래 목록·냉장고 탭 숫자와 늘 같아요
-function pantryStats(){const n=DB.pantry.length;if(!n)return null;const tossed=DB.pantry.filter(x=>x.level==="out"&&x.tossed).length,used=DB.pantry.filter(x=>x.level==="out"&&!x.tossed).length;
- return{n,used,tossed,left:n-used-tossed,pct:Math.round(used/n*100)};}
-function tossView(){const us=pantryStats(),o=outs(),tz=o.filter(x=>x.tossed),us2=o.filter(x=>!x.tossed);
- const row=x=>`<div class="li" style="cursor:default"><div class="em" style="opacity:.5">${ingIc(x.name)}</div><div class="tx"><b style="color:var(--m)">${esc(x.name)}</b></div>
+${sel?`<p class="calday"><b>${+sel.d.slice(5,7)}월 ${sel.i}일</b> ${sel.c.length?esc(sel.c.join(", ")):"해 먹은 집밥이 없어요"}</p>`:""}`;}
+// 식재료 기록 — 달마다, 그 달에 냉장고에 들어온 재료(장 본 것 + 직접 넣은 것)를 세요. 같은 재료라도 들어온 번마다 따로예요
+function tossView(){const ym=S.tym||NOW_YM,cur=ym===NOW_YM,all=DB.pantry.filter(x=>ymOf(x.addedAt||Date.now())===ym),n=all.length;
+ const o=all.filter(x=>x.level==="out").sort((a,b)=>(b.outAt||b.addedAt||0)-(a.outAt||a.addedAt||0)),tz=o.filter(x=>x.tossed),us2=o.filter(x=>!x.tossed);
+ const used=us2.length,tossed=tz.length,left=n-used-tossed,pct=n?Math.round(used/n*100):0;
+ const day=t=>{const d=new Date(t);return `${d.getMonth()+1}월 ${d.getDate()}일`;};
+ const row=x=>`<div class="li" style="cursor:default"><div class="em" style="opacity:.5">${ingIc(x.name)}</div><div class="tx"><b style="color:var(--m)">${esc(x.name)}</b>${x.outAt?`<span class="m">${day(x.outAt)}</span>`:""}</div>
 <button class="used" onclick="restore('${x.id}')">아직 있어요</button><button class="x" onclick="delPantry('${x.id}')" aria-label="목록에서 지우기">${ic("x")}</button></div>`;
- return `${us?`<section class="usecard" style="margin-top:6px">
- <div class="row"><h3>남김없이 다 쓰기</h3><span class="m">냉장고에 넣은 재료 ${us.n}개</span></div>
- <div class="usebig"><b>${us.pct}%</b><span>다 썼어요</span></div>
- <div class="meter3"><i class="u" style="width:${us.used/us.n*100}%"></i><i class="t" style="width:${us.tossed/us.n*100}%"></i></div>
- <div class="uselegend"><span><i class="u"></i>다 씀 ${us.used}</span><span><i class="l"></i>남음 ${us.left}</span><span><i class="t"></i>버림 ${us.tossed}</span></div></section>`
- :`<p class="m" style="margin:14px 2px">장을 보고 재료를 다 쓰거나 버리면 여기서 비율을 보여드려요</p>`}
+ return `<div class="mnav"><button onclick="S.tym=ymAdd('${ym}',-1);keep()" aria-label="이전 달">${ic("back")}</button><b>${ymLabel(ym)}</b><button onclick="S.tym=ymAdd('${ym}',1);keep()" ${cur?"disabled":""} aria-label="다음 달">${ic("right")}</button></div>
+${n?`<section class="usecard" style="margin-top:6px">
+ <div class="usebig"><b>${pct}%</b><span>다 썼어요</span></div>
+ <div class="meter3"><i class="u" style="width:${used/n*100}%"></i><i class="t" style="width:${tossed/n*100}%"></i></div>
+ <div class="uselegend"><span><i class="u"></i>다 씀 ${used}</span><span><i class="l"></i>남음 ${left}</span><span><i class="t"></i>버림 ${tossed}</span></div></section>`
+ :`<p class="m" style="margin:14px 2px">${ymLabel(ym)}에 냉장고에 넣은 재료가 없어요</p>`}
 ${tz.length?`<p class="sec">버린 재료</p><div class="list">${tz.map(row).join("")}</div>`:""}
 ${us2.length?`<p class="sec">다 쓴 재료</p><div class="list">${us2.map(row).join("")}</div>`:""}`;}
 function historyPage(){const k=HSUBS.some(x=>x[0]===S.hsub)?S.hsub:"cal";
@@ -2497,8 +2534,8 @@ ${f.id?`<button class="link" style="color:var(--r)" onclick="delMeal('${f.id}')"
 function saveMeal(){mfSync();const f=S.mf;if(!/^\d{4}-\d{2}-\d{2}$/.test(f.date)||f.date>todayKey())return toast("날짜를 확인해 주세요");
  const before=homeCount(),rec={id:f.id||uid(),date:f.date,slot:f.slot,type:f.type,menu:String(f.menu||"").trim().slice(0,30),cost:+f.cost||0,inst:f.type==="home"&&!!f.inst,at:Date.now()};
  DB.meals=mealList().filter(m=>m.id!==rec.id&&!(m.date===rec.date&&m.slot===rec.slot));DB.meals.push(rec);
- const n=homeCount(),up=stageOf(n)>stageOf(before);S.sheet=null;S.mf=null;save();
- if(rec.type==="home"&&n>before)showReact(up?"grow":"home",up?`집밥 ${n}끼 달성!`:`집밥 ${n}번째!`,up?"밥풀이가 한 뼘 자랐어요":"맛있게 먹었어요");
+ const n=homeCount();S.sheet=null;S.mf=null;save();
+ if(rec.type==="home"&&n>before)showReact("home",`집밥 ${n}번째!`,"맛있게 먹었어요");
  else if(rec.type!=="home")showReact("empty",rec.type==="deliv"?"오늘은 배달이었군요":"오늘은 외식이었군요","다음 끼니는 집밥 어때요?");
  else{toast("기록을 고쳤어요");render();}
 }
@@ -2514,7 +2551,7 @@ const reactLayer=()=>S.react?`<div class="react" role="status" onclick="S.react=
 function settingsPage(){const p=DB.profile,seas=Object.entries(DB.seas).filter(([,v])=>v!=="out").map(([k])=>k);
  const rows=[["area","pin","동네·가게",`${p.district} ${p.dong||""} · ${placeOf(p)}`],["people","users","함께 먹는 사람",`${p.people}명`],
   ["budget","wallet","한 달 장보기 예산",won(p.monthly)],["avoid","ban","못 먹는 재료",[...(p.allergies||[]),p.avoid].filter(Boolean).join(", ")||"없어요"]];
- page(`<h1 style="margin-top:18px">내 정보</h1>${accountCard()}<p class="sub">처음에 입력한 정보예요. 바꿀 항목을 눌러주세요.</p>
+ page(`<h1 style="margin-top:18px">내 정보</h1>${accountCard()}
 <div class="list">${rows.map(([k,i,t,v])=>`<div class="setrow" onclick="${k==="seas"?"openSeas('settings')":k==="deliv"?"S.sheet='save';render()":`openEdit('${k}')`}"><div class="ibox">${ICONS[i]?ic(i):emo(i)}</div><div class="tx"><b>${t}</b><span>${esc(v)}</span></div>${ic("right")}</div>`).join("")}</div>
 <p class="sec" style="margin-top:26px">개인정보</p>
 <div class="list"><div class="setrow" onclick="setAllergyConsent(${!allergyOK()})"><div class="ibox">${ic("ban")}</div><div class="tx"><b>[선택] 알레르기 정보 수집·이용</b><span>${allergyOK()?"동의함 · 누르면 철회하고 알레르기 정보를 지워요":"동의 안 함 · 누르면 동의해요"}</span></div>${ic("right")}</div>
@@ -2568,7 +2605,7 @@ function updBar(){let b=$(".sbar");const H=document.documentElement.scrollHeight
  const bottom=$(".tabbar")?72:12,track=V-12-bottom,th=Math.max(36,track*V/H);
  b.style.height=track+"px";b.style.bottom="";b.firstChild.style.height=th+"px";b.firstChild.style.top=(scrollY/(H-V))*(track-th)+"px";}
 addEventListener("scroll",updBar,{passive:true});addEventListener("resize",updBar);
-function render(){draw();fillPhotos();
+function render(){draw();fillPhotos();turnSeas(document.querySelector(".seasl"));
  // 바텀시트는 처음 열릴 때만 아래에서 올라와요 (열린 채로 화면을 다시 그릴 땐 움직이지 않게)
  const sk=S.sheet||(S.openR?"r"+S.openR:null);
  if(sk&&S._shownSheet===sk)document.querySelectorAll(".modal").forEach(m=>m.style.animation="none");
