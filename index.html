@@ -590,6 +590,12 @@ input[type=range]:focus-visible{outline:2px solid var(--pri);outline-offset:6px}
 @keyframes burst{0%{opacity:0;transform:translate(0,0) scale(.4)}20%{opacity:1}100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(1.1)}}
 /* '해먹었어요' 축하 화면에서는 조금 크게 */
 .react .stage{transform:scale(1.15);margin-bottom:24px;pointer-events:none}
+/* 레시피 그림 그리는 중 */
+.th.ld,.rth.ld{position:relative;overflow:hidden;background:#efe9dd}
+.th.ld::after,.rth.ld::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 20%,rgba(255,255,255,.65) 50%,transparent 80%);animation:shimmer 1.3s linear infinite}
+.th.ld .spin,.rth.ld .spin{position:relative;z-index:1;margin:0;width:22px;height:22px;border-width:3px;border-color:#dcd4c4;border-top-color:var(--pri)}
+.rth.ld{width:min(100%,340px);height:auto;aspect-ratio:1/1;border-radius:20px}
+@keyframes shimmer{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
 .streak{display:flex;flex-direction:column;align-items:center;gap:2px;margin:4px 0 0}.streak b{font-size:16px;font-weight:800;color:var(--r)}
 .streak span{font-size:13.5px;font-weight:700;color:var(--prd);background:var(--prs);border-radius:99px;padding:3px 10px}.streak span.ok{background:#f7ecd2;color:var(--mud)}
 .growline{font-size:13.5px;color:var(--m);margin:2px 0 0}.growline b{color:var(--t)}
@@ -631,7 +637,7 @@ input[type=range]:focus-visible{outline:2px solid var(--pri);outline-offset:6px}
 .bap.pop{width:min(70vw,280px);height:auto;animation:hop .9s ease-out}
 @keyframes hop{0%{transform:scale(.6) translateY(30px);opacity:0}45%{transform:scale(1.06) translateY(-18px);opacity:1}70%{transform:scale(.98) translateY(0)}85%{transform:translateY(-6px)}100%{transform:none}}
 @keyframes fadein{from{opacity:0}to{opacity:1}}
-@media (prefers-reduced-motion:reduce){.bap.pop,.react,.stage *{animation:none!important}.stage .floatup,.stage .fall,.stage .land{display:none}.stage .think img:first-child,.stage .twinkle,.stage .soul{opacity:1}}
+@media (prefers-reduced-motion:reduce){.bap.pop,.react,.stage *{animation:none!important}.th.ld::after,.rth.ld::after{animation:none}.stage .floatup,.stage .fall,.stage .land{display:none}.stage .think img:first-child,.stage .twinkle,.stage .soul{opacity:1}}
 /* ===== 앱 화면(온보딩 뒤): 네모 상자 대신 배경 위에 바로 — 구분은 얇은 선과 여백으로 ===== */
 .hstick{position:sticky;top:0;z-index:8;background:var(--bg)}
 .hstick .fhead{position:static;padding-top:2px}
@@ -1175,11 +1181,12 @@ const SCENE={
   fx:[["stone",8,182,66,""],["droop",210,40,30,"sag"],["ghost",128,0,54,"soul"]]}};
 const THINK=["food-rice","food-veg","food-jorim","food-egg"];
 const bapL=(n,x,y,w,c="")=>`<img class="L ${c}" src="img/bap/${n}.webp" style="left:${x}px;top:${y}px;width:${w}px" alt="" draggable="false">`;
-function moodHero(m=moodOf(),cls=""){const sc=SCENE[m]||SCENE.calm,[pn,px,py,pw]=sc.pose;
+// 레벨이 오를수록 밥풀이가 조금씩 커져요
+function moodHero(m=moodOf(),cls=""){const sc=SCENE[m]||SCENE.calm,[pn,px,py,pw]=sc.pose,lv=Math.min(1,.88+.03*(levelOf(homeCount())-1));
  return `<div class="stage mood-${m} ${cls}" data-m="${m}" onclick="pokeBap(this)" role="img" aria-label="밥풀이 — 누르면 반응해요">
 <i class="shadow" style="left:${px+pw*.18}px;width:${pw*.64}px"></i>
 ${sc.fx.filter(f=>!/floatup|twinkle|fall|soul|drip/.test(f[4])).map(f=>bapL(...f)).join("")}
-<div class="chr" style="left:${px}px;top:${py}px;width:${pw}px"><img class="body" src="img/bap/${pn}.webp" alt="" draggable="false"></div>
+<div class="chr" style="left:${px}px;top:${py}px;width:${pw}px;scale:${lv}"><img class="body" src="img/bap/${pn}.webp" alt="" draggable="false"></div>
 ${sc.fx.filter(f=>/floatup|twinkle|fall|soul|drip/.test(f[4])).map(f=>bapL(...f)).join("")}
 ${sc.think?`<div class="think">${THINK.map((n,i)=>`<img src="img/bap/${n}.webp" style="--k:${i}" alt="" draggable="false">`).join("")}</div>`:""}
 <b class="say" style="left:${px+pw/2}px;top:${Math.max(0,py-30)}px">${sc.say}</b></div>`;}
@@ -1296,9 +1303,10 @@ const photoOn=()=>location.protocol.startsWith("http");
 const photoImg=u=>`<img src="${esc(u)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="photoFail(this)">`;
 // 사진을 못 불러오면 이모지로 돌아가고, 다시 그려도 그 사진은 안 써요
 function photoFail(img){const el=img.parentNode,t=el.dataset.photo;PHOTO[t]=null;savePhotos();el.classList.remove("ph");el.innerHTML=recipeIc({title:t});}
-function thumb(r,cls="th",style=""){const t=String(r.title||""),u=PHOTO[t];
- return `<div class="${cls}${u?" ph":""}" data-photo="${esc(t)}"${style?` style="${style}"`:""}>${u?photoImg(u):recipeIc(r)}</div>`;}
-function setPhoto(el,u){if(el.classList.contains("ph"))return;el.classList.add("ph");el.innerHTML=photoImg(u);}
+// 그림을 받는 중(아직 안 물어봤거나 0)이면 로딩 표시, 못 받았으면(null) 이모지
+function thumb(r,cls="th",style=""){const t=String(r.title||""),u=PHOTO[t],wait=!u&&photoOn()&&t&&PHOTO[t]!==null;
+ return `<div class="${cls}${u?" ph":wait?" ld":""}" data-photo="${esc(t)}"${style?` style="${style}"`:""}>${u?photoImg(u):wait?`<span class="spin dark" aria-label="그림 그리는 중"></span>`:recipeIc(r)}</div>`;}
+function setPhoto(el,u){if(el.classList.contains("ph"))return;el.classList.remove("ld");el.classList.add("ph");el.innerHTML=photoImg(u);}
 function fillPhotos(){if(!photoOn())return;
  document.querySelectorAll("[data-photo]").forEach(el=>{const t=el.dataset.photo;if(!t)return;
   if(PHOTO[t])return setPhoto(el,PHOTO[t]);if(t in PHOTO)return;PHOTO[t]=0;imgQueue.push(t);});
@@ -1307,8 +1315,9 @@ function pumpImages(){while(imgBusy<2&&imgQueue.length){const t=imgQueue.shift()
  (async()=>{const headers={"content-type":"application/json"};
   if(A.user){try{headers.authorization="Bearer "+await A.user.getIdToken();}catch(e){}}
   const r=await fetch("/api/image",{method:"POST",headers,body:JSON.stringify({name:t})});return r.ok?r.json():{url:null};})()
- .then(j=>{PHOTO[t]=j&&j.url||null;if(PHOTO[t]){savePhotos();document.querySelectorAll("[data-photo]").forEach(e=>{if(e.dataset.photo===t)setPhoto(e,PHOTO[t]);});}})
+ .then(j=>{PHOTO[t]=j&&j.url||null;if(PHOTO[t])savePhotos();})
  .catch(()=>{PHOTO[t]=null;})
+ .then(()=>document.querySelectorAll("[data-photo]").forEach(e=>{if(e.dataset.photo!==t)return;if(PHOTO[t])setPhoto(e,PHOTO[t]);else{e.classList.remove("ld");e.innerHTML=recipeIc({title:t});}}))
  .finally(()=>{imgBusy--;pumpImages();});}}
 // 그림이 다 올 때까지 기다려요 (로딩 화면용). 이미지 파일까지 받아 두고, 너무 오래 걸리면 25초에서 끊고 이모지로 보여줘요
 function waitPhotos(titles,ms=25000){titles=[...new Set(titles.map(String).filter(Boolean))];
