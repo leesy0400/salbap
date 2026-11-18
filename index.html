@@ -523,27 +523,71 @@ input[type=range]:focus-visible{outline:2px solid var(--pri);outline-offset:6px}
 .bap.landbap{width:min(52vw,210px);height:auto;margin:0 auto 6px;animation:bob 3.2s ease-in-out infinite;position:relative;z-index:1}
 .hero-img{width:min(64vw,250px);height:auto;animation:bob 3.2s ease-in-out infinite}
 @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-.hero{position:relative}.hero .hero-img{width:auto;height:210px;max-width:96%;object-fit:contain}
-.mood-happy .hero-img{animation:hap 1.6s ease-in-out infinite}
-.mood-calm .hero-img{animation:sway 3.4s ease-in-out infinite;transform-origin:50% 100%}
-.mood-hungry .hero-img{animation:shiver 2.6s ease-in-out infinite}
-.mood-sad .hero-img{animation:droop 4s ease-in-out infinite}
-.mood-faint .hero-img{animation:breathe 3.6s ease-in-out infinite;transform-origin:50% 100%}
-@keyframes hap{0%,100%{transform:translateY(0) scale(1)}30%{transform:translateY(-12px) scale(1.02,.98)}55%{transform:translateY(0) scale(1.03,.96)}70%{transform:translateY(-4px)}}
-@keyframes sway{0%,100%{transform:rotate(-1.5deg)}50%{transform:rotate(1.5deg)}}
-@keyframes shiver{0%,60%,100%{transform:translateX(0)}64%,72%,80%{transform:translateX(-2px)}68%,76%,84%{transform:translateX(2px)}}
-@keyframes droop{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
-@keyframes breathe{0%,100%{transform:scaleY(1)}50%{transform:scaleY(.97)}}
-.fx{position:absolute;font-style:normal;pointer-events:none;opacity:0;line-height:1;font-weight:800}
-.fx-heart,.fx-spark{bottom:55%;left:calc(18% + var(--i)*15%);animation:rise 2.8s ease-out infinite;animation-delay:calc(var(--i)*.55s)}
-.fx-heart{color:#e2574c;font-size:22px}.fx-spark{color:#f2c94c;font-size:18px}
-.fx-note{top:12%;left:calc(46% + var(--i)*10%);color:#6b5a48;font-size:22px;animation:rise 3.2s ease-out infinite;animation-delay:calc(var(--i)*1.6s)}
-.fx-drop{top:18%;left:calc(58% + var(--i)*7%);width:9px;height:9px;background:#8cc3e8;border-radius:0 50% 50% 50%;transform:rotate(45deg);animation:drip 1.8s ease-in infinite;animation-delay:calc(var(--i)*.6s)}
-.fx-rain{top:8%;left:calc(22% + var(--i)*11%);width:2px;height:12px;border-radius:2px;background:#8fa8bf;animation:rain 1.1s linear infinite;animation-delay:calc(var(--i)*.18s)}
-.fx-sigh{top:22%;left:calc(64% + var(--i)*8%);color:#9a9183;font-size:24px;animation:rise 3s ease-out infinite;animation-delay:calc(var(--i)*1.5s)}
-@keyframes rise{0%{opacity:0;transform:translateY(10px) scale(.7)}25%{opacity:1}100%{opacity:0;transform:translateY(-46px) scale(1.1)}}
-@keyframes drip{0%{opacity:0;transform:translateY(0) rotate(45deg)}20%{opacity:1}100%{opacity:0;transform:translateY(34px) rotate(45deg)}}
-@keyframes rain{0%{opacity:0;transform:translateY(0)}20%{opacity:.9}100%{opacity:0;transform:translateY(70px)}}
+.bapsvg{display:block;width:min(72vw,270px);height:auto;overflow:visible}
+.bapsvg *{transform-box:view-box}
+.bp-char{transform-origin:120px 214px}
+.bp-body{transform-origin:120px 210px;animation:bpBreath 3.2s ease-in-out infinite}
+.bp-arm{transform:rotate(var(--a))}
+.bp-eyes{transform-origin:120px 128px;animation:bpBlink 4.6s infinite}
+.bp-leaf{animation:bpLeaf 2.4s ease-in-out infinite}
+.bp-shadow{transform-origin:120px 214px}
+@keyframes bpBreath{0%,100%{transform:scale(1,1)}50%{transform:scale(1.015,.985)}}
+@keyframes bpBlink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
+@keyframes bpLeaf{0%,100%{transform:rotate(0)}50%{transform:rotate(-12deg)}}
+/* 신남: 통통 뛰고 팔 흔들기 */
+.bp-happy .bp-char{animation:bpHop 1.3s ease-in-out infinite}
+.bp-happy .bp-shadow{animation:bpShadow 1.3s ease-in-out infinite}
+.bp-happy .bp-arm-l{animation:bpWaveL .65s ease-in-out infinite alternate}
+.bp-happy .bp-arm-r,.bp-happy .bp-prop{animation:bpWaveR .65s ease-in-out infinite alternate}
+.bp-happy .bp-prop{transform-origin:168px 152px}
+@keyframes bpHop{0%,100%{transform:translateY(0) scale(1.04,.96)}40%{transform:translateY(-16px) scale(.98,1.03)}60%{transform:translateY(-16px)}}
+@keyframes bpShadow{0%,100%{transform:scale(1)}50%{transform:scale(.8);opacity:.06}}
+@keyframes bpWaveL{from{transform:rotate(var(--a))}to{transform:rotate(calc(var(--a) - 25deg))}}
+@keyframes bpWaveR{from{transform:rotate(var(--a,0deg))}to{transform:rotate(calc(var(--a,0deg) + 12deg))}}
+/* 평온: 좌우로 살랑 */
+.bp-calm .bp-char{animation:bpSway 3.4s ease-in-out infinite}
+.bp-calm .bp-mouth{transform-origin:120px 144px;animation:bpPuck 1.7s ease-in-out infinite}
+@keyframes bpSway{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
+@keyframes bpPuck{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+/* 시무룩: 덜덜 */
+.bp-hungry .bp-char{animation:bpShiver 2.4s ease-in-out infinite}
+@keyframes bpShiver{0%,55%,100%{transform:translateX(0)}60%,70%,80%{transform:translateX(-2.5px)}65%,75%,85%{transform:translateX(2.5px)}}
+/* 빼짐: 축 처짐 */
+.bp-sad .bp-char{animation:bpDroop 4s ease-in-out infinite}
+@keyframes bpDroop{0%,100%{transform:translateY(0) scale(1,1)}50%{transform:translateY(3px) scale(1.03,.95)}}
+/* 기력 없음: 옆으로 쓰러져 숨만 */
+.bp-faint .bp-char{transform:scale(1.14,.74);animation:none}
+.bp-faint .bp-body{animation:bpBreath 4s ease-in-out infinite}
+/* 주변 효과 */
+.bp-fx>*{transform-origin:center}
+.fx-heart,.fx-spark{opacity:0;animation:bpRise 2.6s ease-out infinite;animation-delay:calc(var(--i)*.45s)}
+.fx-spark{animation-name:bpTwinkle;animation-duration:1.6s}
+.fx-note{opacity:0;animation:bpRise 3s ease-out infinite;animation-delay:calc(var(--i)*1.5s)}
+.fx-sweat{animation:bpSlide 1.8s ease-in infinite}
+.fx-growl{opacity:0;animation:bpFlick 1.2s steps(2) infinite;animation-delay:calc(var(--i)*.6s)}
+.fx-cloud{animation:bpCloud 4s ease-in-out infinite}
+.fx-rain{opacity:0;animation:bpRain 1s linear infinite;animation-delay:calc(var(--i)*.22s)}
+.fx-ghost{animation:bpGhost 3.4s ease-in-out infinite}
+.fx-tear{animation:bpSlide 2.2s ease-in infinite}
+@keyframes bpRise{0%{opacity:0;translate:0 10px}20%{opacity:1}100%{opacity:0;translate:0 -40px}}
+@keyframes bpTwinkle{0%,100%{opacity:0;scale:.4}50%{opacity:1;scale:1}}
+@keyframes bpSlide{0%{opacity:0;translate:0 0}20%{opacity:1}100%{opacity:0;translate:0 22px}}
+@keyframes bpFlick{0%,100%{opacity:0}50%{opacity:1}}
+@keyframes bpCloud{0%,100%{translate:-6px 0}50%{translate:6px 0}}
+@keyframes bpRain{0%{opacity:0;translate:0 0}15%{opacity:1}100%{opacity:0;translate:0 60px}}
+@keyframes bpGhost{0%,100%{translate:0 0;opacity:.9}50%{translate:6px -10px;opacity:.6}}
+@media (prefers-reduced-motion:reduce){.bapsvg *{animation:none!important}}
+.hero{position:relative;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.hero .bapsvg{width:auto;height:250px;transform-origin:50% 92%}
+.hero.poke .bp-char{animation:bpPoke .6s ease-out!important}
+@keyframes bpPoke{0%{transform:scale(1,1)}25%{transform:scale(1.12,.86)}55%{transform:translateY(-14px) scale(.95,1.06)}100%{transform:none}}
+.bapsvg.pop{width:min(64vw,250px);animation:hop .9s ease-out}
+/* 레시피 그림 그리는 중 */
+.th.ld,.rth.ld{position:relative;overflow:hidden;background:#efe9dd}
+.th.ld::after,.rth.ld::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 20%,rgba(255,255,255,.65) 50%,transparent 80%);animation:shimmer 1.3s linear infinite}
+.th.ld .spin,.rth.ld .spin{position:relative;z-index:1;margin:0;width:22px;height:22px;border-width:3px;border-color:#dcd4c4;border-top-color:var(--pri)}
+.rth.ld{width:min(100%,340px);height:auto;aspect-ratio:1/1;border-radius:20px}
+@keyframes shimmer{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
 .streak{display:flex;flex-direction:column;align-items:center;gap:2px;margin:4px 0 0}.streak b{font-size:16px;font-weight:800;color:var(--r)}
 .streak span{font-size:13.5px;font-weight:700;color:var(--prd);background:var(--prs);border-radius:99px;padding:3px 10px}.streak span.ok{background:#f7ecd2;color:var(--mud)}
 .growline{font-size:13.5px;color:var(--m);margin:2px 0 0}.growline b{color:var(--t)}
@@ -585,7 +629,7 @@ input[type=range]:focus-visible{outline:2px solid var(--pri);outline-offset:6px}
 .bap.pop{width:min(70vw,280px);height:auto;animation:hop .9s ease-out}
 @keyframes hop{0%{transform:scale(.6) translateY(30px);opacity:0}45%{transform:scale(1.06) translateY(-18px);opacity:1}70%{transform:scale(.98) translateY(0)}85%{transform:translateY(-6px)}100%{transform:none}}
 @keyframes fadein{from{opacity:0}to{opacity:1}}
-@media (prefers-reduced-motion:reduce){.hero-img,.bap.pop,.react,.hero .hero-img{animation:none}.fx{display:none}}
+@media (prefers-reduced-motion:reduce){.hero-img,.bap.pop,.react{animation:none}.th.ld::after,.rth.ld::after{animation:none}}
 /* ===== 앱 화면(온보딩 뒤): 네모 상자 대신 배경 위에 바로 — 구분은 얇은 선과 여백으로 ===== */
 .hstick{position:sticky;top:0;z-index:8;background:var(--bg)}
 .hstick .fhead{position:static;padding-top:2px}
@@ -1112,11 +1156,65 @@ const dayStart=t=>{const d=new Date(t);d.setHours(0,0,0,0);return d.getTime();};
 function moodOf(){const ts=homeTimes();if(!ts.length)return "calm";
  const d=Math.round((dayStart(Date.now())-dayStart(ts[ts.length-1]))/DAY);
  return d<1?"happy":d<=2?"calm":d<=4?"hungry":d<7?"sad":"faint";}
-// 기분마다 밥풀이 옆에서 움직이는 것들 (하트·반짝이 / 음표 / 땀방울 / 빗방울 / 한숨)
-const MOOD_FX={happy:["heart","spark","heart","spark","heart"],calm:["note","note"],hungry:["drop","drop","drop"],sad:["rain","rain","rain","rain","rain","rain"],faint:["sigh","sigh"]};
-const FX_TXT={heart:"♥",spark:"✦",note:"♪",sigh:"~"};
-function moodHero(m=moodOf()){const fx=MOOD_FX[m]||[];
- return `<div class="hero mood-${m}"><img class="bap hero-img" src="img/bapuri-mood-${m}.webp" alt="밥풀이" draggable="false">${fx.map((k,i)=>`<i class="fx fx-${k}" style="--i:${i};--n:${fx.length}" aria-hidden="true">${FX_TXT[k]||""}</i>`).join("")}</div>`;}
+// 밥풀이 캐릭터 — 그림 한 장이 아니라 부위(몸·얼굴·팔·다리·스카프·소품·효과)를 따로 그려서 따로 움직여요
+const BAP_EYE={
+ dot:`<g class="bp-eyes"><ellipse cx="101" cy="128" rx="5" ry="6.2" fill="#3f2c22"/><ellipse cx="139" cy="128" rx="5" ry="6.2" fill="#3f2c22"/><circle cx="102.8" cy="125.6" r="1.7" fill="#fff"/><circle cx="140.8" cy="125.6" r="1.7" fill="#fff"/></g>`,
+ joy:`<g class="bp-eyes" fill="none" stroke="#3f2c22" stroke-width="3.6" stroke-linecap="round"><path d="M93 130q8-9 16 0"/><path d="M131 130q8-9 16 0"/></g>`,
+ sad:`<g class="bp-eyes" fill="none" stroke="#3f2c22" stroke-width="3.4" stroke-linecap="round"><path d="M94 129q7 4 14 0"/><path d="M132 129q7 4 14 0"/></g>`,
+ cry:`<g class="bp-eyes" fill="none" stroke="#3f2c22" stroke-width="3.4" stroke-linecap="round"><path d="M93 126h15M97 126v7M104 126v7"/><path d="M132 126h15M136 126v7M143 126v7"/></g>`};
+const BAP_MOUTH={
+ joy:`<path class="bp-mouth" d="M109 141q11 15 22 0z" fill="#8a3b2e"/><path d="M113.5 146.5q6.5 5 13 0q-6.5-3-13 0z" fill="#e98b86"/>`,
+ kiss:`<path class="bp-mouth" d="M117 139q6-3 6 2.2q0 2.8-4 3.1q5 .3 5 3.2q0 4.6-7 1.8" fill="none" stroke="#3f2c22" stroke-width="2.8" stroke-linecap="round"/>`,
+ wavy:`<path class="bp-mouth" d="M110 145q3.3-4 6.6 0t6.6 0t6.6 0" fill="none" stroke="#3f2c22" stroke-width="2.8" stroke-linecap="round"/>`,
+ flat:`<path class="bp-mouth" d="M113 145q7-3 14 0" fill="none" stroke="#3f2c22" stroke-width="2.8" stroke-linecap="round"/>`,
+ o:`<ellipse class="bp-mouth" cx="120" cy="145" rx="4.2" ry="5" fill="#8a3b2e"/>`};
+const BAP_MOOD={
+ happy:{eye:"joy",mouth:"joy",brow:"",armL:125,armR:-100,prop:"bowl",fx:["heart","heart","spark","heart","spark","spark"]},
+ calm:{eye:"dot",mouth:"kiss",brow:"",armL:-48,armR:48,prop:"",fx:["note","note"]},
+ hungry:{eye:"dot",mouth:"wavy",brow:"worry",armL:-38,armR:38,prop:"empty",fx:["sweat","growl","growl"]},
+ sad:{eye:"sad",mouth:"flat",brow:"worry",armL:8,armR:-8,prop:"",fx:["cloud","rain","rain","rain","rain"]},
+ faint:{eye:"cry",mouth:"o",brow:"",armL:75,armR:-75,prop:"fallen",fx:["ghost","tear"]}};
+function bapSVG(mood="calm",cls=""){const M=BAP_MOOD[mood]||BAP_MOOD.calm,g=mood==="sad";
+ const body=g?["#e2ddd6","#c9c2b8","#a8a096"]:["#fdf4e4","#f3e1c3","#dfc59e"];
+ const arm=(side,deg)=>{const x=side<0?72:168;return `<g class="bp-arm bp-arm-${side<0?"l":"r"}" style="--a:${deg}deg;transform-origin:${x}px 152px"><rect x="${x-9.5}" y="146" width="19" height="34" rx="9.5" fill="url(#bpa${mood})"/></g>`;};
+ const brow=M.brow==="worry"?`<g class="bp-brow" fill="none" stroke="#3f2c22" stroke-width="2.6" stroke-linecap="round"><path d="M92 116l13-5"/><path d="M148 116l-13-5"/></g>`:"";
+ const prop=M.prop==="bowl"?`<g class="bp-prop"><g transform="translate(14 2)"><path d="M170 124h40q-2 20-20 20t-20-20z" fill="#e8e6e1" stroke="#c9c5bd" stroke-width="1.5"/><path d="M174 124q4-12 16-11q12-1 16 11z" fill="#fffdf8"/><circle cx="183" cy="118" r="2" fill="#fff"/><circle cx="194" cy="116" r="2" fill="#fff"/></g></g>`
+  :M.prop==="empty"?`<g class="bp-prop"><path d="M98 168h44q-2 22-22 22t-22-22z" fill="#e8e6e1" stroke="#c9c5bd" stroke-width="1.5"/><ellipse cx="120" cy="168" rx="22" ry="4" fill="#d4d0c8"/></g>`
+  :M.prop==="fallen"?`<g class="bp-prop"><path d="M190 204q0-20 20-20l4 26q-14 4-24-6z" fill="#e8e6e1" stroke="#c9c5bd" stroke-width="1.5"/></g>`:"";
+ const FX={heart:(i)=>`<path class="fx-heart" style="--i:${i}" transform="translate(${[46,170,70,196,122,30][i]} ${[70,58,40,96,26,110][i]}) scale(${[1.1,.9,.8,.7,.6,.6][i]})" d="M0 6C0-2 12-2 12 6C12-2 24-2 24 6C24 14 12 20 12 24C12 20 0 14 0 6Z" fill="#e2574c"/>`,
+  spark:(i)=>`<path class="fx-spark" style="--i:${i}" transform="translate(${[40,196,150,20,210,90][i]} ${[100,40,30,60,80,20][i]})" d="M0-9L2.6-2.6L9 0L2.6 2.6L0 9L-2.6 2.6L-9 0L-2.6-2.6Z" fill="#f2c94c"/>`,
+  note:(i)=>`<text class="fx-note" style="--i:${i}" x="${[168,190][i]}" y="${[58,40][i]}" font-size="24" fill="#6b5a48" font-weight="700">♪</text>`,
+  sweat:()=>`<path class="fx-sweat" d="M164 92q6 9 0 13q-6-4 0-13z" fill="#8cc3e8"/>`,
+  growl:(i)=>`<path class="fx-growl" style="--i:${i}" d="${i?"M190 170l6-5l-2 7l7-4":"M44 168l-6-5l2 7l-7-4"}" fill="none" stroke="#8a7a62" stroke-width="2.2" stroke-linecap="round"/>`,
+  cloud:()=>`<g class="fx-cloud"><ellipse cx="120" cy="30" rx="34" ry="13" fill="#8f949b"/><circle cx="104" cy="24" r="12" fill="#9aa0a7"/><circle cx="126" cy="18" r="15" fill="#a2a7ad"/><circle cx="144" cy="27" r="10" fill="#959aa1"/></g>`,
+  rain:(i)=>`<path class="fx-rain" style="--i:${i}" d="M${94+i*13} 44q4.5 8 0 12q-4.5-4 0-12z" fill="#8cc3e8"/>`,
+  ghost:()=>`<g class="fx-ghost"><path d="M30 60q0-22 18-22t18 22v22l-6-5l-6 5l-6-5l-6 5l-6-5l-6 5z" fill="#fbfbfb" stroke="#dedede" stroke-width="1.2"/><circle cx="42" cy="58" r="2.6" fill="#4a4a4a"/><circle cx="54" cy="58" r="2.6" fill="#4a4a4a"/><ellipse cx="48" cy="66" rx="2.4" ry="3" fill="#4a4a4a"/></g>`,
+  tear:()=>`<path class="fx-tear" d="M146 150q4 7 0 10q-4-3 0-10z" fill="#8cc3e8"/>`};
+ const cnt={};const fx=M.fx.map(k=>{cnt[k]=(cnt[k]||0);return FX[k](cnt[k]++);}).join("");
+ return `<svg class="bapsvg bp-${mood} ${cls}" viewBox="14 10 212 214" role="img" aria-label="밥풀이">
+<defs><radialGradient id="bpb${mood}" cx="38%" cy="34%" r="75%"><stop offset="0" stop-color="${body[0]}"/><stop offset=".6" stop-color="${body[1]}"/><stop offset="1" stop-color="${body[2]}"/></radialGradient>
+<linearGradient id="bpa${mood}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${body[0]}"/><stop offset="1" stop-color="${body[2]}"/></linearGradient>
+<filter id="bpsoft${mood}" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="2.4"/></filter></defs>
+<ellipse class="bp-shadow" cx="120" cy="214" rx="52" ry="7" fill="#3f2c22" opacity=".10"/>
+<g class="bp-char">
+ <g class="bp-legs"><ellipse class="bp-leg-l" cx="101" cy="204" rx="14" ry="11" fill="url(#bpb${mood})"/><ellipse class="bp-leg-r" cx="139" cy="204" rx="14" ry="11" fill="url(#bpb${mood})"/></g>
+ <g class="bp-body">
+  <path d="M120 206C78 206 60 184 62 152C64 118 84 84 108 60C118 49 130 40 146 34C142 50 150 70 162 94C176 120 182 152 177 174C172 196 156 206 120 206Z" fill="url(#bpb${mood})"/>
+  <path d="M84 96q14-30 40-48" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="6" stroke-linecap="round" filter="url(#bpsoft${mood})"/>
+  <g class="bp-blush" filter="url(#bpsoft${mood})"><ellipse cx="86" cy="141" rx="11" ry="7" fill="#f2a29a" opacity="${g?.25:.6}"/><ellipse cx="154" cy="141" rx="11" ry="7" fill="#f2a29a" opacity="${g?.25:.6}"/></g>
+  <g class="bp-face">${brow}${BAP_EYE[M.eye]}${BAP_MOUTH[M.mouth]}</g>
+  <g class="bp-scarf"><path d="M64 158q56 18 112 0l1 12q-57 18-114 0z" fill="#8c9b5b"/><path d="M98 166q22 6 44 0q-4 26-22 28q-18-2-22-28z" fill="#93a262"/><ellipse cx="120" cy="178" rx="6" ry="9" fill="#efe6cf" transform="rotate(-20 120 178)"/>
+   <circle cx="176" cy="162" r="6" fill="#7d8c4e"/>
+   <g class="bp-leaf" style="transform-origin:178px 160px"><path d="M178 160q14-18 30-14q-8 18-30 14z" fill="#7d9450"/><path d="M178 162q20-2 28 12q-18 6-28-12z" fill="#8aa35b"/></g></g>
+ </g>
+ ${arm(-1,M.armL)}${arm(1,M.armR)}
+ ${prop}
+</g>
+<g class="bp-fx">${fx}</g></svg>`;}
+// 레벨이 오를수록 밥풀이가 조금씩 커져요. 누르면 통 튀어요(쓰다듬기)
+function moodHero(m=moodOf()){const lv=Math.min(1,.88+.03*(levelOf(homeCount())-1));
+ return `<div class="hero" onclick="pokeBap(this)" aria-label="밥풀이 쓰다듬기">${bapSVG(m).replace('class="bapsvg','style="scale:'+lv+'" class="bapsvg')}</div>`;}
+function pokeBap(el){el.classList.remove("poke");void el.offsetWidth;el.classList.add("poke");setTimeout(()=>el.classList.remove("poke"),650);}
 
 // 장보기 목표 — 장보기마다 그 끼니 수만큼, 다음 장보기를 시작하기 전까지 해 먹으면 달성.
 //   못 채우고 다음 장보기를 시작하면 연속 기록이 깨져요. 그때 방어권이 있으면 하나 써서 기록을 지켜요.
@@ -1222,9 +1320,10 @@ const photoOn=()=>location.protocol.startsWith("http");
 const photoImg=u=>`<img src="${esc(u)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="photoFail(this)">`;
 // 사진을 못 불러오면 이모지로 돌아가고, 다시 그려도 그 사진은 안 써요
 function photoFail(img){const el=img.parentNode,t=el.dataset.photo;PHOTO[t]=null;savePhotos();el.classList.remove("ph");el.innerHTML=recipeIc({title:t});}
-function thumb(r,cls="th",style=""){const t=String(r.title||""),u=PHOTO[t];
- return `<div class="${cls}${u?" ph":""}" data-photo="${esc(t)}"${style?` style="${style}"`:""}>${u?photoImg(u):recipeIc(r)}</div>`;}
-function setPhoto(el,u){if(el.classList.contains("ph"))return;el.classList.add("ph");el.innerHTML=photoImg(u);}
+// 그림을 받는 중(아직 안 물어봤거나 0)이면 로딩 표시, 못 받았으면(null) 이모지
+function thumb(r,cls="th",style=""){const t=String(r.title||""),u=PHOTO[t],wait=!u&&photoOn()&&t&&PHOTO[t]!==null;
+ return `<div class="${cls}${u?" ph":wait?" ld":""}" data-photo="${esc(t)}"${style?` style="${style}"`:""}>${u?photoImg(u):wait?`<span class="spin dark" aria-label="그림 그리는 중"></span>`:recipeIc(r)}</div>`;}
+function setPhoto(el,u){if(el.classList.contains("ph"))return;el.classList.remove("ld");el.classList.add("ph");el.innerHTML=photoImg(u);}
 function fillPhotos(){if(!photoOn())return;
  document.querySelectorAll("[data-photo]").forEach(el=>{const t=el.dataset.photo;if(!t)return;
   if(PHOTO[t])return setPhoto(el,PHOTO[t]);if(t in PHOTO)return;PHOTO[t]=0;imgQueue.push(t);});
@@ -1233,8 +1332,9 @@ function pumpImages(){while(imgBusy<2&&imgQueue.length){const t=imgQueue.shift()
  (async()=>{const headers={"content-type":"application/json"};
   if(A.user){try{headers.authorization="Bearer "+await A.user.getIdToken();}catch(e){}}
   const r=await fetch("/api/image",{method:"POST",headers,body:JSON.stringify({name:t})});return r.ok?r.json():{url:null};})()
- .then(j=>{PHOTO[t]=j&&j.url||null;if(PHOTO[t]){savePhotos();document.querySelectorAll("[data-photo]").forEach(e=>{if(e.dataset.photo===t)setPhoto(e,PHOTO[t]);});}})
+ .then(j=>{PHOTO[t]=j&&j.url||null;if(PHOTO[t])savePhotos();})
  .catch(()=>{PHOTO[t]=null;})
+ .then(()=>document.querySelectorAll("[data-photo]").forEach(e=>{if(e.dataset.photo!==t)return;if(PHOTO[t])setPhoto(e,PHOTO[t]);else{e.classList.remove("ld");e.innerHTML=recipeIc({title:t});}}))
  .finally(()=>{imgBusy--;pumpImages();});}}
 // 그림이 다 올 때까지 기다려요 (로딩 화면용). 이미지 파일까지 받아 두고, 너무 오래 걸리면 25초에서 끊고 이모지로 보여줘요
 function waitPhotos(titles,ms=25000){titles=[...new Set(titles.map(String).filter(Boolean))];
@@ -1724,7 +1824,7 @@ function finishCook(){const {rid,rows}=S.left;
  Object.assign(r,{cooked:true,cookedAt:Date.now(),cookedWeek:NOW_WK});
  S.left=null;S.openR=null;save();
  const n=homeCount(),up=stageOf(n)>stageOf(before),st=streakInfo(),goal=st.open&&st.open.done===st.open.goal;
- showReact("mood-happy",up?`Lv.${levelOf(n)} 달성!`:goal?"이번 장보기 목표 달성!":`집밥 ${n}번째!`,up?"연속 기록 방어권 1개를 받았어요":goal?`장보기 ${st.streak}번 연속이에요`:"냉장고에도 반영했어요");}
+ showReact("svg:happy",up?`Lv.${levelOf(n)} 달성!`:goal?"이번 장보기 목표 달성!":`집밥 ${n}번째!`,up?"연속 기록 방어권 1개를 받았어요":goal?`장보기 ${st.streak}번 연속이에요`:"냉장고에도 반영했어요");}
 
 /* ============================================================
    공통 뼈대
@@ -2421,7 +2521,7 @@ function delMeal(id){DB.meals=mealList().filter(m=>m.id!==id);S.sheet=null;S.mf=
 // 밥풀이 반응 — 저장 직후 크게 보여주고 2초 뒤 사라져요 (눌러도 닫혀요)
 let reactT=null;
 function showReact(img,title,sub){S.react={img,title,sub};render();clearTimeout(reactT);reactT=setTimeout(()=>{S.react=null;render();},2200);}
-const reactLayer=()=>S.react?`<div class="react" role="status" onclick="S.react=null;render()">${bapImg(S.react.img,"pop")}<b>${esc(S.react.title)}</b><small>${esc(S.react.sub)}</small></div>`:"";
+const reactLayer=()=>S.react?`<div class="react" role="status" onclick="S.react=null;render()">${S.react.img.startsWith("svg:")?bapSVG(S.react.img.slice(4),"pop"):bapImg(S.react.img,"pop")}<b>${esc(S.react.title)}</b><small>${esc(S.react.sub)}</small></div>`:"";
 
 /* ============================================================
    ⑥-2 초기 정보 수정 — 항목별로 따로 고쳐요
