@@ -942,6 +942,10 @@ function save(){try{localStorage.setItem(KEY,JSON.stringify(DB))}catch(e){}pushR
 const stats=()=>{const t=DB.stats||(DB.stats={});t.days=t.days||[];t.combo=t.combo||{};return t;};
 function markVisit(){if(!DB.onboarded)return;const t=stats(),d=ymd(new Date());if(t.days.includes(d))return;t.days=[...t.days,d].slice(-180);save();}
 // 조합이 규칙에 걸린 이유를 종류별로 세요 (가장 자주 틀리는 유형을 보려고)
+// 조합을 끝내 못 만들었을 때 — 내부 검사 문구 대신 사용자가 할 수 있는 일을 알려줘요 (자세한 이유는 통계에만 남겨요)
+function failNote(why,wishM){const w=why.map(x=>comboWhy(x.replace(/^[^:]+: /,"")));
+ if(wishM.length&&w.every(x=>x==="먹고 싶은 메뉴 빠짐"||x==="못 먹는 재료"))return `'${esc(wishM.join(", "))}'을(를) 넣은 조합을 만들지 못했어요. 메뉴를 바꾸거나 다시 받아 주세요.`;
+ return "이번엔 조건에 맞는 조합이 안 나왔어요. 버튼을 한 번 더 눌러 주세요.";}
 function comboWhy(p){return /끼니 합/.test(p)?"끼니 수":/먹고 싶은 메뉴/.test(p)?"먹고 싶은 메뉴 빠짐":/고른 냉장고 재료/.test(p)?"고른 재료 빠짐":/못 먹는 재료/.test(p)?"못 먹는 재료":/구할 수 없는|가격 데이터/.test(p)?"목록 밖 재료":/한 끼에만|조금밖에/.test(p)?"적은 재료 여러 번":/두 번/.test(p)?"같은 메뉴 중복":/비어/.test(p)?"재료 없음":"기타";}
 function countCombo(round,kind,why){const c=stats().combo;c[round]=(c[round]||0)+1;if(kind==="pass")c[round==="first"?"pass1":"pass2"]=(c[round==="first"?"pass1":"pass2"]||0)+1;
  if(kind==="err")c.err=(c.err||0)+1;if(why){c.why=c.why||{};c.why[why]=(c.why[why]||0)+1;}}
@@ -1445,8 +1449,9 @@ function allocate(recs){const used={},buys={},fr={},ok=[],bad=[];
    if(c.kind==="water")continue;
    if(c.kind==="none"){fail=`'${g.name}': ${c.why}`;break;}
    const once=(c.kind==="fridge"&&c.item.level==="low")?"f"+c.item.id:(c.kind==="seas"&&c.lv==="low")?"s"+c.key:null;
-   if(once&&used[once]){c=buyOf(g.name);if(!c){fail=`'${g.name}'이(가) 조금밖에 없어 한 끼에만 쓸 수 있어요`;break;}}
-   plan.push({...c,g,once:c.kind==="buy"?null:once});}
+   // 조금 남은 것을 또 쓰면 → 사는 것으로 돌려요. 조미료는 가게 가격이 없어도 한 숟갈 정도라 그냥 써요(조합을 버리지 않아요)
+   if(once&&used[once]){const b=buyOf(g.name);if(b)c=b;else if(c.kind==="seas")c={...c,lv:"have"};else{fail=`'${g.name}'이(가) 조금밖에 없어 한 끼에만 쓸 수 있어요`;break;}}
+   plan.push({...c,g,once:c.kind==="buy"||(once&&used[once])?null:once});}
   if(fail){bad.push({r,reason:fail});continue;}
   plan.forEach(c=>{if(c.once)used[c.once]=1;
    if(c.kind==="fridge")(fr[c.item.id]||(fr[c.item.id]={item:c.item,recipes:[]})).recipes.push(r.title);
@@ -1542,20 +1547,22 @@ async function makeCombos(){const el=$("#wish");S.wish=(el?el.value:S.wish||"").
  const sysBase=`당신은 "냉장고 털기" 집밥 식단 도우미입니다. ${N}끼 메뉴 조합 1개를 만듭니다. 반드시 JSON만, 아래 형식 그대로 짧게 출력하세요(설명·코드블록 금지): ${COMBO_ONE}. t=메뉴명, w=먹고 싶은 메뉴면 1 아니면 0, m=이 메뉴로 먹는 끼니 수, i=[재료명, 분량, 단위] 목록(그 메뉴 m끼 전체 분량). 규칙: 사용자가 먹고 싶다고 한 메뉴는 wishes에 그대로 적고 w:1로 꼭 넣기. 나머지 메뉴는 w:0, 서로 겹치지 않게. m은 기본 1. 김치찌개·카레·곰탕처럼 한 끼 분량만 만들기 어려운 메뉴는 m:2로 해도 되지만 꼭 그럴 필요는 없음(먹고 싶은 메뉴라고 무조건 2끼로 하지 말기). m 합은 정확히 ${N}. 먹고 싶은 메뉴가 없으면 wishes는 빈 배열. 사고 남는 재료와 냉장고 재료는 다른 메뉴에서 이어 써서 남김없이 쓰기. 모든 메뉴에는 조미료·물·쌀·면 말고 주재료(채소·고기·생선·달걀·두부·김치 등)가 꼭 1가지 이상 들어가야 함 — 냉장고에 없으면 [살 수 있는 재료]에서 사는 것으로 넣기. 조미료만으로 만드는 메뉴, 재료를 하나도 안 사려고 억지로 짠 메뉴는 금지. 예산이 모자라도 메뉴는 정상적으로 짜고, 예산 판단은 앱이 함.${pk.length?` 사용자가 이번에 꼭 쓰겠다고 고른 냉장고 재료(${pk.join(", ")})는 모두 어떤 메뉴에든 넣고, 여러 개면 그 재료들을 함께 쓰는 메뉴를 menus 맨 앞에 두기.`:""} ${ingRules()}`;
  const usr=`먹고 싶은 메뉴: ${wishM.join(", ")||"없음"}\n끼니 수: ${N}끼\n이번 달 남은 장보기 예산: ${room>0?room+"원(참고만, 넘어도 메뉴는 정상적으로)":"이미 다 씀(그래도 필요한 재료는 사야 함)"}\n[냉장고 재료] ${fridgeLines()}${pk.length?`\n[이번에 꼭 쓸 냉장고 재료] ${pk.join(", ")}`:""}\n[가진 조미료] ${seasLines()}\n[살 수 있는 재료(${placeOf(P())} 실제 가격)] ${catLinesShort()}\n인원: ${P().people}명\n기피/알레르기: ${avoidText()}`;
  const keyOf=c=>c.recipes.map(r=>r.title).sort().join("+");
- const ask=(k,prev)=>askJSON(sysBase+` 이번 조합의 방향: '${COMBO_DIRS[k][0]}' — ${COMBO_DIRS[k][1]}.`,usr+(prev.length?`\n이미 나온 조합(이것과 다르게): ${prev.join(" / ")}`:""),LLM.planModel,LLM_PLAN)
+ const lastWhy={};   // 안마다 직전에 버린 이유 — 다시 요청할 때 AI에게 알려줘서 같은 실수를 안 하게 해요
+ const ask=(k,prev)=>askJSON(sysBase+` 이번 조합의 방향: '${COMBO_DIRS[k][0]}' — ${COMBO_DIRS[k][1]}.`,usr+(prev.length?`\n이미 나온 조합(이것과 다르게): ${prev.join(" / ")}`:"")+(lastWhy[k]?`\n직전에 짠 조합은 이 문제로 쓸 수 없었어요: ${lastWhy[k]}. 이 문제가 안 생기게 재료나 메뉴를 바꿔서 새로 짜기.`:""),LLM.planModel,LLM_PLAN)
   .then(t=>({k,label:COMBO_DIRS[k][0],...parseCombo(t),wishes:wishM}));   // 먹고 싶은 메뉴는 코드가 읽은 이름으로 검사해요
  // 받은 안 검사 — 규칙에 안 맞으면 그 자리만 다시 요청해요 (시간 초과·연결 오류는 다시 요청하지 않아요)
  const take=(settled,ks,round)=>{const retry=[];settled.forEach((r,j)=>{const k=ks[j];
   if(r.status!=="fulfilled"){const m=r.reason?.message||"오류";errs.push(m);countCombo(round,"err",/형식|JSON|Unexpected/.test(m)?"형식 오류":"연결·시간 초과");return;}
   const c=r.value,p=comboProblem(c.recipes,c.wishes,N);
   if(!p&&valid.some(v=>keyOf(v)===keyOf(c))){countCombo(round,"rule","다른 안과 같음");retry.push(k);return;}
-  if(p){const w=`${c.label}: ${p}`;if(!why.includes(w))why.push(w);countCombo(round,"rule",comboWhy(p));retry.push(k);}else{countCombo(round,"pass");valid.push(c);}});return retry;};
+  if(p){const w=`${c.label}: ${p}`;if(!why.includes(w))why.push(w);lastWhy[k]=p;countCombo(round,"rule",comboWhy(p));retry.push(k);}else{countCombo(round,"pass");valid.push(c);}});return retry;};
  let retry=take(await Promise.allSettled([0,1,2].map(k=>ask(k,[]))),[0,1,2],"first");
- if(retry.length){const prev=valid.map(keyOf);take(await Promise.allSettled(retry.map(k=>ask(k,prev))),retry,"retry");}
+ if(retry.length){const prev=valid.map(keyOf);retry=take(await Promise.allSettled(retry.map(k=>ask(k,prev))),retry,"retry");}
+ if(!valid.length&&retry.length&&why.length)take(await Promise.allSettled(retry.map(k=>ask(k,[]))),retry,"retry");   // 하나도 못 건졌으면 이유를 알려주고 한 번 더
  save();S.work=null;S.tab="pick";S.view="app";
  if(!valid.length){
   S.planNote=errs.length&&!why.length?(LLM.proxy?`메뉴 조합을 만들지 못했어요. 잠시 후 다시 시도해 주세요.${errTail(errs[0])}`:"AI가 연결되지 않아 메뉴 조합을 만들 수 없어요. LLM 설정에 API 키를 넣거나 Claude 미리보기에서 열어주세요.")
-   :`조건에 맞는 메뉴 조합을 만들지 못했어요. ${esc(why.slice(0,2).join(" / "))}`;
+   :failNote(why,wishM);
   return render();}
  valid.sort((a,b)=>a.k-b.k);
  DB.draft={wk:NOW_WK,trip:trip().id,at:Date.now(),wish,meals:N,wishes:valid[0].wishes,combos:valid.map(({k,wishes,...c})=>c),dropped:3-valid.length};
