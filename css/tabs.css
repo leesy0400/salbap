@@ -1,0 +1,893 @@
+/* ============================================================
+   홈 위쪽 탭(장보기·예산·기록)과 체크리스트·캘린더 세부 모양
+   ============================================================ */
+
+/* 장보기 탭 */
+.tripcard {
+  margin: 14px 0 0 !important;
+}
+.tripcard.empty {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.tripcard.empty .m {
+  margin: 6px 0 0;
+  line-height: 1.55;
+}
+.ttl2 {
+  font-size: 17px;
+  font-weight: 800;
+}
+.tripmeta {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 10px 0 0;
+  color: var(--prd);
+}
+.tsteps {
+  display: flex;
+  gap: 6px;
+  list-style: none;
+  padding: 0;
+  margin: 14px 0 0;
+}
+.tsteps li {
+  flex: 1;
+  height: 5px;
+  border-radius: 5px;
+  background: #ece6da;
+}
+.tsteps li.done {
+  background: var(--pri);
+}
+.tsteps li.now {
+  background: var(--sagel);
+}
+.bap.bmini {
+  width: 96px;
+  max-width: none;
+  height: auto;
+  flex: none;
+}
+.tripcard.empty .bap.bmini {
+  width: 120px;
+  margin-bottom: 6px;
+}
+/* 예산 탭 */
+.mnav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  margin: 14px 0 4px;
+}
+.mnav b {
+  font-size: 17px;
+  min-width: 90px;
+  text-align: center;
+}
+.mnav button {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1.5px solid var(--l);
+  background: var(--card);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  color: var(--t);
+}
+.mnav button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.bud3 {
+  text-align: center;
+  padding: 8px 2px 4px;
+}
+.bud3 small {
+  display: block;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--m);
+}
+.bud3 .bbig {
+  display: block;
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--prd);
+  line-height: 1.25;
+  margin-top: 2px;
+}
+.bud3.over .bbig {
+  color: var(--r);
+}
+.bud3 .bbig.none {
+  color: var(--m);
+  font-size: 24px;
+}
+.bud3 .meter {
+  margin-top: 12px;
+}
+.bsub {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+  font-size: 13.5px;
+  color: var(--m);
+}
+.bsave {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 18px;
+  padding: 14px 2px 0;
+  border-top: 1px solid var(--l);
+}
+.bsave .bap.bsv {
+  width: 60px;
+  height: auto;
+  flex: none;
+}
+.bsave small {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--prd);
+  opacity: 0.8;
+}
+.bsave b {
+  display: block;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--prd);
+  letter-spacing: -0.02em;
+}
+.bsave.flat small,
+.bsave.flat b {
+  color: var(--t);
+}
+/* 기록 탭 */
+.mealtop {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.mealtop > div {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.mealtop b {
+  font-size: 17px;
+}
+.mealtop .m {
+  font-size: 13px;
+}
+.checkrow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+  margin-top: 14px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.checkrow input {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--pri);
+}
+.checkrow .m {
+  flex-basis: 100%;
+  font-weight: 500;
+  font-size: 12.5px;
+  padding-left: 28px;
+}
+/* 이번 장보기 끼니 수 */
+.tmrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  margin: 10px 0 0;
+}
+.tmb {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1.5px solid var(--l);
+  background: var(--card);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--t);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+.tmb:disabled {
+  opacity: 0.35;
+}
+.tmv {
+  font-size: 18px;
+  font-weight: 700;
+}
+.tmv b {
+  font-size: 44px;
+  font-weight: 800;
+  color: var(--prd);
+  margin-right: 2px;
+}
+/* 밥풀이 반응 — 저장 직후 크게 */
+.react {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: rgba(247, 243, 235, 0.94);
+  animation: fadein 0.2s ease;
+  cursor: pointer;
+  text-align: center;
+  padding: 24px;
+}
+.react b {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.react small {
+  font-size: 15px;
+  color: var(--m);
+}
+.bap.pop {
+  width: min(70vw, 280px);
+  height: auto;
+  animation: hop 0.9s ease-out;
+}
+@keyframes hop {
+  0% {
+    transform: scale(0.6) translateY(30px);
+    opacity: 0;
+  }
+  45% {
+    transform: scale(1.06) translateY(-18px);
+    opacity: 1;
+  }
+  70% {
+    transform: scale(0.98) translateY(0);
+  }
+  85% {
+    transform: translateY(-6px);
+  }
+  100% {
+    transform: none;
+  }
+}
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bap.pop,
+  .react,
+  .stage * {
+    animation: none !important;
+  }
+  .th.ld::after,
+  .rth.ld::after {
+    animation: none;
+  }
+  .stage .floatup,
+  .stage .fall {
+    display: none;
+  }
+  .stage .think img:first-child,
+  .stage .twinkle,
+  .stage .soul {
+    opacity: 1;
+  }
+}
+/* ===== 앱 화면(온보딩 뒤): 네모 상자 대신 배경 위에 바로 — 구분은 얇은 선과 여백으로 ===== */
+.hstick {
+  position: sticky;
+  top: 0;
+  z-index: 8;
+  background: var(--bg);
+}
+.hstick .fhead {
+  position: static;
+  padding-top: 2px;
+}
+.htop {
+  padding: 16px 22px 2px;
+}
+.htabs {
+  gap: 18px;
+}
+.htabs button {
+  font-size: 19px;
+}
+.hstick .back {
+  background: none;
+  box-shadow: none;
+  width: 34px;
+  margin-left: -8px;
+}
+main.tab .card,
+main.tab section.card,
+main.tab .bcard {
+  background: none;
+  box-shadow: none;
+  border: 0;
+  border-radius: 0;
+  padding: 6px 2px 22px;
+  margin: 0 0 6px;
+  border-bottom: 1px solid var(--l);
+}
+main.tab .list {
+  background: none;
+  box-shadow: none;
+  border-radius: 0;
+  padding: 0;
+  margin: 2px 0;
+}
+main.tab .li .em,
+main.tab .rc .th {
+  border-radius: 50%;
+}
+main.tab .rc {
+  background: none;
+  box-shadow: none;
+  border-radius: 0;
+  margin: 0;
+  padding: 12px 2px;
+  border-bottom: 1px solid #efe8db;
+}
+main.tab .rc .th {
+  width: 60px;
+  height: 60px;
+}
+.combo {
+  border: 0;
+  border-bottom: 1px solid var(--l);
+  border-radius: 0;
+  background: none;
+  padding: 15px 6px;
+  margin-top: 2px;
+}
+.combo.on {
+  background: var(--prs);
+  border-radius: 18px;
+  border-bottom-color: transparent;
+  box-shadow: none;
+}
+.cck {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid #d3cabb;
+  display: grid;
+  place-items: center;
+  background: var(--card);
+}
+.combo.on .cck {
+  background: var(--pri);
+  border-color: var(--pri);
+  color: #fff;
+}
+.cck .i {
+  font-size: 15px;
+}
+.fridge {
+  background: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+}
+.fridge .fr-top {
+  height: auto;
+  padding: 0 2px 6px;
+}
+.fridge .fr-handle {
+  display: none;
+}
+.fridge .fr-in {
+  background: none;
+  box-shadow: none;
+  padding: 0;
+  border-radius: 0;
+}
+.shelves .li {
+  border-bottom: 1px solid #efe8db;
+}
+.shelves .li + .li::before {
+  display: none;
+}
+.shelves .em {
+  box-shadow: none;
+  background: var(--food);
+}
+main.tab .setrow .ibox {
+  border-radius: 50%;
+}
+/* 밥풀이 탭 남은 예산 — 상자 없이 가운데 숫자로 */
+.tbud {
+  width: 100%;
+  margin: 18px 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.tbud small {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--m);
+}
+.tbud b {
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--prd);
+  line-height: 1.25;
+}
+.tbud-bar {
+  display: block;
+  width: 62%;
+  height: 6px;
+  margin-top: 10px;
+  border-radius: 99px;
+  background: #e4dccd;
+  overflow: hidden;
+}
+.tbud-bar i {
+  display: block;
+  height: 100%;
+  border-radius: 99px;
+  background: var(--pri);
+}
+.tbud.over b {
+  color: var(--r);
+}
+/* 알레르기 동의 안내 */
+.consentask {
+  padding: 16px 2px 4px;
+}
+.consentask b {
+  display: block;
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+.consentask p {
+  margin: 0 0 12px;
+  font-size: 13.5px;
+  color: var(--m);
+  line-height: 1.5;
+}
+.consentask .btn {
+  height: 48px;
+  font-size: 15px;
+}
+/* 장볼 목록 — 구매 체크 · 보유중 */
+.pbtns {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.buy {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--m);
+  cursor: pointer;
+  padding: 4px 2px;
+}
+.buy .cb {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  border: 2px solid #cfc6b6;
+  display: grid;
+  place-items: center;
+  background: var(--card);
+  color: #fff;
+}
+.buy .cb .i {
+  font-size: 13px;
+  stroke-width: 2.6;
+}
+.buy.on {
+  color: var(--prd);
+}
+.buy.on .cb {
+  background: var(--pri);
+  border-color: var(--pri);
+}
+.buy:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.own {
+  border: 1.5px solid var(--l);
+  background: none;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--m);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.own.on {
+  border-color: var(--pri);
+  color: var(--prd);
+  background: var(--prs);
+}
+.pr.zero {
+  color: #b8afa1;
+}
+.li.have .tx b {
+  color: var(--m);
+}
+.rlist {
+  margin-top: 2px;
+}
+.rc.rcx {
+  cursor: default;
+  align-items: flex-start;
+}
+.rctop {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+.rctop b {
+  flex: 1;
+  margin-bottom: 4px;
+}
+.rctop .heart {
+  border: 0;
+  background: none;
+  cursor: pointer;
+  font-size: 20px;
+  padding: 0 2px;
+}
+.rcbtns {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+.rcb {
+  flex: 1;
+  height: 38px;
+  border-radius: 999px;
+  border: 0;
+  background: var(--pri);
+  color: #fff;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.rcb.ghost {
+  background: none;
+  border: 1.5px solid var(--l);
+  color: var(--t);
+}
+.cklist {
+  padding-top: 8px;
+}
+.cklist .list {
+  margin-top: 8px;
+}
+.ckrow {
+  cursor: default;
+}
+.ckb {
+  border: 0;
+  background: none;
+  padding: 4px 2px;
+  cursor: pointer;
+  flex: none;
+}
+.ckrow .cb {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  border: 2px solid #cfc6b6;
+  display: grid;
+  place-items: center;
+  background: var(--card);
+  color: #fff;
+}
+.ckrow .cb .i {
+  font-size: 16px;
+  stroke-width: 2.6;
+}
+.ckrow.on .cb {
+  background: var(--pri);
+  border-color: var(--pri);
+}
+.ckrow.on .tx b {
+  color: var(--m);
+  text-decoration: line-through;
+}
+.ckhd {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.ckall {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--m);
+  padding: 4px 2px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.ckall .cb {
+  width: 18px;
+  height: 18px;
+  border-radius: 6px;
+  border: 2px solid #cfc6b6;
+  display: grid;
+  place-items: center;
+  background: var(--card);
+  color: #fff;
+}
+.ckall .cb .i {
+  font-size: 12px;
+  stroke-width: 2.8;
+}
+.ckall.on .cb {
+  background: var(--pri);
+  border-color: var(--pri);
+}
+.ckrow .tx {
+  cursor: pointer;
+}
+.ckp {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  width: 104px;
+  border: 1.5px solid var(--l);
+  border-radius: 10px;
+  background: var(--bg);
+  padding-right: 10px;
+}
+.ckp:focus-within {
+  border-color: var(--pri);
+}
+.ckp .priceIn {
+  flex: 1;
+  min-width: 0;
+  width: auto;
+  border: 0;
+  background: none;
+  padding: 8px 4px 8px 8px;
+}
+.ckp em {
+  position: static;
+  transform: none;
+  font-style: normal;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--m);
+}
+.cklinks {
+  display: flex;
+  gap: 8px;
+}
+.cklinks .link {
+  flex: 1;
+}
+.rsubs {
+  display: flex;
+  gap: 6px;
+  margin: 6px 0 8px;
+}
+.rsubs button {
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  color: #b9b0a3;
+  padding: 6px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.calsum {
+  font-size: 15px;
+  color: var(--m);
+  text-align: center;
+  margin: 2px 0 12px;
+}
+.calsum b {
+  color: var(--prd);
+}
+.cal {
+  background: #f3f6ec;
+  border-radius: 24px;
+  padding: 16px 12px 14px;
+}
+.calh,
+.calg {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+.calh span {
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: #a39b8d;
+  padding-bottom: 6px;
+}
+.cd {
+  aspect-ratio: 1;
+  border: 0;
+  border-radius: 12px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  color: #9a927f;
+  background: #e9e5da;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  padding: 0;
+}
+.cd.l1 {
+  background: #d7e8b5;
+  color: #56703b;
+}
+.cd.l2 {
+  background: #a9cc78;
+  color: #fff;
+}
+.cd.l3 {
+  background: #6f9a45;
+  color: #fff;
+}
+.cd.fut {
+  background: #efece4;
+  color: #c9c2b4;
+  cursor: default;
+}
+.cd.today {
+  box-shadow:
+    0 0 0 2px #f3f6ec,
+    0 0 0 4px var(--pri);
+}
+.cd.sel {
+  box-shadow:
+    0 0 0 2px #f3f6ec,
+    0 0 0 4px var(--t);
+}
+.callg {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 14px;
+  font-size: 12.5px;
+  color: var(--m);
+}
+.callg span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.callg i {
+  width: 12px;
+  height: 12px;
+  border-radius: 4px;
+  display: inline-block;
+}
+.callg .l0 {
+  background: #e9e5da;
+}
+.callg .l1 {
+  background: #d7e8b5;
+}
+.callg .l2 {
+  background: #a9cc78;
+}
+.callg .l3 {
+  background: #6f9a45;
+}
+.calday {
+  text-align: center;
+  margin: 14px 0 0;
+  font-size: 14.5px;
+  line-height: 1.5;
+}
+.calday b {
+  color: var(--prd);
+  margin-right: 4px;
+}
+.rsubs button.on {
+  background: var(--prs);
+  color: var(--prd);
+}
+.rsubs em {
+  font-style: normal;
+  font-size: 12px;
+  color: var(--pri);
+  margin-left: 2px;
+}
+.triprow .tx b {
+  font-size: 16.5px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.recempty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 24px 0 8px;
+}
+.recempty p {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.5;
+  margin: 10px 0 0;
+}
+.recempty .gobtn {
+  margin-top: 18px;
+}
+.backlink {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin: 6px 0 0;
+  padding: 4px 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+  color: var(--m);
+  text-decoration: none;
+}
+.tripttl {
+  font-size: 19px;
+  font-weight: 800;
+  margin: 8px 0 4px;
+  letter-spacing: -0.02em;
+}
+.fridgeuse {
+  margin: 0 2px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--t);
+}
